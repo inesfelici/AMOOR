@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AMOOR — Estudi</title>
+  <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
+  <style>
+    :root{
+      --bg:#f5f7f3;--panel:#fff;--text:#27302a;--muted:#6d776f;--line:#dfe5df;
+      --accent:#4f6b59;--accent-soft:#e8eee9;--ok:#3f6a4c;--ok-soft:#edf5ef;
+      --warn:#8a6a2d;--warn-soft:#f7f1df;--bad:#8c4848;--bad-soft:#f7eaea;--radius:18px
+    }
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+    .sidebar{border-right:1px solid var(--line);padding:28px 18px;background:rgba(255,255,255,.45)}.brand{font-size:18px;font-weight:750;margin:0 10px 26px}.nav{display:grid;gap:8px}
+    .nav button{border:0;background:transparent;color:var(--text);padding:12px 14px;border-radius:12px;text-align:left}.nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:750}
+    .main{padding:42px 34px 70px}.wrap{max-width:900px;margin:0 auto}h1{font-size:34px;letter-spacing:-.03em;margin:0 0 8px}h2{font-size:22px;margin:0 0 16px}h3{font-size:17px;margin:0 0 10px}p{line-height:1.55}.muted{color:var(--muted)}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px}.grid{display:grid;gap:18px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 16px;border-radius:12px;font-weight:650}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.soft{background:var(--accent-soft);border-color:transparent;color:var(--accent)}.btn.danger{background:var(--bad-soft);border-color:transparent;color:var(--bad)}.btn:disabled{opacity:.45;cursor:not-allowed}
+    label{display:grid;gap:7px;font-size:14px;font-weight:650}input,textarea,select{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:12px;padding:12px 13px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}textarea{min-height:110px;resize:vertical}
+    .view{display:none}.view.active{display:block}.study-card{padding:32px}.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:800;color:var(--muted)}.prompt{font-size:26px;line-height:1.28;margin:10px 0 24px}.feedback{display:none;margin-top:18px;border-radius:14px;padding:16px}.feedback.show{display:block}.feedback.ok{background:var(--ok-soft);color:var(--ok)}.feedback.warn{background:var(--warn-soft);color:var(--warn)}.feedback.bad{background:var(--bad-soft);color:var(--bad)}.answer-block{margin-top:8px;color:var(--text)}
+    .statbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 24px}.stat{background:rgba(255,255,255,.65);border:1px solid var(--line);padding:9px 12px;border-radius:999px;font-size:14px}.list{display:grid;gap:12px}.item{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}.item strong{display:block;margin-bottom:5px}.tiny{font-size:13px;color:var(--muted)}.hidden{display:none!important}.empty{text-align:center;padding:36px 18px;color:var(--muted)}
+    .filebox{border:1px dashed #bfc9c0;border-radius:16px;padding:26px;text-align:center;background:rgba(255,255,255,.55)}.pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:5px 9px;font-size:12px;font-weight:750}.question-fields{display:grid;gap:13px}.source-preview{white-space:pre-wrap;background:#f7f8f6;border:1px solid var(--line);padding:14px;border-radius:12px;max-height:260px;overflow:auto}.top-mobile{display:none}.section-gap{margin-top:20px}.type-badge{font-size:12px;font-weight:750;color:var(--accent)}
+    .answer-control{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:8px;align-items:start}.mic-btn{min-width:48px;height:48px;padding:0;display:grid;place-items:center;font-size:19px}.mic-btn.listening{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}.mic-status{min-height:20px;margin-top:8px}
+    .scope{display:flex;gap:8px;flex-wrap:wrap}.scope button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:650}.scope button.active{background:var(--accent);border-color:var(--accent);color:#fff}.subtle{background:#fafbf9}.preview-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.mini-pill{background:var(--accent-soft);color:var(--accent);padding:6px 9px;border-radius:999px;font-size:12px;font-weight:700}.multi-result{display:grid;gap:7px;margin-top:10px}.multi-ok{color:var(--ok)}.multi-miss{color:var(--bad)}
+    .divider{height:1px;background:var(--line);margin:6px 0}.checkline{display:flex;gap:9px;align-items:center}.checkline input{width:auto}.note{padding:12px 14px;border-radius:12px;background:#f7f8f6;border:1px solid var(--line);font-size:13px;color:var(--muted)}
+    @media(max-width:760px){.app{display:block}.sidebar{display:none}.top-mobile{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.65)}.top-mobile button{white-space:nowrap;border:0;background:transparent;padding:9px 12px;border-radius:10px}.top-mobile button.active{background:var(--accent-soft);color:var(--accent);font-weight:750}.main{padding:28px 16px 54px}h1{font-size:29px}.grid.two{grid-template-columns:1fr}.study-card{padding:22px}.prompt{font-size:23px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">AMOOR</div>
+    <nav class="nav" aria-label="Menú principal">
+      <button class="active" data-view="study">Estudiar</button>
+      <button data-view="errors">Test d’errors</button>
+      <button data-view="add">Referències i idees</button>
+      <button data-view="others">Altres</button>
+      <button data-view="import">Importar documents</button>
+    </nav>
+  </aside>
+  <div>
+    <nav class="top-mobile" aria-label="Menú principal mòbil">
+      <button class="active" data-view="study">Estudiar</button><button data-view="errors">Errors</button><button data-view="add">Referències</button><button data-view="others">Altres</button><button data-view="import">Importar</button>
+    </nav>
+    <main class="main"><div class="wrap">
+
+      <section id="study" class="view active">
+        <h1>Estudiar</h1>
+        <p class="muted">Tria què vols repassar. El contingut que falles apareix amb més freqüència.</p>
+        <div class="scope" aria-label="Tipus d'estudi">
+          <button type="button" data-scope="references" class="active">Només referències</button>
+          <button type="button" data-scope="others">Només altres</button>
+          <button type="button" data-scope="mixed">Tot barrejat</button>
+        </div>
+        <div id="studyStats" class="statbar"></div>
+        <div id="studyEmpty" class="card empty hidden">Encara no hi ha contingut disponible per a aquest mode.</div>
+        <div id="studyBox" class="card study-card hidden">
+          <div class="row space"><span id="qType" class="eyebrow"></span><span id="qProgress" class="pill"></span></div>
+          <div id="qPrompt" class="prompt"></div>
+          <form id="answerForm">
+            <div id="qFields" class="question-fields"></div>
+            <div id="micStatus" class="tiny mic-status" aria-live="polite"></div>
+            <div class="row" style="margin-top:18px"><button class="btn primary" type="submit">Comprovar</button><button class="btn" type="button" id="showAnswerBtn">Mostra la resposta</button></div>
+          </form>
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <div class="row" style="margin-top:16px"><button id="nextBtn" class="btn soft hidden" type="button">Següent</button></div>
+        </div>
+      </section>
+
+      <section id="errors" class="view">
+        <h1>Test d’errors</h1>
+        <p class="muted">Repassa referències, targetes i preguntes de conceptes que hages fallat.</p>
+        <div id="errorSummary" class="statbar"></div>
+        <div class="card">
+          <div class="row space"><div><h2 style="margin-bottom:5px">Contingut amb errors</h2><div class="tiny">Ordenat de més a menys fallades.</div></div><button id="startErrorTest" class="btn primary" type="button">Començar test d’errors</button></div>
+          <div id="errorList" class="list section-gap"></div>
+        </div>
+      </section>
+
+      <section id="add" class="view">
+        <h1>Referències i idees</h1>
+        <p class="muted">Pots editar qualsevol referència. Les idees de totes les referències d’un mateix autor es consideren conjuntament.</p>
+        <form id="addForm" class="card grid">
+          <input type="hidden" id="editRefId">
+          <div class="grid two"><label>Autor<input id="author" required placeholder="Hemsy de Gainza, V."></label><label>Any<input id="year" required placeholder="1964 o s.f."></label></div>
+          <label>Títol<input id="title" required placeholder="La iniciación musical del niño"></label>
+          <label>Editorial / font<input id="publisher" required placeholder="Ricordi"></label>
+          <label>Idees associades<textarea id="ideas" placeholder="Una idea per línia. Pots deixar-ho buit."></textarea></label>
+          <div class="row"><button id="saveRefBtn" class="btn primary" type="submit">Guardar referència</button><button id="cancelRefEdit" class="btn hidden" type="button">Cancel·lar</button><span id="addMsg" class="tiny" aria-live="polite"></span></div>
+        </form>
+        <div class="card section-gap"><div class="row space"><div><h2 style="margin-bottom:5px">Referències guardades</h2><div id="savedCount" class="tiny"></div></div></div><div id="savedList" class="list section-gap"></div></div>
+        <div class="card section-gap"><div class="row space"><div><h2 style="margin-bottom:5px">Autors amb idees sense referència</h2><div id="authorOnlyCount" class="tiny"></div></div></div><div id="authorOnlyList" class="list section-gap"></div></div>
+      </section>
+
+      <section id="others" class="view">
+        <h1>Altres</h1>
+        <p class="muted">Targetes normals per a definicions, frases, compositors o qualsevol dada que no siga una referència bibliogràfica.</p>
+        <form id="otherForm" class="card grid">
+          <input type="hidden" id="editOtherId">
+          <label>Anvers / pregunta<input id="otherFront" required placeholder="Frase de Manuel Romero"></label>
+          <label>Revers / resposta<textarea id="otherBack" required placeholder="La música és essencial per a viure"></textarea></label>
+          <label>Com vols que es pregunte?
+            <select id="otherMode"><option value="front-back">Només anvers → revers</option><option value="bidirectional">Bidireccional: els dos costats poden ser pregunta</option></select>
+          </label>
+          <div class="note">Si el revers conté diverses respostes, posa una resposta per línia. AMOOR indicarà quines has recordat i quines et falten.</div>
+          <div class="row"><button id="saveOtherBtn" class="btn primary" type="submit">Guardar targeta</button><button id="cancelOtherEdit" class="btn hidden" type="button">Cancel·lar</button><button id="studyOthersBtn" class="btn soft" type="button">Estudiar només «Altres»</button><span id="otherMsg" class="tiny"></span></div>
+        </form>
+        <div class="card section-gap"><div class="row space"><div><h2 style="margin-bottom:5px">Targetes guardades</h2><div id="otherCount" class="tiny"></div></div></div><div id="otherList" class="list section-gap"></div></div>
+      </section>
+
+      <section id="import" class="view">
+        <h1>Importar documents</h1>
+        <p class="muted">Pots importar tant el document de referències i idees com un document de targetes d’«Altres».</p>
+        <div class="card grid">
+          <div><h2>Referències i idees</h2><p class="tiny">Accepta anys numèrics i «s.f.», títols acabats en punt, interrogació o exclamació, autors amb diverses referències i l’apartat «AUTORS SENSE REFERÈNCIA BIBLIOGRÀFICA». Ignora «DUBTES PER REVISAR».</p></div>
+          <div class="filebox"><input id="fileInput" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><p class="tiny" style="margin-bottom:0">Format: Autor (Any). Títol. Editorial. + línies «Idea: ...»</p></div>
+          <div id="importPreview" class="hidden"><h3>Previsualització</h3><div id="importSummary" class="preview-summary"></div><div id="importList" class="list"></div><div class="row" style="margin-top:18px"><button id="confirmImport" class="btn primary" type="button">Importar</button><span id="importMsg" class="tiny"></span></div></div>
+        </div>
+        <div class="card grid section-gap">
+          <div><h2>Altres</h2><p class="tiny">Cada targeta pot ser unidireccional o bidireccional. En respostes múltiples, cada línia del revers es tracta com una part que cal recordar.</p></div>
+          <div class="filebox"><input id="otherFileInput" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><p class="tiny" style="margin-bottom:0">Format: «Anvers: ...», «Revers: ...», «Mode: anvers-revers/bidireccional»</p></div>
+          <div class="source-preview">Anvers: Qui ha escrit les definicions de "llenguatge"?\nRevers: AVL — vocabulari...\nHemsy de Gainza — llenguatge tan natural...\nMode: anvers-revers\n\nAnvers: Frase de Manuel Romero\nRevers: La música és essencial per a viure\nMode: bidireccional</div>
+          <div id="otherImportPreview" class="hidden"><h3>Previsualització</h3><div id="otherImportSummary" class="preview-summary"></div><div id="otherImportList" class="list"></div><div class="row" style="margin-top:18px"><button id="confirmOtherImport" class="btn primary" type="button">Importar targetes</button><span id="otherImportMsg" class="tiny"></span></div></div>
+        </div>
+      </section>
+
+    </div></main>
+  </div>
+</div>
+<script>
+(() => {
+  const REF_KEY='referencies_estudi_v1', OTHER_KEY='altres_estudi_v1', AUTHOR_KEY='autors_idees_v1', CONCEPT_KEY='conceptes_stats_v1', SCOPE_KEY='amoorscope_v1';
+  let refs=loadArray(REF_KEY), others=loadArray(OTHER_KEY), authorOnly=loadArray(AUTHOR_KEY), conceptStats=loadObject(CONCEPT_KEY);
+  let studyScope=localStorage.getItem(SCOPE_KEY)||'references', mode='normal', current=null, pendingImport={refs:[],authors:[],ideaCount:0}, pendingOtherImport=[];
+  const $=id=>document.getElementById(id), navButtons=[...document.querySelectorAll('[data-view]')];
+
+  function loadArray(key){try{const x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
+  function loadObject(key){try{const x=JSON.parse(localStorage.getItem(key)||'{}');return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}catch{return{}}}
+  function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+  function saveAll(){localStorage.setItem(REF_KEY,JSON.stringify(refs));localStorage.setItem(OTHER_KEY,JSON.stringify(others));localStorage.setItem(AUTHOR_KEY,JSON.stringify(authorOnly));localStorage.setItem(CONCEPT_KEY,JSON.stringify(conceptStats));localStorage.setItem(SCOPE_KEY,studyScope);renderAll()}
+  function statsObj(x){x.stats||={asked:0,correct:0,wrong:0,minor:0};return x.stats}
+
+  function normalize(s=''){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[“”‘’"'.,:;!?¿¡()[\]{}]/g,' ').replace(/[–—-]/g,' ').replace(/\s+/g,' ').trim()}
+  function lev(a,b){a=normalize(a);b=normalize(b);const m=a.length,n=b.length,dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return dp[m][n]}
+  function fuzzy(given,correct,kind='text'){const g=normalize(given),c=normalize(correct);if(!g)return{ok:false,minor:false};if(g===c)return{ok:true,minor:false};if(kind==='year'){const gy=g.replace(/\s+/g,''),cy=c.replace(/\s+/g,'');return{ok:gy===cy,minor:false}};const d=lev(g,c),ratio=1-d/Math.max(g.length,c.length,1);let t=kind==='title'?0.83:kind==='publisher'?0.82:0.84;const ok=ratio>=t||d<=Math.max(1,Math.floor(c.length*.08));return{ok,minor:ok}}
+  function uniqStrings(arr){const out=[];for(const x of arr){const s=String(x||'').trim();if(s&&!out.some(y=>normalize(y)===normalize(s)))out.push(s)}return out}
+  function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+  // Autors i idees
+  const NAME_STOP=new Set(['de','del','dels','la','les','el','els','i','y','e','and','the']);
+  function allAuthorNames(){return uniqStrings([...refs.map(r=>r.author),...authorOnly.map(a=>a.author)])}
+  function authorAliases(author){const n=normalize(author),tokens=n.split(' '),significant=tokens.filter(t=>t.length>1&&!NAME_STOP.has(t));const aliases=[n];if(significant.length)aliases.push(significant.join(' '));significant.forEach(t=>aliases.push(t));return uniqStrings(aliases)}
+  function authorMatch(input,target){const raw=normalize(input),tar=normalize(target);if(!raw)return{ok:false};const full=fuzzy(raw,tar,'author');if(full.ok)return{ok:true,minor:full.minor,abbreviated:false};const known=allAuthorNames();const candidates=known.filter(a=>authorAliases(a).some(alias=>alias===raw || (raw.length>=4&&alias.startsWith(raw))));if(candidates.length===1&&normalize(candidates[0])===tar)return{ok:true,minor:false,abbreviated:true,full:target};return{ok:false,ambiguous:candidates.length>1,candidates}}
+  function getAuthorIdeas(author){const ideas=[];refs.filter(r=>normalize(r.author)===normalize(author)).forEach(r=>(r.ideas||[]).forEach(i=>ideas.push(i)));authorOnly.filter(a=>normalize(a.author)===normalize(author)).forEach(a=>(a.ideas||[]).forEach(i=>ideas.push(i)));return uniqStrings(ideas)}
+  function addAuthorOnly(author,ideas){let a=authorOnly.find(x=>normalize(x.author)===normalize(author));if(!a){a={id:uid(),author,ideas:[],stats:{asked:0,correct:0,wrong:0,minor:0}};authorOnly.push(a)}a.ideas=uniqStrings([...(a.ideas||[]),...ideas]);return a}
+
+  const SYN={creativitat:'creativitat',creatividad:'creativitat',creatiu:'creativitat',creativa:'creativitat',creador:'creativitat',creadora:'creativitat',crear:'creativitat',audicio:'audicio',audicion:'audicio',escolta:'audicio',escoltar:'audicio',ritmic:'ritme',ritmica:'ritme',ritmo:'ritme',ritme:'ritme',improvisar:'improvisacio',improvisacion:'improvisacio',improvisacio:'improvisacio',moviment:'moviment',movimiento:'moviment',corporal:'cos',cos:'cos',cuerpo:'cos',joc:'joc',juego:'joc',ludic:'joc',ludica:'joc',relaxacio:'relaxacio',relajacion:'relaxacio',folklore:'folklore',folclore:'folklore',veu:'veu',voz:'veu',cant:'cant',canto:'cant',canco:'canco',cancion:'canco',harmonia:'harmonia',armonia:'harmonia',melodia:'melodia',textura:'textura',forma:'forma',modulacio:'modulacio',modulacion:'modulacio',cadencia:'cadencia',cadencies:'cadencia',cadencias:'cadencia',lectoescriptura:'lectoescriptura',notacio:'notacio',notacion:'notacio',diversitat:'diversitat',diversidad:'diversitat',innovacio:'innovacio',innovacion:'innovacio',tecnologia:'tecnologia',tecnologia:'tecnologia',coral:'coral'};
+  const IDEA_STOP=new Set(['el','la','els','les','un','una','uns','unes','de','del','dels','a','al','als','i','o','en','per','para','amb','con','que','es','se','pot','poden','ha','han','com','mes','més','musica','musical','educacio','educacion','aprenentatge','ensenyament','alumnat','infant','infantil','treball','treballar','partir','afavorir','desenvolupament','desenvolupar','estimular','fomentar','potenciar','promoure']);
+  function ideaTokens(s){return normalize(s).split(' ').filter(w=>w&&!IDEA_STOP.has(w)).map(w=>SYN[w]||w)}
+  function ideaSimilarity(a,b){const A=ideaTokens(a),B=ideaTokens(b);if(!A.length||!B.length)return 0;const sa=new Set(A),sb=new Set(B);let inter=0;sa.forEach(x=>{if(sb.has(x))inter++});const jac=inter/new Set([...sa,...sb]).size, l=1-lev(a,b)/Math.max(normalize(a).length,normalize(b).length,1);return Math.max(jac,l)}
+  function ideasEquivalent(a,b){return ideaSimilarity(a,b)>=0.52}
+  function validAuthorsForIdea(idea){return allAuthorNames().filter(a=>getAuthorIdeas(a).some(i=>ideasEquivalent(idea,i)))}
+
+  const CONCEPTS=[
+    {key:'creativitat',label:'la creativitat',tokens:['creativitat']},{key:'ritme',label:'el ritme',tokens:['ritme']},{key:'improvisacio',label:'la improvisació',tokens:['improvisacio']},{key:'audicio',label:'l’audició i l’escolta',tokens:['audicio']},{key:'cos_moviment',label:'el cos i el moviment',tokens:['cos','moviment']},{key:'joc',label:'el joc',tokens:['joc']},{key:'relaxacio',label:'la relaxació',tokens:['relaxacio']},{key:'folklore',label:'el folklore',tokens:['folklore']},{key:'veu_cant',label:'la veu i el cant',tokens:['veu','cant']},{key:'canco',label:'la cançó',tokens:['canco']},{key:'harmonia',label:'l’harmonia',tokens:['harmonia']},{key:'melodia',label:'la melodia',tokens:['melodia']},{key:'textura',label:'la textura',tokens:['textura']},{key:'forma',label:'la forma musical',tokens:['forma']},{key:'modulacio',label:'la modulació',tokens:['modulacio']},{key:'cadencia',label:'les cadències',tokens:['cadencia']},{key:'lectoescriptura',label:'la lectoescriptura i la notació',tokens:['lectoescriptura','notacio']},{key:'diversitat',label:'la diversitat',tokens:['diversitat']},{key:'innovacio',label:'la innovació educativa',tokens:['innovacio']},{key:'tecnologia',label:'la tecnologia',tokens:['tecnologia']},{key:'coral',label:'el cant i la direcció coral',tokens:['coral']}
+  ];
+  function conceptAuthors(c){return allAuthorNames().filter(a=>getAuthorIdeas(a).some(i=>{const t=new Set(ideaTokens(i));return c.tokens.some(k=>t.has(k))}))}
+  function conceptCandidates(){return CONCEPTS.map(c=>({...c,authors:conceptAuthors(c)})).filter(c=>c.authors.length>=2&&c.authors.length<=12)}
+  function conceptStat(key){conceptStats[key]||={asked:0,correct:0,wrong:0};return conceptStats[key]}
+
+  function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));navButtons.forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='study')startQuestion();if(id==='errors')renderErrors()}
+  navButtons.forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+  document.querySelectorAll('[data-scope]').forEach(b=>b.addEventListener('click',()=>{studyScope=b.dataset.scope;mode='normal';document.querySelectorAll('[data-scope]').forEach(x=>x.classList.toggle('active',x.dataset.scope===studyScope));saveAll();startQuestion()}));
+  document.querySelectorAll('[data-scope]').forEach(x=>x.classList.toggle('active',x.dataset.scope===studyScope));
+
+  function totalStats(){const all=[...refs,...others,...authorOnly];const base=all.reduce((a,r)=>{a.asked+=r.stats?.asked||0;a.correct+=r.stats?.correct||0;a.wrong+=r.stats?.wrong||0;return a},{asked:0,correct:0,wrong:0});Object.values(conceptStats).forEach(s=>{base.asked+=s.asked||0;base.correct+=s.correct||0;base.wrong+=s.wrong||0});return base}
+  function renderStats(){const s=totalStats();$('studyStats').innerHTML=`<span class="stat">${refs.length} referències</span><span class="stat">${others.length} altres targetes</span><span class="stat">${allAuthorNames().length} autors</span><span class="stat">${s.correct} encerts</span><span class="stat">${s.wrong} errors</span>`}
+  function weightOf(item){return Math.max(1,1+(item.stats?.wrong||0)*2-Math.floor((item.stats?.correct||0)/4))}
+  function pickWeighted(entries,getWeight=e=>weightOf(e.item)){const bag=[];entries.forEach(e=>{const n=Math.min(12,Math.max(1,getWeight(e)));for(let i=0;i<n;i++)bag.push(e)});return bag.length?bag[Math.floor(Math.random()*bag.length)]:null}
+
+  function normalReferenceEntry(){
+    const concepts=conceptCandidates(), ideaOnlyCandidates=authorOnly.filter(a=>(a.ideas||[]).length);
+    const roll=Math.random();
+    if(concepts.length&&roll<0.16){const entries=concepts.map(c=>({kind:'concept',concept:c}));return pickWeighted(entries,e=>Math.max(1,1+(conceptStat(e.concept.key).wrong||0)*2))}
+    if(ideaOnlyCandidates.length&&roll<0.30){const a=pickWeighted(ideaOnlyCandidates.map(item=>({kind:'ideaOnlyBase',item}))).item;const idea=a.ideas[Math.floor(Math.random()*a.ideas.length)];return{kind:'ideaOnly',item:a,idea}}
+    if(!refs.length){if(!ideaOnlyCandidates.length)return null;const a=ideaOnlyCandidates[Math.floor(Math.random()*ideaOnlyCandidates.length)];return{kind:'ideaOnly',item:a,idea:a.ideas[Math.floor(Math.random()*a.ideas.length)]}}
+    return pickWeighted(refs.map(item=>({kind:'ref',item})))
+  }
+  function normalOtherEntry(){return others.length?pickWeighted(others.map(item=>({kind:'other',item}))):null}
+  function pickCurrent(){
+    if(mode==='errors')return pickErrorEntry();
+    if(studyScope==='references')return normalReferenceEntry();
+    if(studyScope==='others')return normalOtherEntry();
+    const a=normalReferenceEntry(),b=normalOtherEntry();if(a&&b)return Math.random()<.6?a:b;return a||b;
+  }
+  function pickErrorEntry(){const entries=[];refs.filter(x=>(x.stats?.wrong||0)>0).forEach(item=>entries.push({kind:'ref',item}));others.filter(x=>(x.stats?.wrong||0)>0).forEach(item=>entries.push({kind:'other',item}));authorOnly.filter(x=>(x.stats?.wrong||0)>0).forEach(item=>{const idea=(item.ideas||[])[0];if(idea)entries.push({kind:'ideaOnly',item,idea})});conceptCandidates().forEach(c=>{if((conceptStat(c.key).wrong||0)>0)entries.push({kind:'concept',concept:c})});return pickWeighted(entries,e=>e.kind==='concept'?Math.max(1,(conceptStat(e.concept.key).wrong||0)*2):Math.max(1,(e.item.stats?.wrong||0)*2))}
+
+  function startQuestion(){renderStats();current=pickCurrent();$('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').classList.add('hidden');$('showAnswerBtn').classList.remove('hidden');$('micStatus').textContent='';if(!current){$('studyEmpty').classList.remove('hidden');$('studyBox').classList.add('hidden');return}$('studyEmpty').classList.add('hidden');$('studyBox').classList.remove('hidden');$('qProgress').textContent=mode==='errors'?'Test d’errors':studyScope==='references'?'Referències':studyScope==='others'?'Altres':'Tot barrejat';if(current.kind==='ref')renderReferenceQuestion(current.item);else if(current.kind==='other')renderOtherQuestion(current.item);else if(current.kind==='concept')renderConceptQuestion(current.concept);else renderIdeaOnlyQuestion(current);attachMicButtons()}
+
+  function refsByAuthor(author){return refs.filter(r=>normalize(r.author)===normalize(author))}
+  function renderReferenceQuestion(r){const ideas=getAuthorIdeas(r.author),available=['complete','author'];if(ideas.length)available.push('ideaAuthor');const type=available[Math.floor(Math.random()*available.length)];current.qtype=type;if(type==='complete'){const siblings=refsByAuthor(r.author);let fields=['year','title','publisher'],hint='';if(siblings.length>1){const clue=['year','title','publisher'][Math.floor(Math.random()*3)];fields=fields.filter(f=>f!==clue);const L={year:'Any',title:'Títol',publisher:'Editorial / font'};hint=`<div class="tiny" style="margin-top:8px">Pista per distingir-la de les altres: <strong>${L[clue]}:</strong> ${esc(r[clue])}</div>`}$('qType').textContent='Completa la referència';$('qPrompt').innerHTML=`${esc(r.author)}${hint}`;const L={year:'Any',title:'Títol',publisher:'Editorial / font'};$('qFields').innerHTML=fields.map(f=>answerInput(L[f],f)).join('');current.expectedFields=fields}else if(type==='author'){$('qType').textContent='Quin és l’autor?';$('qPrompt').innerHTML=`<em>${esc(r.title)}</em><div class="tiny" style="margin-top:8px">${esc(r.year)} · ${esc(r.publisher)}</div>`;$('qFields').innerHTML=answerInput('Autor','author');current.expectedFields=['author']}else{const idea=ideas[Math.floor(Math.random()*ideas.length)];current.ideaShown=idea;current.validAuthors=validAuthorsForIdea(idea);$('qType').textContent='Quin autor pots relacionar amb aquesta idea?';$('qPrompt').textContent=idea;$('qFields').innerHTML=answerInput('Autor','author');current.expectedFields=['author']}}
+  function renderIdeaOnlyQuestion(c){current.qtype='ideaAuthor';current.ideaShown=c.idea;current.validAuthors=validAuthorsForIdea(c.idea);$('qType').textContent='Quin autor pots relacionar amb aquesta idea?';$('qPrompt').textContent=c.idea;$('qFields').innerHTML=answerInput('Autor','author');current.expectedFields=['author']}
+  function renderConceptQuestion(c){current.qtype='concept';current.validAuthors=c.authors;$('qType').textContent='Relaciona autors i idea';$('qPrompt').textContent=`Quins autors parlen sobre ${c.label}?`;$('qFields').innerHTML=answerTextarea('Autors','conceptAnswer','Escriu tots els que recordes. Pots separar-los amb punt i coma o en línies diferents.');current.expectedFields=['conceptAnswer']}
+  function renderOtherQuestion(o){const bid=(o.mode||'front-back')==='bidirectional'&&String(o.back||'').split(/\r?\n/).filter(Boolean).length===1;const reverse=bid&&Math.random()<.5;current.qtype='other';current.otherDirection=reverse?'back-front':'front-back';$('qType').textContent=reverse?'Revers → anvers':'Anvers → revers';$('qPrompt').style.whiteSpace='pre-wrap';$('qPrompt').textContent=reverse?o.back:o.front;$('qFields').innerHTML=answerTextarea('Resposta','back');current.expectedFields=['back']}
+  function answerInput(label,field){return `<label>${label}<div class="answer-control"><input data-field="${field}" autocomplete="off"><button class="btn mic-btn" type="button" data-mic-for="${field}" aria-label="Respondre amb el micròfon" title="Respondre amb el micròfon">🎙️</button></div></label>`}
+  function answerTextarea(label,field,placeholder=''){return `<label>${label}<div class="answer-control"><textarea data-field="${field}" placeholder="${esc(placeholder)}" style="min-height:90px"></textarea><button class="btn mic-btn" type="button" data-mic-for="${field}" aria-label="Respondre amb el micròfon" title="Respondre amb el micròfon">🎙️</button></div></label>`}
+
+  function titlePunct(t){return /[?!]$/.test(String(t).trim())?String(t).trim():String(t).trim()+'.'}
+  function refAnswer(r){return `<div class="answer-block"><strong>${esc(r.author)} (${esc(r.year)}).</strong> <em>${esc(titlePunct(r.title))}</em> ${esc(r.publisher)}${/[.!?]$/.test(r.publisher)?'':'.'}</div>`}
+  function otherAnswer(o){return `<div class="answer-block"><strong>${esc(o.front)}</strong><div style="margin-top:6px;white-space:pre-wrap">${esc(o.back)}</div></div>`}
+  function fullAuthorNotice(input,target){const m=authorMatch(input,target);return m.ok&&m.abbreviated?`<div class="tiny" style="margin-top:8px">Correcte. El nom complet guardat és <strong>${esc(target)}</strong>.</div>`:''}
+
+  function containsAuthor(answer,author){const raw=normalize(answer);if(!raw)return false;const aliases=authorAliases(author).sort((a,b)=>b.length-a.length);if(aliases.some(a=>a.length>=3&&raw.includes(a)))return true;return authorMatch(answer,author).ok}
+  function evaluateConcept(answer,expected){const found=expected.filter(a=>containsAuthor(answer,a)),missing=expected.filter(a=>!found.includes(a));return{ok:missing.length===0,partial:found.length>0,found,missing}}
+  function expectedBackParts(back){return String(back||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean)}
+  function approxContains(text,phrase){const t=normalize(text),p=normalize(phrase);if(!p)return true;if(t.includes(p))return true;const toks=p.split(' ').filter(x=>x.length>2);if(!toks.length)return false;const hit=toks.filter(x=>t.includes(x)).length;return hit>=Math.max(1,Math.ceil(toks.length*.65))}
+  function evaluateBackParts(answer,back){const parts=expectedBackParts(back);if(parts.length<=1)return null;const results=parts.map(p=>{const m=p.match(/^(.+?)\s*[—–-]\s*(.+)$/);if(m){const label=m[1].trim(),detail=m[2].trim(),detailWords=normalize(detail).split(' ').filter(w=>w.length>3).slice(0,4);const labelOk=approxContains(answer,label),detailHit=detailWords.filter(w=>normalize(answer).includes(w)).length,detailOk=!detailWords.length||detailHit>=Math.min(2,detailWords.length);return{part:p,ok:labelOk&&detailOk}}return{part:p,ok:approxContains(answer,p)}});return{ok:results.every(x=>x.ok),partial:results.some(x=>x.ok),results}}
+  function frontAlternatives(front){const f=String(front||'').trim(),out=[f];const m=f.match(/^(?:frase|obra|definici[oó]|definició|text|idea)\s+de\s+(.+)$/i);if(m)out.push(m[1].trim());return uniqStrings(out)}
+
+  $('answerForm').addEventListener('submit',e=>{e.preventDefault();if(!current)return;let result={ok:false,minor:false,body:''},statTarget=null;
+    if(current.qtype==='concept'){
+      const ans=document.querySelector('[data-field="conceptAnswer"]').value,ev=evaluateConcept(ans,current.validAuthors);const st=conceptStat(current.concept.key);statTarget=st;
+      const detail=`<div class="multi-result">${ev.found.length?`<div class="multi-ok">Recordats: <strong>${ev.found.map(esc).join(' · ')}</strong></div>`:''}${ev.missing.length?`<div class="multi-miss">Et falten: <strong>${ev.missing.map(esc).join(' · ')}</strong></div>`:''}</div>`;
+      result={ok:ev.ok,partial:ev.partial,body:detail};
+    }else if(current.qtype==='ideaAuthor'){
+      const ans=document.querySelector('[data-field="author"]').value,valid=current.validAuthors||[];let matched=null,abbr=false;for(const a of valid){const m=authorMatch(ans,a);if(m.ok){matched=a;abbr=m.abbreviated;break}}
+      statTarget=statsObj(current.item);result={ok:!!matched,body:matched?`${abbr?`<div class="tiny">Correcte. El nom complet guardat és <strong>${esc(matched)}</strong>.</div>`:''}<div class="tiny" style="margin-top:8px">Altres autors relacionats: ${valid.filter(a=>a!==matched).map(esc).join(' · ')||'—'}</div>`:`<div>Autors relacionats: <strong>${valid.map(esc).join(' · ')}</strong></div>`};
+    }else if(current.kind==='other'){
+      const o=current.item,ans=document.querySelector('[data-field="back"]').value;statTarget=statsObj(o);
+      if(current.otherDirection==='back-front'){let ok=false,minor=false;for(const alt of frontAlternatives(o.front)){const m=fuzzy(ans,alt,'title');if(m.ok){ok=true;minor=m.minor;break}}result={ok,minor,body:ok&&normalize(ans)!==normalize(o.front)?`<div class="tiny">Forma completa de l’anvers: <strong>${esc(o.front)}</strong></div>`:`Resposta correcta:${otherAnswer(o)}`};}
+      else{
+        const multi=evaluateBackParts(ans,o.back);
+        if(multi){
+          const rows=multi.results.map(x=>`<div class="${x.ok?'multi-ok':'multi-miss'}">${x.ok?'✓':'✗'} ${esc(x.part)}</div>`).join('');
+          result={ok:multi.ok,partial:multi.partial,body:`<div class="multi-result">${rows}</div>`};
+        }else{
+          const m=fuzzy(ans,o.back,'title');
+          result={ok:m.ok,minor:m.minor,body:`Resposta correcta:${otherAnswer(o)}`};
+        }
+      }
+    }else{
+      const r=current.item;statTarget=statsObj(r);let all=true,minor=false,abbrBody='';for(const f of current.expectedFields){const input=document.querySelector(`[data-field="${f}"]`).value;if(f==='author'){const m=authorMatch(input,r.author);all=all&&m.ok;if(m.ok&&m.abbreviated)abbrBody=fullAuthorNotice(input,r.author)}else{const m=fuzzy(input,r[f],f);all=all&&m.ok;minor=minor||m.minor}}result={ok:all,minor,body:all?abbrBody:`Resposta correcta:${refAnswer(r)}`};
+    }
+    if(statTarget){statTarget.asked=(statTarget.asked||0)+1;if(result.ok)statTarget.correct=(statTarget.correct||0)+1;else statTarget.wrong=(statTarget.wrong||0)+1}
+    if(result.ok)showFeedback(result.minor?'warn':'ok',result.minor?'Correcte amb una errada menor':'Correcte',result.body);
+    else if(result.partial)showFeedback('warn','Parcialment correcte',result.body);
+    else showFeedback('bad','Incorrecte',result.body);
+    saveAll();finishQuestion();
+  });
+
+  $('showAnswerBtn').addEventListener('click',()=>{if(!current)return;let body='';if(current.qtype==='concept'){const st=conceptStat(current.concept.key);st.asked++;st.wrong++;body=`<div>Autors relacionats: <strong>${current.validAuthors.map(esc).join(' · ')}</strong></div>`}else{const item=current.item,st=statsObj(item);st.asked++;st.wrong++;if(current.qtype==='ideaAuthor')body=`<div>Autors relacionats: <strong>${current.validAuthors.map(esc).join(' · ')}</strong></div>`;else body=current.kind==='ref'?refAnswer(item):otherAnswer(item)}showFeedback('bad','Resposta',body);saveAll();finishQuestion()});
+  function showFeedback(kind,title,body){const el=$('feedback');el.className=`feedback show ${kind}`;el.innerHTML=`<strong>${title}</strong>${body?`<div style="margin-top:6px">${body}</div>`:''}`}
+  function finishQuestion(){if(activeRecognition){try{activeRecognition.stop()}catch{}}document.querySelectorAll('#qFields input,#qFields textarea,#qFields .mic-btn').forEach(i=>i.disabled=true);$('showAnswerBtn').classList.add('hidden');$('nextBtn').classList.remove('hidden')}
+  $('nextBtn').addEventListener('click',startQuestion);
+
+  // Micròfon
+  const SpeechRecognitionAPI=window.SpeechRecognition||window.webkitSpeechRecognition;let activeRecognition=null,activeMicButton=null;
+  function attachMicButtons(){document.querySelectorAll('[data-mic-for]').forEach(btn=>{if(!SpeechRecognitionAPI){btn.disabled=true;btn.title='El reconeixement de veu no està disponible en aquest navegador';return}btn.addEventListener('click',()=>startDictation(btn))})}
+  function startDictation(btn){const target=document.querySelector(`[data-field="${btn.dataset.micFor}"]`);if(!target||target.disabled)return;if(activeRecognition){try{activeRecognition.stop()}catch{}if(activeMicButton===btn)return}const rec=new SpeechRecognitionAPI();activeRecognition=rec;activeMicButton=btn;rec.lang=navigator.language||'ca-ES';rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{btn.classList.add('listening');$('micStatus').textContent='Escoltant…'};rec.onresult=e=>{const t=(e.results?.[0]?.[0]?.transcript||'').trim();if(t){target.value=target.value.trim()?`${target.value.trim()} ${t}`:t;$('micStatus').textContent='Text transcrit. Revisa’l abans de comprovar.';target.focus()}else $('micStatus').textContent='No s’ha detectat cap resposta. Torna-ho a intentar.'};rec.onerror=e=>{const m={'not-allowed':'Cal donar permís al navegador per usar el micròfon.','no-speech':'No s’ha detectat veu. Torna-ho a intentar.','audio-capture':'No s’ha pogut accedir al micròfon.','network':'No s’ha pogut usar el reconeixement de veu en aquest moment.'};$('micStatus').textContent=m[e.error]||'No s’ha pogut transcriure la resposta.'};rec.onend=()=>{btn.classList.remove('listening');if(activeRecognition===rec){activeRecognition=null;activeMicButton=null}};try{rec.start()}catch{$('micStatus').textContent='No s’ha pogut iniciar el micròfon.'}}
+
+  // Referències: alta/edició
+  $('addForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editRefId').value,p={author:$('author').value.trim(),year:$('year').value.trim(),title:$('title').value.trim(),publisher:$('publisher').value.trim(),ideas:uniqStrings($('ideas').value.split('\n'))};if(id){const r=refs.find(x=>x.id===id);if(r)Object.assign(r,p);$('addMsg').textContent='Canvis guardats.'}else{refs.push({id:uid(),...p,stats:{asked:0,correct:0,wrong:0,minor:0}});$('addMsg').textContent='Referència guardada.'}resetRefForm();saveAll();setTimeout(()=>$('addMsg').textContent='',1600)});
+  function resetRefForm(){$('addForm').reset();$('editRefId').value='';$('saveRefBtn').textContent='Guardar referència';$('cancelRefEdit').classList.add('hidden')}$('cancelRefEdit').addEventListener('click',resetRefForm);
+  function editRef(id){const r=refs.find(x=>x.id===id);if(!r)return;$('editRefId').value=r.id;$('author').value=r.author;$('year').value=r.year;$('title').value=r.title;$('publisher').value=r.publisher;$('ideas').value=(r.ideas||[]).join('\n');$('saveRefBtn').textContent='Guardar canvis';$('cancelRefEdit').classList.remove('hidden');showView('add');$('author').focus()}
+  function renderSaved(){$('savedCount').textContent=`${refs.length} referències guardades`;if(!refs.length){$('savedList').innerHTML='<div class="empty">Encara no hi ha referències.</div>';return}$('savedList').innerHTML=refs.slice().sort((a,b)=>a.author.localeCompare(b.author)).map(r=>`<div class="item"><div class="row space"><div style="min-width:0"><strong>${esc(r.author)}</strong><div>${esc(r.year)} · <em>${esc(r.title)}</em> · ${esc(r.publisher)}</div>${getAuthorIdeas(r.author).length?`<div class="tiny" style="margin-top:7px">${getAuthorIdeas(r.author).length} idees totals de l’autor</div>`:''}</div><div class="row"><button class="btn edit-ref" data-id="${r.id}" type="button">Editar</button><button class="btn danger delete-ref" data-id="${r.id}" type="button">Eliminar</button></div></div></div>`).join('');document.querySelectorAll('.edit-ref').forEach(b=>b.addEventListener('click',()=>editRef(b.dataset.id)));document.querySelectorAll('.delete-ref').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar aquesta referència?')){refs=refs.filter(r=>r.id!==b.dataset.id);saveAll()}}))}
+  function renderAuthorOnly(){$('authorOnlyCount').textContent=`${authorOnly.length} autors sense referència`;if(!authorOnly.length){$('authorOnlyList').innerHTML='<div class="empty">No n’hi ha cap.</div>';return}$('authorOnlyList').innerHTML=authorOnly.slice().sort((a,b)=>a.author.localeCompare(b.author)).map(a=>`<div class="item"><strong>${esc(a.author)}</strong><div class="tiny">${(a.ideas||[]).length} idees · disponibles en les preguntes d’idees i conceptes</div><div style="margin-top:8px">${(a.ideas||[]).slice(0,3).map(i=>`<div class="tiny">• ${esc(i)}</div>`).join('')}${(a.ideas||[]).length>3?'<div class="tiny">…</div>':''}</div></div>`).join('')}
+
+  // Altres: alta/edició
+  $('otherForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editOtherId').value,p={front:$('otherFront').value.trim(),back:$('otherBack').value.trim(),mode:$('otherMode').value};if(id){const o=others.find(x=>x.id===id);if(o)Object.assign(o,p);$('otherMsg').textContent='Canvis guardats.'}else{others.push({id:uid(),...p,stats:{asked:0,correct:0,wrong:0,minor:0}});$('otherMsg').textContent='Targeta guardada.'}resetOtherForm();saveAll();setTimeout(()=>$('otherMsg').textContent='',1600)});
+  function resetOtherForm(){$('otherForm').reset();$('editOtherId').value='';$('otherMode').value='front-back';$('saveOtherBtn').textContent='Guardar targeta';$('cancelOtherEdit').classList.add('hidden')}$('cancelOtherEdit').addEventListener('click',resetOtherForm);
+  function editOther(id){const o=others.find(x=>x.id===id);if(!o)return;$('editOtherId').value=o.id;$('otherFront').value=o.front;$('otherBack').value=o.back;$('otherMode').value=o.mode||'front-back';$('saveOtherBtn').textContent='Guardar canvis';$('cancelOtherEdit').classList.remove('hidden');showView('others');$('otherFront').focus()}
+  $('studyOthersBtn').addEventListener('click',()=>{studyScope='others';mode='normal';document.querySelectorAll('[data-scope]').forEach(x=>x.classList.toggle('active',x.dataset.scope===studyScope));saveAll();showView('study')});
+  function renderOthers(){$('otherCount').textContent=`${others.length} targetes guardades`;$('otherList').innerHTML=others.length?others.map(o=>`<div class="item"><div class="row space"><div style="min-width:0"><span class="type-badge">${(o.mode||'front-back')==='bidirectional'?'Bidireccional':'Anvers → revers'}</span><strong>${esc(o.front)}</strong><div style="white-space:pre-wrap">${esc(o.back)}</div></div><div class="row"><button class="btn edit-other" data-id="${o.id}" type="button">Editar</button><button class="btn danger delete-other" data-id="${o.id}" type="button">Eliminar</button></div></div></div>`).join(''):'<div class="empty">Encara no hi ha targetes.</div>';document.querySelectorAll('.edit-other').forEach(b=>b.addEventListener('click',()=>editOther(b.dataset.id)));document.querySelectorAll('.delete-other').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar aquesta targeta?')){others=others.filter(o=>o.id!==b.dataset.id);saveAll()}}))}
+
+  // Errors
+  function renderErrors(){const arr=[...refs.filter(r=>(r.stats?.wrong||0)>0).map(item=>({kind:'Referència',item,label:item.author,sub:item.title,wrong:item.stats.wrong})),...others.filter(o=>(o.stats?.wrong||0)>0).map(item=>({kind:'Altres',item,label:item.front,sub:item.back,wrong:item.stats.wrong})),...authorOnly.filter(a=>(a.stats?.wrong||0)>0).map(item=>({kind:'Idea',item,label:item.author,sub:(item.ideas||[])[0]||'',wrong:item.stats.wrong})),...conceptCandidates().filter(c=>(conceptStat(c.key).wrong||0)>0).map(c=>({kind:'Concepte',label:`Autors sobre ${c.label}`,sub:c.authors.join(' · '),wrong:conceptStat(c.key).wrong}))].sort((a,b)=>b.wrong-a.wrong);$('errorSummary').innerHTML=`<span class="stat">${arr.length} elements amb errors</span>`;$('startErrorTest').disabled=!arr.length;$('errorList').innerHTML=arr.length?arr.map(x=>`<div class="item"><span class="type-badge">${x.kind}</span><strong>${esc(x.label)}</strong><div>${esc(x.sub)}</div><div class="tiny" style="margin-top:6px">${x.wrong} errors</div></div>`).join(''):'<div class="empty">Encara no has fallat cap element.</div>'}
+  $('startErrorTest').addEventListener('click',()=>{mode='errors';showView('study')});
+
+  // Lectura de fitxers
+  async function readFile(file){if(file.name.toLowerCase().endsWith('.docx')){if(!window.mammoth)throw new Error('No s’ha pogut carregar el lector de Word.');const buf=await file.arrayBuffer(),result=await window.mammoth.extractRawText({arrayBuffer:buf});return result.value}return await file.text()}
+
+  // Importació de referències
+  $('fileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{pendingImport=parseReferenceDocument(await readFile(file));renderImportPreview()}catch(err){$('importPreview').classList.remove('hidden');$('importList').innerHTML=`<div class="item">No s’ha pogut llegir el document: ${esc(err.message)}</div>`;$('confirmImport').disabled=true}});
+  const SOURCE_HINTS=['editorial','editoriales','ed ','ediciones','edicions','press','university','universitat','universidad','revista','journal','science','bbc','eufonia','educere','artseduca','anagrama','alianza','paidos','morata','ricordi','ume','piles','cincel','cisell','anaya','planeta','cepe','rialp','herder','pearson','oxford','frontiers','ptrsb','acs','aulodia','educatio','educacao','ile','labor','alpuerto','everest','inde','neuma','urano','eudeba','jobin','goma shobo','paulinas','bononia','leeme','cultura y educacion','fondo de cultura','siglo xxi','segle xxi','aljibe','l artista','aula didactica','conservatorio','federacio','fundacion'];
+  function looksLikeSource(text){const n=normalize(text);return SOURCE_HINTS.some(h=>n===h||n.startsWith(h+' ')||n.startsWith(h))}
+  function parseReferenceLine(line){const m=line.match(/^(.+?)\s*\(([^)]+)\)\.\s*(.+)$/);if(!m)return null;const author=m[1].trim(),year=m[2].trim();if(!/^(?:\d{4}[a-z]?|s\.?\s*f\.?)$/i.test(year))return null;const rest=m[3].trim(),candidates=[];const re=/[.!?]\s+/g;let hit;while((hit=re.exec(rest))!==null){const cut=hit.index+1,left=rest.slice(0,cut).trim(),right=rest.slice(re.lastIndex).trim();if(left&&right)candidates.push({left,right})}if(!candidates.length)return null;let chosen=candidates.find(c=>looksLikeSource(c.right))||candidates[0];let title=chosen.left,publisher=chosen.right;if(title.endsWith('.'))title=title.slice(0,-1).trim();publisher=publisher.replace(/\.$/,'').trim();if(!title||!publisher)return null;return{author,year,title,publisher}}
+  function parseReferenceDocument(text){const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),parsedRefs=[],authorIdeas=new Map();let section='refs',currentAuthor=null,ideaCount=0;const addIdea=(author,idea)=>{if(!author)return;const k=normalize(author);if(!authorIdeas.has(k))authorIdeas.set(k,{author,ideas:[]});authorIdeas.get(k).ideas.push(idea);ideaCount++};for(const line of lines){const up=normalize(line);if(up==='autors sense referencia bibliografica'){section='authors';currentAuthor=null;continue}if(up==='dubtes per revisar'){section='stop';currentAuthor=null;continue}if(section==='stop')continue;const im=line.match(/^(?:Idea|Idea clau|Idea associada)\s*:\s*(.+)$/i);if(im){addIdea(currentAuthor,im[1].trim());continue}if(section==='refs'){const r=parseReferenceLine(line);if(r){const item={id:uid(),...r,ideas:[],stats:{asked:0,correct:0,wrong:0,minor:0}};parsedRefs.push(item);currentAuthor=r.author;continue}}if(section==='authors'){currentAuthor=line;continue}}
+    // Les idees d'autors amb referències s'enganxen només a l'última referència d'eixe autor; l'app les agrega per autor.
+    const parsedAuthors=[];for(const {author,ideas} of authorIdeas.values()){const matching=parsedRefs.filter(r=>normalize(r.author)===normalize(author));if(matching.length)matching[matching.length-1].ideas=uniqStrings(ideas);else parsedAuthors.push({id:uid(),author,ideas:uniqStrings(ideas),stats:{asked:0,correct:0,wrong:0,minor:0}})}return{refs:parsedRefs,authors:parsedAuthors,ideaCount}}
+  function renderImportPreview(){const p=pendingImport;$('importPreview').classList.remove('hidden');$('confirmImport').disabled=!p.refs.length&&!p.authors.length;$('importSummary').innerHTML=`<span class="mini-pill">${p.refs.length} referències</span><span class="mini-pill">${p.authors.length} autors sense referència</span><span class="mini-pill">${p.ideaCount} idees</span>`;$('importMsg').textContent='';const sample=[...p.refs.slice(0,8).map(r=>`<div class="item"><span class="type-badge">Referència</span><strong>${esc(r.author)}</strong><div>${esc(r.year)} · <em>${esc(r.title)}</em> · ${esc(r.publisher)}</div>${r.ideas.length?`<div class="tiny">${r.ideas.length} idees associades</div>`:''}</div>`),...p.authors.slice(0,5).map(a=>`<div class="item"><span class="type-badge">Autor sense referència</span><strong>${esc(a.author)}</strong><div class="tiny">${a.ideas.length} idees</div></div>`)];$('importList').innerHTML=sample.join('')+(p.refs.length+p.authors.length>13?'<div class="tiny">Previsualització parcial. La resta també s’importarà.</div>':'')}
+  function sameRef(a,b){return normalize(a.author)===normalize(b.author)&&normalize(a.year)===normalize(b.year)&&normalize(a.title)===normalize(b.title)}
+  $('confirmImport').addEventListener('click',()=>{let added=0,merged=0;for(const r of pendingImport.refs){const ex=refs.find(x=>sameRef(x,r));if(ex){ex.ideas=uniqStrings([...(ex.ideas||[]),...(r.ideas||[])]);merged++}else{refs.push(r);added++}}for(const a of pendingImport.authors){const before=authorOnly.length;addAuthorOnly(a.author,a.ideas);if(authorOnly.length===before)merged++;else added++}saveAll();$('importMsg').textContent=`Importació completada: ${added} elements nous i ${merged} combinats amb contingut existent.`;pendingImport={refs:[],authors:[],ideaCount:0};$('confirmImport').disabled=true});
+
+  // Importació d'Altres
+  $('otherFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{pendingOtherImport=parseOtherDocument(await readFile(file));renderOtherImportPreview()}catch(err){$('otherImportPreview').classList.remove('hidden');$('otherImportList').innerHTML=`<div class="item">No s’ha pogut llegir el document: ${esc(err.message)}</div>`;$('confirmOtherImport').disabled=true}});
+  function parseOtherDocument(text){const lines=text.split(/\r?\n/),out=[];let cur=null,collectingBack=false;const push=()=>{if(cur&&cur.front&&cur.back){cur.mode=cur.mode||'front-back';out.push({id:uid(),front:cur.front.trim(),back:cur.back.trim(),mode:cur.mode,stats:{asked:0,correct:0,wrong:0,minor:0}})}cur=null;collectingBack=false};for(const raw of lines){const line=raw.trim();if(!line){if(cur&&cur.front&&cur.back&&cur.mode)push();continue}let m=line.match(/^Anvers\s*:\s*(.*)$/i);if(m){if(cur&&cur.front)push();cur={front:m[1].trim(),back:'',mode:'front-back'};collectingBack=false;continue}m=line.match(/^Revers\s*:\s*(.*)$/i);if(m&&cur){cur.back=m[1].trim();collectingBack=true;continue}m=line.match(/^Mode\s*:\s*(.*)$/i);if(m&&cur){const v=normalize(m[1]);cur.mode=v.includes('bidireccional')?'bidirectional':'front-back';collectingBack=false;continue}if(cur&&collectingBack)cur.back+=(cur.back?'\n':'')+line}push();return out}
+  function renderOtherImportPreview(){$('otherImportPreview').classList.remove('hidden');$('confirmOtherImport').disabled=!pendingOtherImport.length;$('otherImportSummary').innerHTML=`<span class="mini-pill">${pendingOtherImport.length} targetes detectades</span><span class="mini-pill">${pendingOtherImport.filter(x=>x.mode==='bidirectional').length} bidireccionals</span>`;$('otherImportMsg').textContent='';$('otherImportList').innerHTML=pendingOtherImport.slice(0,10).map(o=>`<div class="item"><span class="type-badge">${o.mode==='bidirectional'?'Bidireccional':'Anvers → revers'}</span><strong>${esc(o.front)}</strong><div style="white-space:pre-wrap">${esc(o.back)}</div></div>`).join('')+(pendingOtherImport.length>10?'<div class="tiny">Previsualització parcial.</div>':'')}
+  $('confirmOtherImport').addEventListener('click',()=>{let added=0,merged=0;for(const o of pendingOtherImport){const ex=others.find(x=>normalize(x.front)===normalize(o.front)&&normalize(x.back)===normalize(o.back));if(ex){ex.mode=o.mode;merged++}else{others.push(o);added++}}saveAll();$('otherImportMsg').textContent=`Importació completada: ${added} targetes noves i ${merged} ja existents.`;pendingOtherImport=[];$('confirmOtherImport').disabled=true});
+
+  function renderAll(){renderStats();renderSaved();renderAuthorOnly();renderOthers();renderErrors()}
+  renderAll();startQuestion();
+})();
+</script>
+</body>
+</html>
