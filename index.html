@@ -1,0 +1,2022 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A-MOOR — Estudi</title>
+  <meta name="amoor-build" content="Rev07">
+  <!-- A-MOOR Rev07: comprovació robusta + explicació diferida + recuperació global -->
+  <link rel="shortcut icon" href="https://inesfelici.github.io/AMOOR/amoor-tab-v4.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://inesfelici.github.io/AMOOR/amoor-tab-v4-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="https://inesfelici.github.io/AMOOR/amoor-tab-v4-64.png">
+  <link rel="icon" type="image/svg+xml" href="https://inesfelici.github.io/AMOOR/amoor-tab-v4.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://inesfelici.github.io/AMOOR/amoor-touch-v4.png">
+  <link rel="mask-icon" href="https://inesfelici.github.io/AMOOR/amoor-mask-v4.svg" color="#4f6b59">
+  <link rel="manifest" href="./site.webmanifest">
+  <meta name="theme-color" content="#4f6b59">
+  <meta name="apple-mobile-web-app-title" content="A-MOOR">
+
+  <meta name="description" content="A-MOOR · Estudi i repàs adaptatiu">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="A-MOOR">
+  <meta property="og:title" content="A-MOOR · Estudi">
+  <meta property="og:description" content="Organitza, relaciona i repassa el teu material d’estudi.">
+  <meta property="og:url" content="https://inesfelici.github.io/AMOOR/">
+  <meta property="og:image" content="https://inesfelici.github.io/AMOOR/amoor-share-v4.png">
+  <meta property="og:image:secure_url" content="https://inesfelici.github.io/AMOOR/amoor-share-v4.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A-MOOR · Estudi">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="A-MOOR · Estudi">
+  <meta name="twitter:description" content="Organitza, relaciona i repassa el teu material d’estudi.">
+  <meta name="twitter:image" content="https://inesfelici.github.io/AMOOR/amoor-share-v4.png">
+  <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --bg:#f5f7f3;--panel:#fff;--text:#27302a;--muted:#6d776f;--line:#dfe5df;
+      --accent:#4f6b59;--accent-soft:#e8eee9;--ok:#3f6a4c;--ok-soft:#edf5ef;
+      --warn:#8a6a2d;--warn-soft:#f7f1df;--bad:#8c4848;--bad-soft:#f7eaea;--radius:18px
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+    .sidebar{border-right:1px solid var(--line);padding:28px 18px;background:rgba(255,255,255,.45)}.brand{font-size:18px;font-weight:750;margin:0 10px 26px}.nav{display:grid;gap:8px}
+    .nav button{border:0;background:transparent;color:var(--text);padding:12px 14px;border-radius:12px;text-align:left}.nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:750}
+    .main{padding:42px 34px 70px}.wrap{max-width:940px;margin:0 auto}h1{font-size:34px;letter-spacing:-.03em;margin:0 0 8px}h2{font-size:22px;margin:0 0 16px}h3{font-size:17px;margin:0 0 10px}p{line-height:1.55}.muted{color:var(--muted)}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px}.grid{display:grid;gap:18px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.grow{flex:1;min-width:0}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 16px;border-radius:12px;font-weight:650}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.soft{background:var(--accent-soft);border-color:transparent;color:var(--accent)}.btn.danger{background:var(--bad-soft);border-color:transparent;color:var(--bad)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.small{padding:8px 11px;font-size:13px}
+    label{display:grid;gap:7px;font-size:14px;font-weight:650}input,textarea,select{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:12px;padding:12px 13px;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}textarea{min-height:110px;resize:vertical}
+    .view{display:none}.view.active{display:block}.study-card{padding:32px}.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:800;color:var(--muted)}.prompt{font-size:26px;line-height:1.28;margin:10px 0 24px}.feedback{display:none;margin-top:18px;border-radius:14px;padding:16px}.feedback.show{display:block}.feedback.ok{background:var(--ok-soft);color:var(--ok)}.feedback.warn{background:var(--warn-soft);color:var(--warn)}.feedback.bad{background:var(--bad-soft);color:var(--bad)}.answer-block{margin-top:8px;color:var(--text)}
+    .statbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 24px}.stat{background:rgba(255,255,255,.65);border:1px solid var(--line);padding:9px 12px;border-radius:999px;font-size:14px}.list{display:grid;gap:12px}.item{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}.item strong{display:block;margin-bottom:5px}.tiny{font-size:13px;color:var(--muted)}.hidden{display:none!important}.empty{text-align:center;padding:36px 18px;color:var(--muted)}
+    .filebox{border:1px dashed #bfc9c0;border-radius:16px;padding:26px;text-align:center;background:rgba(255,255,255,.55)}.pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:5px 9px;font-size:12px;font-weight:750}.question-fields{display:grid;gap:13px}.source-preview{white-space:pre-wrap;background:#f7f8f6;border:1px solid var(--line);padding:14px;border-radius:12px;max-height:260px;overflow:auto}.top-mobile{display:none}.section-gap{margin-top:20px}.type-badge{font-size:12px;font-weight:750;color:var(--accent)}
+        .subtle{background:#fafbf9}.preview-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.mini-pill{background:var(--accent-soft);color:var(--accent);padding:6px 9px;border-radius:999px;font-size:12px;font-weight:700}.multi-result{display:grid;gap:7px;margin-top:10px}.multi-ok{color:var(--ok)}.multi-miss{color:var(--bad)}
+    .divider{height:1px;background:var(--line);margin:6px 0}.checkline{display:flex;gap:9px;align-items:center}.checkline input{width:auto}.note{padding:12px 14px;border-radius:12px;background:#f7f8f6;border:1px solid var(--line);font-size:13px;color:var(--muted)}
+    .source-picker{display:grid;gap:9px}.source-option{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}.source-option input{width:auto}
+    .auth-screen{min-height:100vh;display:grid;place-items:center;padding:28px;background:var(--bg)}
+    .auth-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px}
+    .auth-brand{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+    .auth-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .auth-msg{min-height:22px;margin-top:12px;font-size:13px;color:var(--muted)}
+    .auth-msg.bad{color:var(--bad)}.auth-msg.ok{color:var(--ok)}
+    .guest-divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:2px 0}
+    .guest-divider::before,.guest-divider::after{content:'';height:1px;background:var(--line);flex:1}
+    .help-details{border:1px solid var(--line);border-radius:14px;background:#fafbf9;overflow:hidden}
+    .help-details summary{cursor:pointer;list-style:none;padding:13px 15px;font-weight:750;color:var(--accent);display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .help-details summary::-webkit-details-marker{display:none}
+    .help-details summary::after{content:'▾';color:var(--muted);font-size:13px;transition:transform .18s ease}
+    .help-details[open] summary::after{transform:rotate(180deg)}
+    .help-content{border-top:1px solid var(--line);padding:14px 15px;font-size:13px;line-height:1.55}
+    .format-code{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;overflow-wrap:anywhere}
+    .migration-card{width:min(620px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px}
+    .account-chip{margin-top:22px;padding:12px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+    .account-chip strong{display:block;color:var(--text);font-size:13px;margin-bottom:3px;overflow-wrap:anywhere}
+    .sync-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+    .sync-dot.ok{background:var(--ok)}.sync-dot.warn{background:var(--warn)}.sync-dot.bad{background:var(--bad)}
+    .filter-details{padding:0;overflow:hidden}.filter-details summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;font-weight:750}.filter-details summary::-webkit-details-marker{display:none}.filter-details summary::after{content:'▾';color:var(--muted);font-size:15px;transition:transform .18s ease}.filter-details[open] summary::after{transform:rotate(180deg)}.filter-details[open] summary{border-bottom:1px solid var(--line)}.filter-body{padding:20px 22px}.filter-summary-text{font-size:13px;font-weight:500;color:var(--muted);margin-left:auto}.folder-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}.searchbox{margin-top:14px}.doc-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}.kbdhint{font-size:12px;color:var(--muted)}
+    .password-wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.password-toggle{min-width:82px}
+    .verify-icon{width:54px;height:54px;border-radius:16px;background:var(--accent-soft);display:grid;place-items:center;font-size:25px;margin-bottom:14px}
+    .field-results{display:grid;gap:8px}.field-result{padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:#fff}.field-result.ok{border-color:#cfe0d3;background:var(--ok-soft)}.field-result.minor{border-color:#e3d5a9;background:var(--warn-soft)}.field-result.bad{border-color:#e5c6c6;background:var(--bad-soft)}.field-label{font-weight:750}
+    .error-session{border:1px solid #e3d5a9;background:var(--warn-soft);border-radius:16px;padding:14px 16px;margin:18px 0}.study-card.error-mode{border-color:#d7c58c}.error-session-stats{display:flex;gap:8px;flex-wrap:wrap}.error-result{border-left:4px solid var(--warn)}
+    .merge-panel{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fafbf9}.recovery-pill{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-size:12px;font-weight:750}.download-note{font-size:12px;color:var(--muted)}
+    .bulk-panel{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fafbf9}.bulk-check{display:flex;align-items:flex-start;gap:12px}.bulk-check>input{width:auto;margin-top:5px;transform:scale(1.15)}.bulk-selected{outline:2px solid rgba(79,107,89,.18);background:#fbfdfb}.bulk-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.bulk-actions label{min-width:220px;flex:1}.bulk-toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .explain-toggle{margin-top:12px;border:1px solid currentColor;background:rgba(255,255,255,.48);color:inherit;border-radius:999px;padding:6px 11px;font-weight:800;cursor:pointer}.explain-toggle:hover{background:rgba(255,255,255,.75)}.explain-box{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.62);border:1px solid rgba(0,0,0,.07);font-size:14px;line-height:1.5}.explain-box strong{font-size:inherit}.explain-item{margin-top:8px}.profile-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.profile-grid label{margin:0}
+    .sheet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sheet-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}.sheet-card h3{margin-bottom:7px}.sheet-detail-section{padding:14px 0;border-top:1px solid var(--line)}.sheet-detail-section:first-child{border-top:0;padding-top:0}.relation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.relation-source{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}.relation-fields{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}.relation-fields label{display:flex;align-items:center;gap:6px;font-weight:500}.relation-fields input{width:auto}.sheet-tag{display:inline-block;padding:5px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;margin:2px 4px 2px 0}
+    @media(max-width:760px){.app{display:block}.sidebar{display:none}.top-mobile{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.65)}.top-mobile button{white-space:nowrap;border:0;background:transparent;padding:9px 12px;border-radius:10px}.top-mobile button.active{background:var(--accent-soft);color:var(--accent);font-weight:750}.main{padding:28px 16px 54px}h1{font-size:29px}.grid.two{grid-template-columns:1fr}.study-card{padding:22px}.prompt{font-size:23px}.folder-row{grid-template-columns:1fr}.btn{min-height:44px}.auth-screen{padding:18px}.auth-card,.migration-card{padding:22px}.auth-actions{grid-template-columns:1fr}.sheet-grid,.relation-grid{grid-template-columns:1fr}}}
+  </style>
+</head>
+<body>
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">A-MOOR</div>
+    <p class="muted" style="margin-top:0">Inicia sessió per tindre les mateixes dades al mòbil, l’ordinador i qualsevol altre dispositiu.</p>
+    <form id="authForm" class="grid">
+      <label>Nom d’usuari <span class="tiny">(necessari només per crear el compte)</span>
+        <input id="authUsername" type="text" autocomplete="nickname" maxlength="50" placeholder="p. ex. Joan">
+      </label>
+      <label>Correu electrònic
+        <input id="authEmail" type="email" autocomplete="email" required placeholder="nom@correu.com">
+      </label>
+      <label>Contrasenya
+        <div class="password-wrap">
+          <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="••••••••">
+          <button id="togglePasswordBtn" class="btn password-toggle" type="button" aria-pressed="false">Mostrar</button>
+        </div>
+      </label>
+      <div class="auth-actions">
+        <button id="signInBtn" class="btn primary" type="submit">Iniciar sessió</button>
+        <button id="signUpBtn" class="btn" type="button">Crear compte</button>
+      </div>
+      <div class="guest-divider">o</div>
+      <button id="guestModeBtn" class="btn soft" type="button">Utilitzar sense iniciar sessió</button>
+      <div class="tiny" style="text-align:center">En mode local, les dades es guarden només en aquest navegador. Podràs iniciar sessió més avant i importar-les al teu perfil.</div>
+      <div id="authMsg" class="auth-msg" aria-live="polite"></div>
+    </form>
+  </div>
+</div>
+
+<div id="verifyEmailScreen" class="auth-screen hidden">
+  <div class="auth-card">
+    <div class="verify-icon" aria-hidden="true">✉</div>
+    <div class="auth-brand">Revisa el teu correu</div>
+    <p class="muted">T’hem enviat un correu per confirmar el teu compte d’A-MOOR.</p>
+    <div id="verifyEmailAddress" class="note" style="overflow-wrap:anywhere"></div>
+    <p class="tiny">Després de confirmar l’adreça, torna a A-MOOR. Si en aquest navegador ja tens dades locals, et preguntarem si vols importar-les al teu perfil.</p>
+    <button id="backToLoginBtn" class="btn primary" type="button">Tornar a iniciar sessió</button>
+  </div>
+</div>
+
+<div id="migrationScreen" class="auth-screen hidden">
+  <div class="migration-card">
+    <div class="eyebrow">Primera sincronització</div>
+    <h1 style="margin-top:8px">Hem trobat dades guardades en aquest navegador</h1>
+    <p class="muted">Vols importar-les al teu perfil? Això pujarà les teues referències, idees, targetes, carpetes, documents i estadístiques al núvol perquè apareguen també en els altres dispositius.</p>
+    <div id="migrationSummary" class="statbar"></div>
+    <div class="note">Abans de fer res, A-MOOR guardarà una còpia local de seguretat d’aquestes dades.</div>
+    <div class="row" style="margin-top:20px">
+      <button id="migrateLocalBtn" class="btn primary" type="button">Importar-les al meu perfil</button>
+      <button id="startEmptyBtn" class="btn" type="button">Continuar amb les dades del perfil</button>
+      <button id="cancelMigrationBtn" class="btn soft" type="button">Tancar sessió</button>
+    </div>
+    <div id="migrationMsg" class="auth-msg" aria-live="polite"></div>
+  </div>
+</div>
+
+<div id="appShell" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand">A-MOOR</div>
+    <nav class="nav" aria-label="Menú principal">
+      <button class="active" data-view="study">Estudiar</button>
+      <button data-view="errors">Test d’errors</button>
+      <button data-view="add">Referències i idees</button>
+      <button data-view="others">Altres</button>
+      <button data-view="sheets">Fitxes d’estudi</button>
+      <button data-view="import">Importar documents</button>
+      <button data-view="documents">Documents importats</button>
+      <button data-view="account">Compte</button>
+    </nav>
+    <div class="account-chip"><strong id="sidebarEmail">—</strong><div class="sync-line"><span id="sidebarSyncDot" class="sync-dot"></span><span id="sidebarSyncText">Connectant…</span></div></div>
+  </aside>
+  <div>
+    <nav class="top-mobile" aria-label="Menú principal mòbil">
+      <button class="active" data-view="study">Estudiar</button><button data-view="errors">Errors</button><button data-view="add">Referències</button><button data-view="others">Altres</button><button data-view="sheets">Fitxes</button><button data-view="import">Importar</button><button data-view="documents">Documents</button><button data-view="account">Compte</button>
+    </nav>
+    <main class="main"><div class="wrap">
+
+      <section id="study" class="view active">
+        <h1>Estudiar</h1>
+        <p class="muted">A-MOOR recorda automàticament el contingut que tens seleccionat per estudiar.</p>
+        <details id="studyFilterDetails" class="card filter-details">
+          <summary>
+            <span>Filtres d’estudi</span>
+            <span id="studyFilterSummary" class="filter-summary-text"></span>
+          </summary>
+          <div class="filter-body">
+            <div class="row space">
+              <div class="tiny">Marca les referències i carpetes que vols incloure en el repàs.</div>
+              <div class="row">
+                <button id="selectAllSources" class="btn small" type="button">Marcar-ho tot</button>
+                <button id="clearAllSources" class="btn small" type="button">Desmarcar-ho tot</button>
+              </div>
+            </div>
+            <div id="studySources" class="source-picker section-gap"></div>
+          </div>
+        </details>
+        <div id="errorSessionBar" class="error-session hidden">
+          <div class="row space">
+            <div>
+              <strong>Test d’errors en curs</strong>
+              <div id="errorSessionPosition" class="tiny" style="margin-top:4px"></div>
+            </div>
+            <button id="finishErrorTestBtn" class="btn danger" type="button">Acabar test</button>
+          </div>
+          <div id="errorSessionStats" class="error-session-stats section-gap"></div>
+        </div>
+        <div id="studyStats" class="statbar"></div>
+        <div id="studyEmpty" class="card empty hidden">No hi ha contingut disponible amb la selecció actual.</div>
+        <div id="studyBox" class="card study-card hidden">
+          <div class="row space"><span id="qType" class="eyebrow"></span><span id="qProgress" class="pill"></span></div>
+          <div id="qPrompt" class="prompt"></div>
+          <form id="answerForm">
+            <div id="qFields" class="question-fields"></div>
+            <div class="row" style="margin-top:18px"><button id="checkAnswerBtn" class="btn primary" type="submit">Comprovar</button><button class="btn" type="button" id="showAnswerBtn">Mostra la resposta</button></div>
+          </form>
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <div class="row" style="margin-top:16px"><button id="acceptAnswerBtn" class="btn soft hidden" type="button">La meua resposta també és vàlida</button><button id="nextBtn" class="btn soft hidden" type="button">Següent</button></div>
+        </div>
+      </section>
+
+      <section id="errors" class="view">
+        <h1>Test d’errors</h1>
+        <p class="muted">Només utilitza el contingut que tens marcat en «Estudiar».</p>
+        <div id="errorSummary" class="statbar"></div>
+        <div id="errorTestResult" class="card error-result hidden"></div>
+        <div class="card">
+          <div class="row space"><div><h2 style="margin-bottom:5px">Contingut amb errors</h2><div class="tiny">Ordenat de més a menys fallades.</div></div><button id="startErrorTest" class="btn primary" type="button">Començar test d’errors</button></div>
+          <div id="errorList" class="list section-gap"></div>
+        </div>
+      </section>
+
+      <section id="add" class="view">
+        <h1>Referències i idees</h1>
+        <p class="muted">Les idees pertanyen a l’autor, no a una obra concreta. Pots editar-les encara que l’autor no tinga referència.</p>
+        <form id="addForm" class="card grid">
+          <input type="hidden" id="editRefId">
+          <div class="grid two"><label>Autor<input id="author" required placeholder="Hemsy de Gainza, V."></label><label>Any<input id="year" required placeholder="1964 o s.f."></label></div>
+          <label>Títol<input id="title" required placeholder="La iniciación musical del niño"></label>
+          <label>Editorial / font<input id="publisher" required placeholder="Ricordi"></label>
+          <label>Idees associades a l’autor<textarea id="ideas" placeholder="Una idea per línia. Pots deixar-ho buit."></textarea></label>
+          <div class="row"><button id="saveRefBtn" class="btn primary" type="submit">Guardar referència</button><button id="cancelRefEdit" class="btn hidden" type="button">Cancel·lar</button><span id="addMsg" class="tiny" aria-live="polite"></span></div>
+        </form>
+
+        <div id="authorIdeaEditor" class="card grid section-gap hidden">
+          <input type="hidden" id="editAuthorOriginal">
+          <div class="row space"><h2 style="margin:0">Editar autor i idees</h2><button id="closeAuthorEditor" class="btn small" type="button">Tancar</button></div>
+          <label>Autor<input id="editAuthorName"></label>
+          <label>Idees<textarea id="editAuthorIdeas" placeholder="Una idea per línia"></textarea></label>
+          <div class="row">
+            <button id="saveAuthorIdeas" class="btn primary" type="button">Guardar canvis</button>
+            <button id="openMergeAuthorBtn" class="btn soft" type="button">Unificar amb…</button>
+            <span id="authorEditMsg" class="tiny"></span>
+          </div>
+          <div id="mergeAuthorPanel" class="merge-panel hidden">
+            <div class="grid">
+              <label>Unificar amb
+                <select id="mergeAuthorTarget"></select>
+              </label>
+              <label>Nom que es conservarà
+                <select id="mergeAuthorFinalName"></select>
+              </label>
+              <div id="mergeAuthorSummary" class="tiny"></div>
+              <div class="row">
+                <button id="confirmMergeAuthorBtn" class="btn primary" type="button">Confirmar unificació</button>
+                <button id="cancelMergeAuthorBtn" class="btn" type="button">Cancel·lar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card section-gap">
+          <div class="row space">
+            <div><h2 style="margin-bottom:5px">Referències guardades</h2><div id="savedCount" class="tiny"></div></div>
+            <button id="downloadReferencesBtn" class="btn small soft" type="button">Descarregar contingut</button>
+          </div>
+          <div class="searchbox"><input id="refSearch" type="search" placeholder="Buscar per autor, títol, editorial o idea…"></div>
+          <div id="savedList" class="list section-gap"></div>
+        </div>
+        <div class="card section-gap">
+          <div class="row space"><div><h2 style="margin-bottom:5px">Autors amb idees sense referència</h2><div id="authorOnlyCount" class="tiny"></div></div></div>
+          <div id="authorOnlyList" class="list section-gap"></div>
+        </div>
+      </section>
+
+      <section id="others" class="view">
+        <h1>Altres</h1>
+        <p class="muted">Organitza les targetes en carpetes i decideix si cada targeta funciona en un sentit o en els dos.</p>
+
+        <div class="card">
+          <div class="row space"><h2 style="margin:0">Carpetes</h2></div>
+          <form id="folderForm" class="row section-gap"><input id="newFolderName" class="grow" placeholder="Nova carpeta, p. ex. Definicions" required><button class="btn primary" type="submit">Crear carpeta</button></form>
+          <div id="folderList" class="list section-gap"></div>
+        </div>
+
+        <form id="otherForm" class="card grid section-gap">
+          <input type="hidden" id="editOtherId">
+          <label>Carpeta<select id="otherFolder"></select></label>
+          <label>Anvers / pregunta<input id="otherFront" required placeholder="Frase de Manuel Romero"></label>
+          <label>Revers / resposta<textarea id="otherBack" required placeholder="La música és essencial per a viure"></textarea></label>
+          <label>Com vols que es pregunte?
+            <select id="otherMode"><option value="front-back">Només anvers → revers</option><option value="bidirectional">Bidireccional: els dos costats poden ser pregunta</option></select>
+          </label>
+          <div class="note">Si el revers conté diverses respostes, posa una resposta per línia. A-MOOR comprovarà les parts per separat. També accepta paràfrasis raonablement semblants.</div>
+          <div class="row"><button id="saveOtherBtn" class="btn primary" type="submit">Guardar targeta</button><button id="cancelOtherEdit" class="btn hidden" type="button">Cancel·lar</button><span id="otherMsg" class="tiny"></span></div>
+        </form>
+
+        <div class="card section-gap">
+          <div class="row space">
+            <div><h2 style="margin-bottom:5px">Targetes guardades</h2><div id="otherCount" class="tiny"></div></div>
+            <button id="openBulkOtherBtn" class="btn small soft" type="button">Seleccionar targetes</button>
+          </div>
+          <div id="otherBulkPanel" class="bulk-panel hidden section-gap">
+            <div class="bulk-actions">
+              <label>Carpeta de destí
+                <select id="bulkOtherFolder"></select>
+              </label>
+              <div class="bulk-toolbar">
+                <button id="bulkMoveOthersBtn" class="btn primary small" type="button">Moure seleccionades</button>
+                <button id="bulkDeleteOthersBtn" class="btn danger small" type="button">Eliminar seleccionades</button>
+              </div>
+            </div>
+            <div class="row space section-gap">
+              <div id="bulkOtherCount" class="tiny">0 targetes seleccionades</div>
+              <div class="bulk-toolbar">
+                <button id="bulkSelectVisibleBtn" class="btn small" type="button">Seleccionar visibles</button>
+                <button id="bulkClearOthersBtn" class="btn small" type="button">Netejar selecció</button>
+                <button id="closeBulkOtherBtn" class="btn small" type="button">Tancar</button>
+              </div>
+            </div>
+            <div class="tiny">Pots seleccionar diverses targetes i moure-les totes a una carpeta o eliminar-les d’una vegada.</div>
+          </div>
+          <div class="grid two searchbox"><input id="otherSearch" type="search" placeholder="Buscar en anvers o revers…"><select id="otherFilterFolder"></select></div>
+          <div id="otherList" class="list section-gap"></div>
+        </div>
+      </section>
+
+
+      <section id="sheets" class="view">
+        <h1>Fitxes d’estudi</h1>
+        <p class="muted">Són vistes dinàmiques: no dupliquen dades. Cada vegada que afegixes, edites o importes contingut, les fitxes es recalculen automàticament.</p>
+
+        <div class="card">
+          <div class="row space">
+            <div>
+              <h2 style="margin-bottom:5px">Fitxa lliure</h2>
+              <div class="tiny">Escriu qualsevol concepte per reunir la informació relacionada de les fonts habilitades.</div>
+            </div>
+          </div>
+          <form id="customSheetForm" class="row section-gap">
+            <input id="customSheetTerm" class="grow" placeholder="p. ex. creativitat, audició, lectoescriptura…">
+            <button class="btn primary" type="submit">Generar fitxa</button>
+          </form>
+        </div>
+
+        <details class="card filter-details section-gap">
+          <summary>
+            <span>Configuració de relacions</span>
+            <span id="relationSummary" class="filter-summary-text"></span>
+          </summary>
+          <div class="filter-body">
+            <p class="tiny" style="margin-top:0">Tria quines fonts poden aparéixer juntes en les fitxes. Aquesta configuració és independent dels filtres del repàs normal.</p>
+            <div id="relationSources" class="relation-grid"></div>
+          </div>
+        </details>
+
+        <div class="card section-gap">
+          <div class="row space">
+            <div>
+              <h2 style="margin-bottom:5px">Fitxes automàtiques</h2>
+              <div id="sheetCount" class="tiny"></div>
+            </div>
+            <input id="sheetSearch" type="search" placeholder="Buscar fitxa…" style="max-width:280px">
+          </div>
+          <div id="sheetList" class="sheet-grid section-gap"></div>
+        </div>
+
+        <div id="sheetDetail" class="card section-gap hidden"></div>
+      </section>
+
+      <section id="import" class="view">
+        <h1>Importar documents</h1>
+        <p class="muted">A-MOOR registra l’origen del contingut importat perquè després pugues eliminar un document junt amb les dades que només provenien d’ell.</p>
+        <div class="card grid">
+          <div><h2>Referències i idees</h2><p class="tiny">Accepta anys numèrics i «s.f.», títols amb punts, interrogacions o exclamacions, autors amb diverses referències, «AUTORS SENSE REFERÈNCIA BIBLIOGRÀFICA» i ignora «DUBTES PER REVISAR».</p></div>
+          <details class="help-details">
+            <summary>Com ha de ser el document?</summary>
+            <div class="help-content">
+              <strong>Format bàsic</strong>
+              <div class="format-code">Autor (Any). Títol. Editorial.
+Idea: Primera idea associada a l’autor.
+Idea: Segona idea associada a l’autor.</div>
+              <p><strong>Regles:</strong> cada referència ha d’anar en una línia pròpia. Si un autor té diverses referències, posa primer totes les referències i després les línies <code>Idea:</code>. No uses vinyetes ni numeració davant de les referències o les idees.</p>
+              <p>Es poden usar anys com <code>1964</code> o <code>s.f.</code>. Els títols i editorials es mantenen en l’idioma original.</p>
+              <p>Per a autors dels quals només tens idees, crea al final l’encapçalament exacte <code>AUTORS SENSE REFERÈNCIA BIBLIOGRÀFICA</code>, escriu el nom de l’autor en una línia i després les seues línies <code>Idea:</code>.</p>
+              <div class="format-code">AUTORS SENSE REFERÈNCIA BIBLIOGRÀFICA
+Zoltán Kodály
+Idea: El repertori popular és una base potent d’aprenentatge musical.</div>
+              <p>Si necessites deixar observacions que no s’han d’importar, usa l’encapçalament <code>DUBTES PER REVISAR</code>. A-MOOR ignorarà tot el que aparega després.</p>
+              <p class="muted" style="margin-bottom:0">Pots copiar aquestes instruccions i demanar a una persona o a una IA que adapte el teu document a aquest format.</p>
+            </div>
+          </details>
+          <div class="filebox"><input id="fileInput" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><p class="tiny" style="margin-bottom:0">Format: Autor (Any). Títol. Editorial. + línies «Idea: ...»</p></div>
+          <label class="checkline"><input id="retroRefImport" type="checkbox"> <span>Aquest document ja l’havia importat abans d’aquesta actualització. Vincula les coincidències existents com a dades d’aquest document.</span></label>
+          <div id="importPreview" class="hidden"><h3>Previsualització</h3><div id="importSummary" class="preview-summary"></div><div id="importRelations" class="note hidden"></div><div id="importList" class="list section-gap"></div><div class="row" style="margin-top:18px"><button id="confirmImport" class="btn primary" type="button">Importar / vincular</button><span id="importMsg" class="tiny"></span></div></div>
+        </div>
+
+        <div class="card grid section-gap">
+          <div><h2>Altres</h2><p class="tiny">Cada targeta pot ser unidireccional o bidireccional. Pots importar tot el document a una carpeta o indicar «Carpeta: ...» dins del document.</p></div>
+          <details class="help-details">
+            <summary>Com ha de ser el document?</summary>
+            <div class="help-content">
+              <strong>Una targeta</strong>
+              <div class="format-code">Anvers: Pregunta o contingut de l’anvers
+Revers: Resposta o contingut del revers
+Mode: anvers-revers</div>
+              <p><code>Mode: anvers-revers</code> pregunta sempre l’anvers i espera el revers. Usa <code>Mode: bidireccional</code> quan vulgues que A-MOOR puga preguntar en els dos sentits.</p>
+              <div class="format-code">Carpeta: Frases
+Anvers: Frase de Manuel Romero
+Revers: La música és essencial per a viure
+Mode: bidireccional</div>
+              <p>Per a una resposta amb diverses parts, continua escrivint-les en les línies següents després de <code>Revers:</code>.</p>
+              <div class="format-code">Carpeta: Definicions
+Anvers: Qui ha escrit les definicions de "llenguatge"?
+Revers: AVL — vocabulari...
+Hemsy de Gainza — llenguatge tan natural...
+Mode: anvers-revers</div>
+              <p><code>Carpeta:</code> és opcional. Si no apareix, A-MOOR usarà la carpeta per defecte seleccionada abans de pujar el fitxer.</p>
+              <p class="muted" style="margin-bottom:0">Pots copiar aquestes instruccions i demanar a una persona o a una IA que adapte qualsevol document a aquest format.</p>
+            </div>
+          </details>
+          <label>Carpeta per defecte<select id="otherImportFolder"></select></label>
+          <div class="filebox"><input id="otherFileInput" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><p class="tiny" style="margin-bottom:0">Format: «Anvers: ...», «Revers: ...», «Mode: anvers-revers/bidireccional»</p></div>
+          <label class="checkline"><input id="retroOtherImport" type="checkbox"> <span>Aquest document ja l’havia importat abans d’aquesta actualització. Vincula les coincidències existents com a dades d’aquest document.</span></label>
+          <div class="source-preview">Carpeta: Definicions
+Anvers: Qui ha escrit les definicions de "llenguatge"?
+Revers: AVL — vocabulari...
+Hemsy de Gainza — llenguatge tan natural...
+Mode: anvers-revers
+
+Carpeta: Frases
+Anvers: Frase de Manuel Romero
+Revers: La música és essencial per a viure
+Mode: bidireccional</div>
+          <div id="otherImportPreview" class="hidden"><h3>Previsualització</h3><div id="otherImportSummary" class="preview-summary"></div><div id="otherImportList" class="list"></div><div class="row" style="margin-top:18px"><button id="confirmOtherImport" class="btn primary" type="button">Importar / vincular targetes</button><span id="otherImportMsg" class="tiny"></span></div></div>
+        </div>
+      </section>
+
+      <section id="documents" class="view">
+        <h1>Documents importats</h1>
+        <p class="muted">Ací pots veure d’on provenen les dades. «Eliminar document i dades» només elimina elements que depenen exclusivament d’eixe document i que no has editat manualment.</p>
+        <div id="documentsList" class="list section-gap"></div>
+      </section>
+
+      <section id="account" class="view">
+        <h1>Compte</h1>
+        <p class="muted">Les dades d’A-MOOR es guarden al teu perfil i es mantenen sincronitzades entre dispositius.</p>
+        <div class="card grid">
+          <div>
+            <div class="eyebrow">Perfil</div>
+            <div id="accountUsernameDisplay" style="font-size:22px;font-weight:800;margin-top:6px">—</div>
+            <div id="accountEmail" class="tiny" style="margin-top:4px;overflow-wrap:anywhere">—</div>
+          </div>
+          <div class="profile-grid">
+            <label>Nom d’usuari
+              <input id="accountUsernameInput" type="text" maxlength="50" autocomplete="nickname" placeholder="Nom d’usuari">
+            </label>
+            <button id="saveUsernameBtn" class="btn soft" type="button">Guardar nom</button>
+          </div>
+          <div id="usernameMsg" class="tiny"></div>
+          <div class="sync-line">
+            <span id="accountSyncDot" class="sync-dot"></span>
+            <strong id="accountSyncText">Connectant…</strong>
+          </div>
+          <div class="row">
+            <button id="syncNowBtn" class="btn primary" type="button">Sincronitzar ara</button>
+            <button id="signOutBtn" class="btn danger" type="button">Tancar sessió</button>
+          </div>
+          <div class="note">Amb un compte, les dades se sincronitzen entre dispositius. Sense iniciar sessió, A-MOOR continua funcionant però les dades només es guarden en aquest navegador. Si després inicies sessió, podràs importar-les al teu perfil.</div>
+        <div class="tiny" style="margin-top:12px">Versió: A-MOOR Rev07</div>
+        </div>
+      </section>
+
+    </div></main>
+  </div>
+</div>
+<script>
+(() => {
+  const REF_KEY='referencies_estudi_v1', OTHER_KEY='altres_estudi_v1', AUTHOR_KEY='autors_idees_v1', CONCEPT_KEY='conceptes_stats_v1', SCOPE_KEY='amoorscope_v1';
+  const FOLDER_KEY='amoor_folders_v1', SELECTION_KEY='amoor_selection_v1', DOC_KEY='amoor_documents_v1', RELATION_KEY='amoor_relations_v1', PROFILE_KEY='amoor_profile_v1';
+  const CLOUD_META_KEY='amoor_cloud_meta_v1', BACKUP_KEY='amoor_backup_before_cloud_v1';
+  const STUDY_DRAFT_KEY='amoor_study_draft_v1', ERROR_SESSION_KEY='amoor_error_session_v1';
+  const SUPABASE_URL='https://htgkquacpowervotcwus.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY='sb_publishable_8X4Sbqt9d_WtaDlXWjxLOg_bYsvzB0H';
+  const supa=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const UNCAT='__uncategorized__';
+  let refs=loadArray(REF_KEY), others=loadArray(OTHER_KEY), profiles=loadArray(AUTHOR_KEY), conceptStats=loadObject(CONCEPT_KEY), folders=loadArray(FOLDER_KEY), documents=loadArray(DOC_KEY);
+  let selection=loadObject(SELECTION_KEY), relationConfig=loadObject(RELATION_KEY), profileSettings=loadObject(PROFILE_KEY), mode='normal', current=null;
+  let errorSession=null;
+  let bulkOtherMode=false,bulkOtherSelected=new Set();
+  let pendingRefImport=null, pendingOtherImport=null;
+  let currentUser=null, guestMode=false, cloudReady=false, syncTimer=null, syncInFlight=false, syncDirty=false, suppressCloudSync=true, activatingUserId=null;
+  let migrationCandidateState=null, migrationCloudState=null;
+  const $=id=>document.getElementById(id), navButtons=[...document.querySelectorAll('[data-view]')];
+
+  function loadArray(key){try{const x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
+  function loadObject(key){try{const x=JSON.parse(localStorage.getItem(key)||'{}');return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}catch{return{}}}
+  function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+  function statsObj(x){x.stats||={asked:0,correct:0,wrong:0,minor:0,recoveryStreak:0};if(typeof x.stats.recoveryStreak!=='number')x.stats.recoveryStreak=0;return x.stats}
+  function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function normalize(s=''){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[“”‘’"'.,:;!?¿¡()[\]{}]/g,' ').replace(/[–—-]/g,' ').replace(/\s+/g,' ').trim()}
+  function uniqStrings(arr){const out=[];for(const x of arr){const s=String(x||'').trim();if(s&&!out.some(y=>normalize(y)===normalize(s)))out.push(s)}return out}
+  function lev(a,b){a=normalize(a);b=normalize(b);const m=a.length,n=b.length,dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return dp[m][n]}
+  function hashString(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16)}
+  function fuzzy(given,correct,kind='text'){
+    const g=normalize(given),c=normalize(correct);if(!g)return{ok:false,minor:false};if(g===c)return{ok:true,minor:false};
+    if(kind==='year')return{ok:g.replace(/\s+/g,'')===c.replace(/\s+/g,''),minor:false};
+    const d=lev(g,c),ratio=1-d/Math.max(g.length,c.length,1);let t=kind==='title'?0.83:kind==='publisher'?0.82:0.84;const ok=ratio>=t||d<=Math.max(1,Math.floor(c.length*.08));return{ok,minor:ok}
+  }
+
+  // ---------- Compte i sincronització ----------
+  function exportState(){return{version:5,refs,others,profiles,conceptStats,folders,selection,documents,relationConfig,profileSettings}}
+  function blankState(){return{version:5,refs:[],others:[],profiles:[],conceptStats:{},folders:[],selection:{references:true,folders:{}},documents:[],relationConfig:defaultRelationConfig(),profileSettings:{username:''}}}
+  function stateHasData(st){return !!((st.refs?.length||0)||(st.others?.length||0)||(st.profiles?.some(p=>p.ideas?.length))||(st.folders?.length||0)||(st.documents?.length||0))}
+  function stateSummary(st){let ideas=0;(st.profiles||[]).forEach(p=>ideas+=(p.ideas||[]).length);return{refs:(st.refs||[]).length,others:(st.others||[]).length,authors:(st.profiles||[]).filter(p=>p.ideas?.length).length,ideas}}
+  function backupState(st,label='abans de la sincronització'){try{localStorage.setItem(BACKUP_KEY,JSON.stringify({createdAt:new Date().toISOString(),label,state:st}))}catch{}}
+  function loadBackupState(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(BACKUP_KEY)||'null');
+      return raw&&raw.state&&typeof raw.state==='object'?raw:null;
+    }catch{return null}
+  }
+  function applyState(st){
+    suppressCloudSync=true;
+    refs=Array.isArray(st?.refs)?st.refs:[];
+    others=Array.isArray(st?.others)?st.others:[];
+    profiles=Array.isArray(st?.profiles)?st.profiles:[];
+    conceptStats=st?.conceptStats&&typeof st.conceptStats==='object'&&!Array.isArray(st.conceptStats)?st.conceptStats:{};
+    folders=Array.isArray(st?.folders)?st.folders:[];
+    selection=st?.selection&&typeof st.selection==='object'&&!Array.isArray(st.selection)?st.selection:{references:true,folders:{}};
+    documents=Array.isArray(st?.documents)?st.documents:[];
+    relationConfig=st?.relationConfig&&typeof st.relationConfig==='object'&&!Array.isArray(st.relationConfig)?st.relationConfig:defaultRelationConfig();
+    profileSettings=st?.profileSettings&&typeof st.profileSettings==='object'&&!Array.isArray(st.profileSettings)?st.profileSettings:{username:''};
+    if(typeof profileSettings.username!=='string')profileSettings.username='';
+    migrate();renderAll();startQuestion();
+    suppressCloudSync=false;
+  }
+  function cloudMeta(){return loadObject(CLOUD_META_KEY)}
+  function setCloudMeta(obj){localStorage.setItem(CLOUD_META_KEY,JSON.stringify(obj||{}))}
+  function setSyncStatus(kind,text){
+    [['sidebarSyncDot','sidebarSyncText'],['accountSyncDot','accountSyncText']].forEach(([d,t])=>{if($(d)){$(d).className='sync-dot'+(kind?` ${kind}`:'')}if($(t))$(t).textContent=text});
+  }
+  function showAuth(message='',kind=''){
+    currentUser=null;guestMode=false;cloudReady=false;
+    $('appShell').classList.add('hidden');$('migrationScreen').classList.add('hidden');$('verifyEmailScreen').classList.add('hidden');$('authScreen').classList.remove('hidden');
+    $('authMsg').textContent=message;$('authMsg').className='auth-msg'+(kind?` ${kind}`:'');
+  }
+  function showApp(){
+    $('authScreen').classList.add('hidden');$('migrationScreen').classList.add('hidden');$('verifyEmailScreen').classList.add('hidden');$('appShell').classList.remove('hidden');
+    const email=guestMode?'Mode local':(currentUser?.email||'Compte');
+    const username=String(profileSettings?.username||currentUser?.user_metadata?.username||'').trim();
+    if(username&&!profileSettings.username)profileSettings.username=username;
+    if($('sidebarEmail'))$('sidebarEmail').textContent=username||email;
+    if($('accountUsernameDisplay'))$('accountUsernameDisplay').textContent=username||(guestMode?'Mode local':'Sense nom d’usuari');
+    if($('accountUsernameInput'))$('accountUsernameInput').value=username;
+    if($('accountEmail'))$('accountEmail').textContent=guestMode?'Sense iniciar sessió':email;
+    if(guestMode){
+      setSyncStatus('warn','Només en aquest dispositiu');
+      if($('syncNowBtn'))$('syncNowBtn').classList.add('hidden');
+      if($('signOutBtn')){$('signOutBtn').textContent='Iniciar sessió';$('signOutBtn').classList.remove('danger')}
+    }else{
+      if($('syncNowBtn'))$('syncNowBtn').classList.remove('hidden');
+      if($('signOutBtn')){$('signOutBtn').textContent='Tancar sessió';$('signOutBtn').classList.add('danger')}
+    }
+    renderAll();startQuestion();
+  }
+  function showMigration(localState,cloudState=null){
+    migrationCandidateState=localState;
+    migrationCloudState=cloudState;
+    const s=stateSummary(localState);
+    $('migrationSummary').innerHTML=`<span class="stat">${s.refs} referències</span><span class="stat">${s.ideas} idees</span><span class="stat">${s.others} altres targetes</span><span class="stat">${s.authors} autors amb idees</span>`;
+    $('migrationMsg').textContent=cloudState&&stateHasData(cloudState)
+      ? 'El perfil ja conté dades. Si importes aquestes dades locals, es farà una còpia de seguretat abans de substituir l’estat del perfil.'
+      : '';
+    $('migrationMsg').className='auth-msg';
+    $('authScreen').classList.add('hidden');$('appShell').classList.add('hidden');$('migrationScreen').classList.remove('hidden');
+  }
+  async function fetchCloudRow(userId){
+    const {data,error}=await supa.from('amoor_state').select('state,updated_at').eq('user_id',userId).maybeSingle();
+    if(error)throw error;return data||null;
+  }
+  async function writeCloudState(st){
+    if(!currentUser)throw new Error('No hi ha cap sessió activa.');
+    const updatedAt=new Date().toISOString();
+    const {error}=await supa.from('amoor_state').upsert({user_id:currentUser.id,state:st,updated_at:updatedAt},{onConflict:'user_id'});
+    if(error)throw error;
+    setCloudMeta({userId:currentUser.id,updatedAt});
+    return updatedAt;
+  }
+  async function syncCloudNow(){
+    if(!currentUser||!cloudReady||syncInFlight)return;
+    if(!navigator.onLine){syncDirty=true;setSyncStatus('warn','Sense connexió · canvis pendents');return}
+    syncInFlight=true;setSyncStatus('warn','Sincronitzant…');
+    try{
+      await writeCloudState(exportState());syncDirty=false;setSyncStatus('ok','Sincronitzat');
+    }catch(err){
+      syncDirty=true;setSyncStatus('bad','No s’ha pogut sincronitzar');console.error(err);
+    }finally{syncInFlight=false;if(syncDirty&&navigator.onLine)scheduleCloudSync(1500)}
+  }
+  function scheduleCloudSync(delay=650){
+    if(suppressCloudSync||!currentUser||!cloudReady)return;
+    syncDirty=true;setSyncStatus('warn','Canvis pendents');
+    clearTimeout(syncTimer);syncTimer=setTimeout(syncCloudNow,delay);
+  }
+  async function refreshFromCloudIfNewer(){
+    if(!currentUser||!cloudReady||syncDirty||syncInFlight||!navigator.onLine)return;
+    try{
+      const row=await fetchCloudRow(currentUser.id),meta=cloudMeta();
+      if(row?.state&&row.updated_at&&(!meta.updatedAt||new Date(row.updated_at)>new Date(meta.updatedAt))){
+        applyState(row.state);setCloudMeta({userId:currentUser.id,updatedAt:row.updated_at});setSyncStatus('ok','Actualitzat des del núvol');
+      }
+    }catch(err){console.error(err)}
+  }
+  async function activateUser(user){
+    if(!user||activatingUserId===user.id)return;
+    guestMode=false;
+    activatingUserId=user.id;currentUser=user;cloudReady=false;setSyncStatus('warn','Carregant perfil…');
+    const metadataUsername=String(user.user_metadata?.username||'').trim();
+    try{
+      const row=await fetchCloudRow(user.id),localState=exportState(),meta=cloudMeta(),backup=loadBackupState();
+      const localBelongsToThisCloud=meta.userId===user.id;
+      let candidate=null;
+
+      // Dades locals que encara no estan vinculades a aquest compte.
+      if(stateHasData(localState)&&!localBelongsToThisCloud){
+        candidate=localState;
+      }
+
+      // Correcció retroactiva: si una versió anterior ja va carregar el perfil
+      // abans de mostrar la pregunta, recuperem la còpia local de seguretat.
+      if(!candidate&&backup?.state&&stateHasData(backup.state)){
+        const b=stateSummary(backup.state),c=stateSummary(row?.state||blankState());
+        const backupLooksRicher=(b.refs+b.others+b.ideas)>(c.refs+c.others+c.ideas);
+        if(backupLooksRicher)candidate=backup.state;
+      }
+
+      if(candidate){
+        backupState(candidate,'dades locals pendents d’importar al perfil');
+        showMigration(candidate,row?.state||null);
+        return;
+      }
+
+      if(row?.state){
+        applyState(row.state);
+        if(!profileSettings.username&&metadataUsername){profileSettings.username=metadataUsername;saveRaw()}
+        setCloudMeta({userId:user.id,updatedAt:row.updated_at||new Date().toISOString()});
+        cloudReady=true;suppressCloudSync=false;setSyncStatus('ok','Sincronitzat');showApp();
+        if(metadataUsername&&row.state?.profileSettings?.username!==metadataUsername&&!row.state?.profileSettings?.username)scheduleCloudSync(250);
+      }else{
+        const st=stateHasData(localState)?localState:blankState();
+        st.profileSettings=st.profileSettings&&typeof st.profileSettings==='object'?st.profileSettings:{username:''};
+        if(!st.profileSettings.username&&metadataUsername)st.profileSettings.username=metadataUsername;
+        await writeCloudState(st);applyState(st);cloudReady=true;suppressCloudSync=false;setSyncStatus('ok','Sincronitzat');showApp();
+      }
+    }catch(err){
+      console.error(err);cloudReady=false;suppressCloudSync=false;
+      showAuth('No s’ha pogut carregar el perfil. Comprova la connexió i torna-ho a intentar.','bad');
+    }finally{activatingUserId=null}
+  }
+
+  // ---------- Migració i model de dades ----------
+  function migrate(){
+    refs.forEach(r=>{r.id||=uid();statsObj(r);r.stats.partial=r.stats.partial||0;r.stats.recoveryStreak=Math.max(0,Number(r.stats.recoveryStreak)||0);r.fieldStats=r.fieldStats&&typeof r.fieldStats==='object'?r.fieldStats:{};['year','title','publisher'].forEach(f=>{r.fieldStats[f]=r.fieldStats[f]&&typeof r.fieldStats[f]==='object'?r.fieldStats[f]:{asked:0,correct:0,wrong:0,minor:0}});r.origins=Array.isArray(r.origins)?r.origins:[];if(typeof r.manual!=='boolean')r.manual=true;if(typeof r.legacy!=='boolean')r.legacy=true;const oldIdeas=Array.isArray(r.ideas)?r.ideas:[];if(oldIdeas.length)mergeIdeas(r.author,oldIdeas,{manual:true,legacy:true});r.ideas=[]});
+    const newProfiles=[];
+    for(const p of profiles){
+      const np={id:p.id||uid(),author:p.author||'',ideas:[],stats:p.stats||{asked:0,correct:0,wrong:0,minor:0,recoveryStreak:0}};
+      if(typeof np.stats.recoveryStreak!=='number')np.stats.recoveryStreak=0;
+      for(const idea of (p.ideas||[])){
+        if(typeof idea==='string')np.ideas.push({id:uid(),text:idea,origins:[],manual:true,legacy:true});
+        else if(idea&&typeof idea==='object')np.ideas.push({id:idea.id||uid(),text:idea.text||idea.idea||'',origins:Array.isArray(idea.origins)?idea.origins:[],manual:typeof idea.manual==='boolean'?idea.manual:true,legacy:typeof idea.legacy==='boolean'?idea.legacy:true});
+      }
+      if(np.author)newProfiles.push(np);
+    }
+    profiles=[];for(const p of newProfiles)mergeProfileObject(p);
+    others.forEach(o=>{o.id||=uid();statsObj(o);o.mode=o.mode==='bidirectional'?'bidirectional':'front-back';o.folderId=o.folderId||UNCAT;o.origins=Array.isArray(o.origins)?o.origins:[];if(typeof o.manual!=='boolean')o.manual=true;if(typeof o.legacy!=='boolean')o.legacy=true;o.accepted=o.accepted&&typeof o.accepted==='object'?o.accepted:{forward:[],reverse:[]};o.accepted.forward=Array.isArray(o.accepted.forward)?o.accepted.forward:[];o.accepted.reverse=Array.isArray(o.accepted.reverse)?o.accepted.reverse:[]});
+    folders=folders.filter(f=>f&&f.id&&f.name&&f.id!==UNCAT).map(f=>({id:f.id,name:f.name}));
+    documents=documents.filter(Boolean).map(d=>({id:d.id||uid(),name:d.name||'Document',type:d.type||'references',fingerprint:d.fingerprint||'',importedAt:d.importedAt||Date.now(),summary:d.summary||{}}));
+    if(typeof selection.references!=='boolean'){
+      const old=localStorage.getItem(SCOPE_KEY)||'references';selection={references:old!=='others',folders:{}};allFolderIds().forEach(id=>selection.folders[id]=old!=='references');
+    }
+    selection.folders=selection.folders&&typeof selection.folders==='object'?selection.folders:{};
+    allFolderIds().forEach(id=>{if(typeof selection.folders[id]!=='boolean')selection.folders[id]=true});
+    ensureRelationConfig();
+    saveRaw();
+  }
+  function saveRaw(){localStorage.setItem(REF_KEY,JSON.stringify(refs));localStorage.setItem(OTHER_KEY,JSON.stringify(others));localStorage.setItem(AUTHOR_KEY,JSON.stringify(profiles));localStorage.setItem(CONCEPT_KEY,JSON.stringify(conceptStats));localStorage.setItem(FOLDER_KEY,JSON.stringify(folders));localStorage.setItem(SELECTION_KEY,JSON.stringify(selection));localStorage.setItem(DOC_KEY,JSON.stringify(documents));localStorage.setItem(RELATION_KEY,JSON.stringify(relationConfig));localStorage.setItem(PROFILE_KEY,JSON.stringify(profileSettings))}
+  function saveAll(){saveRaw();renderAll();scheduleCloudSync()}
+  function mergeProfileObject(p){let ex=profiles.find(x=>normalize(x.author)===normalize(p.author));if(!ex){profiles.push(p);return p}ex.ideas=mergeIdeaObjects(ex.ideas||[],p.ideas||[]);return ex}
+  function mergeIdeaObjects(a,b){const out=[...a];for(const idea of b){if(!idea.text)continue;const ex=out.find(x=>normalize(x.text)===normalize(idea.text));if(ex){ex.origins=uniqStrings([...(ex.origins||[]),...(idea.origins||[])]);ex.manual=ex.manual||idea.manual;ex.legacy=ex.legacy&&idea.legacy}else out.push(idea)}return out}
+  function getProfileExact(author,create=false){let p=profiles.find(x=>normalize(x.author)===normalize(author));if(!p&&create){p={id:uid(),author,ideas:[],stats:{asked:0,correct:0,wrong:0,minor:0}};profiles.push(p)}return p}
+  function mergeIdeas(author,ideas,meta={manual:true,legacy:false,originId:null,retro:false}){const p=getProfileExact(author,true);for(const raw of ideas){const text=String(raw||'').trim();if(!text)continue;let ex=p.ideas.find(i=>normalize(i.text)===normalize(text));if(!ex){ex={id:uid(),text,origins:[],manual:!!meta.manual,legacy:!!meta.legacy};p.ideas.push(ex)}if(meta.originId&&!ex.origins.includes(meta.originId))ex.origins.push(meta.originId);if(meta.retro&&ex.legacy){ex.manual=false;ex.legacy=false}}return p}
+  function getAuthorIdeas(author){const p=findProfileByAuthor(author);return p?uniqStrings((p.ideas||[]).map(i=>i.text)):[]}
+  function findProfileByAuthor(author){return profiles.find(p=>authorEquivalent(p.author,author))||null}
+
+  // ---------- Autors, noms i idees ----------
+  const NAME_STOP=new Set(['de','del','dels','la','les','el','els','i','y','e','and','the']);
+  function nameTokens(author){return normalize(author).split(' ').filter(t=>t&&!NAME_STOP.has(t))}
+  function significantNameTokens(author){return nameTokens(author).filter(t=>t.length>1)}
+  function allAuthorNames(){return uniqStrings([...refs.map(r=>r.author),...profiles.map(p=>p.author)])}
+  function authorEquivalent(a,b){
+    const na=normalize(a),nb=normalize(b);if(!na||!nb)return false;if(na===nb)return true;
+    const AT=nameTokens(a),BT=nameTokens(b),A=AT.filter(t=>t.length>1),B=BT.filter(t=>t.length>1),AI=AT.filter(t=>t.length===1),BI=BT.filter(t=>t.length===1);
+    const shared=A.filter(x=>x.length>=4&&B.includes(x));if(!shared.length)return false;if(shared.length>=2)return true;
+    const sharedToken=shared[0],aOther=A.filter(x=>x!==sharedToken),bOther=B.filter(x=>x!==sharedToken);
+    const initialSupports=AI.some(i=>bOther.some(w=>w.startsWith(i)))||BI.some(i=>aOther.some(w=>w.startsWith(i)));
+    if(initialSupports)return true;
+    const oneSideBare=(aOther.length===0&&AI.length===0)||(bOther.length===0&&BI.length===0);
+    if(oneSideBare){const all=allAuthorNames(),owners=uniqStrings(all.filter(n=>significantNameTokens(n).includes(sharedToken)));return owners.length<=1}
+    return false
+  }
+  function canonicalAuthor(author,candidates=[]){const pool=uniqStrings([...candidates,...allAuthorNames()]);const exact=pool.find(x=>normalize(x)===normalize(author));if(exact)return exact;const matches=pool.filter(x=>authorEquivalent(author,x));return matches.length===1?matches[0]:author}
+  function authorAliases(author){const n=normalize(author),sig=significantNameTokens(author),aliases=[n,sig.join(' ')];sig.forEach(t=>aliases.push(t));return uniqStrings(aliases)}
+  function bibliographicAuthorCount(author){
+    const s=String(author||'');
+    const initialGroups=(s.match(/,\s*[A-ZÀ-ÖØ-Ý]\s*\./g)||[]).length;
+    if(initialGroups)return initialGroups;
+    const semis=s.split(/\s*;\s*/).filter(Boolean).length;
+    if(semis>1)return semis;
+    const conjunctions=(s.match(/\s+(?:i|y|e|and|&)\s+/gi)||[]).length;
+    return conjunctions?conjunctions+1:1
+  }
+  function firstAuthorForEtAl(author){
+    const s=String(author||'').trim();
+    const comma=s.indexOf(',');
+    if(comma>0)return s.slice(0,comma).trim();
+    const sep=s.match(/\s+(?:i|y|e|and|&)\s+/i);
+    return sep?s.slice(0,sep.index).trim():s
+  }
+  function etAlMatch(input,target){
+    if(bibliographicAuthorCount(target)<=3)return{ok:false};
+    const n=normalize(input),m=n.match(/^(.+?)\s+et\s+al$/);
+    if(!m)return{ok:false};
+    const first=firstAuthorForEtAl(target),res=fuzzy(m[1],first,'author');
+    return res.ok?{ok:true,minor:res.minor,abbreviated:true,etAl:true,display:`${first} et al.`}:{ok:false}
+  }
+  function tokenSimilarity(a,b){
+    a=normalize(a);b=normalize(b);if(!a||!b)return 0;if(a===b)return 1;
+    const d=lev(a,b),ratio=1-d/Math.max(a.length,b.length,1);
+    return (d<=1||ratio>=0.86)?ratio:0
+  }
+  function significantTokensMatch(input,target){
+    const I=significantNameTokens(input),T=significantNameTokens(target);
+    if(!I.length||!T.length)return{ok:false,minor:false};
+    const used=new Set();let minor=false;
+    for(const i of I){
+      let best=-1,bestScore=0;
+      for(let j=0;j<T.length;j++){
+        if(used.has(j))continue;
+        const score=tokenSimilarity(i,T[j]);
+        if(score>bestScore){bestScore=score;best=j}
+      }
+      if(best<0||bestScore<0.86)return{ok:false,minor:false};
+      if(normalize(i)!==normalize(T[best]))minor=true;
+      used.add(best)
+    }
+    return{ok:true,minor}
+  }
+  function authorShortFormMatch(input,target,scope){
+    const raw=normalize(input);if(!raw)return{ok:false};
+    const count=bibliographicAuthorCount(target);
+    const I=significantNameTokens(input),T=significantNameTokens(target);
+    if(!I.length||!T.length)return{ok:false};
+
+    // Referències amb diversos autors: "Bernal y Calvo" és suficient per
+    // "Bernal, J. y Calvo, M.L.", però "Bernal" a soles no ho és.
+    if(count>1){
+      if(I.length!==T.length)return{ok:false};
+      const m=significantTokensMatch(input,target);
+      return m.ok?{ok:true,minor:m.minor,abbreviated:true,full:target}:{ok:false}
+    }
+
+    // Un sol autor: es pot ometre nom/inicials si la forma escrita
+    // identifica un únic autor dins del context real de la pregunta.
+    if(I.length>T.length)return{ok:false};
+    const m=significantTokensMatch(input,target);
+    if(!m.ok)return{ok:false};
+
+    const pool=uniqStrings((scope&&scope.length?scope:allAuthorNames()));
+    const compatible=pool.filter(a=>{
+      if(bibliographicAuthorCount(a)!==1)return false;
+      const A=significantNameTokens(a);
+      if(I.length>A.length)return false;
+      return significantTokensMatch(input,a).ok
+    });
+
+    const canonical=uniqStrings(compatible.map(a=>canonicalAuthor(a,pool)));
+    if(canonical.length===1&&authorEquivalent(canonical[0],target)){
+      return{ok:true,minor:m.minor,abbreviated:normalize(input)!==normalize(target),full:target}
+    }
+    if(canonical.length>1)return{ok:false,ambiguous:true,candidates:canonical.slice(0,5)};
+    return{ok:false}
+  }
+  function authorMatch(input,target,scope=null){
+    const raw=normalize(input),tar=normalize(target);if(!raw)return{ok:false};
+    const etal=etAlMatch(input,target);if(etal.ok)return etal;
+    const full=fuzzy(raw,tar,'author');if(full.ok)return{ok:true,minor:full.minor,abbreviated:false};
+
+    const short=authorShortFormMatch(input,target,scope);
+    if(short.ok||short.ambiguous)return short;
+
+    const known=uniqStrings(scope&&scope.length?scope:allAuthorNames()),ranked=[];
+    for(const a of known){
+      let best=0,bestMinor=false;
+      for(const alias of authorAliases(a)){
+        if(!alias)continue;
+        if(alias===raw||(raw.length>=4&&alias.startsWith(raw))){best=1;bestMinor=alias!==raw;break}
+        if(raw.length>=4&&alias.length>=4){
+          const d=lev(raw,alias),ratio=1-d/Math.max(raw.length,alias.length,1);
+          if(d<=1||ratio>=0.86){const score=Math.max(ratio,1-d/Math.max(raw.length,alias.length));if(score>best){best=score;bestMinor=true}}
+        }
+      }
+      if(best>=0.86)ranked.push({author:a,score:best,minor:bestMinor});
+    }
+    ranked.sort((a,b)=>b.score-a.score);
+    const top=ranked[0],second=ranked[1];
+    const unique=top&&(!second||top.score-second.score>=0.06||top.score===1&&second.score<1);
+    if(unique&&authorEquivalent(top.author,target))return{ok:true,minor:top.minor,abbreviated:true,full:target};
+    return{ok:false,ambiguous:ranked.length>1,candidates:ranked.slice(0,5).map(x=>x.author)}
+  }
+  function authorSurnameSequence(author){
+    return significantNameTokens(author).map(normalize).filter(Boolean)
+  }
+  function approxSequenceEqual(a,b){
+    if(a.length!==b.length)return false;
+    for(let i=0;i<a.length;i++)if(tokenSimilarity(a[i],b[i])<0.86)return false;
+    return true
+  }
+  function directAuthorAnswerMatch(input,target,scope){
+    const I=authorSurnameSequence(input),T=authorSurnameSequence(target);
+    if(!I.length||!T.length)return{ok:false};
+
+    const targetCount=bibliographicAuthorCount(target);
+
+    // Grup de diversos autors: Bernal y Calvo -> Bernal, J. y Calvo, M.L.
+    if(targetCount>1){
+      if(approxSequenceEqual(I,T))return{ok:true,abbreviated:normalize(input)!==normalize(target),minor:I.some((x,i)=>x!==T[i])};
+      return{ok:false}
+    }
+
+    // Autor individual: cognom/nombre abreujat si és inequívoc en el context.
+    if(I.length>T.length)return{ok:false};
+    const matchesTarget=I.every(tok=>T.some(t=>tokenSimilarity(tok,t)>=0.86));
+    if(!matchesTarget)return{ok:false};
+
+    const pool=uniqStrings(scope?.length?scope:allAuthorNames());
+    const compatible=pool.filter(a=>{
+      if(bibliographicAuthorCount(a)!==1)return false;
+      const A=authorSurnameSequence(a);
+      return I.every(tok=>A.some(t=>tokenSimilarity(tok,t)>=0.86))
+    });
+
+    if(compatible.length===1&&authorEquivalent(compatible[0],target)){
+      return{ok:true,abbreviated:normalize(input)!==normalize(target),minor:I.some(tok=>!T.includes(tok))}
+    }
+    if(compatible.length>1)return{ok:false,ambiguous:true,candidates:compatible};
+    return{ok:false}
+  }
+
+  function matchAuthorAgainstPool(input,pool){
+    const valid=uniqStrings(pool||[]),matches=[],ambiguities=[];
+    for(const target of valid){
+      const direct=directAuthorAnswerMatch(input,target,valid);
+      const m=direct.ok||direct.ambiguous?direct:authorMatch(input,target,valid);
+      if(m.ok)matches.push({target,match:m});
+      else if(m.ambiguous)ambiguities.push(...(m.candidates||[]))
+    }
+    const uniqueMatches=matches.filter((x,i,a)=>a.findIndex(y=>normalize(y.target)===normalize(x.target))===i);
+    if(uniqueMatches.length===1)return{ok:true,target:uniqueMatches[0].target,match:uniqueMatches[0].match};
+    if(uniqueMatches.length>1)return{ok:false,ambiguous:true,candidates:uniqueMatches.map(x=>x.target)};
+    const candidates=uniqStrings(ambiguities);
+    return{ok:false,ambiguous:candidates.length>1,candidates}
+  }
+
+  const SYN={creatividad:'creativitat',creatiu:'creativitat',creativa:'creativitat',creador:'creativitat',creadora:'creativitat',crear:'creativitat',audicion:'audicio',escolta:'audicio',escoltar:'audicio',ritmic:'ritme',ritmica:'ritme',ritmo:'ritme',improvisar:'improvisacio',improvisacion:'improvisacio',movimiento:'moviment',corporal:'cos',cuerpo:'cos',juego:'joc',ludic:'joc',ludica:'joc',relajacion:'relaxacio',folclore:'folklore',voz:'veu',canto:'cant',cancion:'canco',armonia:'harmonia',modulacion:'modulacio',cadencies:'cadencia',cadencias:'cadencia',notacion:'notacio',diversidad:'diversitat',innovacion:'innovacio',global:'integral',globalment:'integral',xiquet:'infant',xiqueta:'infant',nen:'infant',nena:'infant',nino:'infant',nina:'infant',ajuda:'afavorir',ajudar:'afavorir',contribueix:'afavorir',contribuir:'afavorir',fomenta:'afavorir',fomentar:'afavorir',estimula:'afavorir',estimular:'afavorir',potencia:'afavorir',potenciar:'afavorir',promou:'afavorir',promoure:'afavorir'};
+  const IDEA_STOP=new Set(['el','la','els','les','un','una','uns','unes','de','del','dels','a','al','als','i','o','en','per','para','amb','con','que','es','se','pot','poden','ha','han','com','mes','més','musica','musical','educacio','educacion','aprenentatge','ensenyament','alumnat','treball','treballar','partir']);
+  function stem(w){return w.replace(/(ment|ments|cio|cions|cion|ciones|tat|tats|itat|itats|iva|ives|iu|ius|ant|ants|ent|ents|ar|er|ir|es|s)$/,'')||w}
+  function ideaTokens(s){return normalize(s).split(' ').filter(w=>w&&!IDEA_STOP.has(w)).map(w=>stem(SYN[w]||w)).filter(w=>w.length>2)}
+  function tokenScore(given,expected){const G=new Set(ideaTokens(given)),E=new Set(ideaTokens(expected));if(!E.size)return 0;let hit=0;E.forEach(x=>{if(G.has(x))hit++});const coverage=hit/E.size,precision=G.size?hit/G.size:0;return .72*coverage+.28*precision}
+  function ideaSimilarity(a,b){const A=new Set(ideaTokens(a)),B=new Set(ideaTokens(b));if(!A.size||!B.size)return 0;let inter=0;A.forEach(x=>{if(B.has(x))inter++});const jac=inter/new Set([...A,...B]).size,l=1-lev(a,b)/Math.max(normalize(a).length,normalize(b).length,1);return Math.max(jac,l,tokenScore(a,b),tokenScore(b,a))}
+  function ideasEquivalent(a,b){return ideaSimilarity(a,b)>=0.58}
+  function validAuthorsForIdea(idea){return allAuthorNames().filter(a=>getAuthorIdeas(a).some(i=>ideasEquivalent(idea,i)))}
+
+  const CONCEPTS=[
+    {key:'creativitat',label:'la creativitat',tokens:['creativitat']},{key:'ritme',label:'el ritme',tokens:['ritme']},{key:'improvisacio',label:'la improvisació',tokens:['improvisacio']},{key:'audicio',label:'l’audició i l’escolta',tokens:['audicio']},{key:'cos_moviment',label:'el cos i el moviment',tokens:['cos','moviment']},{key:'joc',label:'el joc',tokens:['joc']},{key:'relaxacio',label:'la relaxació',tokens:['relaxacio']},{key:'folklore',label:'el folklore',tokens:['folklore']},{key:'veu_cant',label:'la veu i el cant',tokens:['veu','cant']},{key:'canco',label:'la cançó',tokens:['canco']},{key:'harmonia',label:'l’harmonia',tokens:['harmonia']},{key:'melodia',label:'la melodia',tokens:['melodia']},{key:'textura',label:'la textura',tokens:['textura']},{key:'forma',label:'la forma musical',tokens:['forma']},{key:'modulacio',label:'la modulació',tokens:['modulacio']},{key:'cadencia',label:'les cadències',tokens:['cadencia']},{key:'lectoescriptura',label:'la lectoescriptura i la notació',tokens:['lectoescriptura','notacio']},{key:'diversitat',label:'la diversitat',tokens:['diversitat']},{key:'innovacio',label:'la innovació educativa',tokens:['innovacio']},{key:'tecnologia',label:'la tecnologia',tokens:['tecnologia']},{key:'coral',label:'el cant i la direcció coral',tokens:['coral']},{key:'desenvolupament',label:'el desenvolupament integral',tokens:['integral','desenvolup']},{key:'socialitzacio',label:'la socialització i els valors',tokens:['social','valor']},{key:'motivacio',label:'la motivació',tokens:['motiv']},{key:'psicomotricitat',label:'la psicomotricitat',tokens:['psicomot']},{key:'expressio',label:'l’expressió musical',tokens:['expressio']},{key:'interculturalitat',label:'la interculturalitat',tokens:['intercultural','cultura']}
+  ];
+  let conceptIndexCache={key:null,map:null,candidates:null};
+  function conceptIdeaFingerprint(){return JSON.stringify(profiles.map(p=>[p.author,(p.ideas||[]).map(i=>i.text)]))}
+  function buildConceptAuthorIndex(){
+    const key=conceptIdeaFingerprint();
+    if(conceptIndexCache.key===key&&conceptIndexCache.map)return conceptIndexCache;
+    const map=new Map();
+    for(const p of profiles){
+      const seen=new Set();
+      for(const idea of (p.ideas||[])){
+        for(const tok of ideaTokens(idea.text||''))seen.add(tok);
+      }
+      for(const tok of seen){
+        if(!map.has(tok))map.set(tok,[]);
+        const arr=map.get(tok);
+        if(!arr.some(a=>normalize(a)===normalize(p.author)))arr.push(p.author);
+      }
+    }
+    const candidates=CONCEPTS.map(c=>{
+      const authors=[];
+      for(const k of c.tokens){
+        const tok=stem(SYN[normalize(k)]||normalize(k));
+        for(const a of (map.get(tok)||[]))if(!authors.some(x=>normalize(x)===normalize(a)))authors.push(a);
+      }
+      return {...c,authors};
+    }).filter(c=>c.authors.length>=2&&c.authors.length<=15);
+    conceptIndexCache={key,map,candidates};
+    return conceptIndexCache;
+  }
+  function conceptAuthors(c){
+    const idx=buildConceptAuthorIndex(),authors=[];
+    for(const k of c.tokens){
+      const tok=stem(SYN[normalize(k)]||normalize(k));
+      for(const a of (idx.map.get(tok)||[]))if(!authors.some(x=>normalize(x)===normalize(a)))authors.push(a);
+    }
+    return authors
+  }
+  function conceptCandidates(){return buildConceptAuthorIndex().candidates}
+  function conceptStat(key){conceptStats[key]||={asked:0,correct:0,wrong:0,recoveryStreak:0};if(typeof conceptStats[key].recoveryStreak!=='number')conceptStats[key].recoveryStreak=0;return conceptStats[key]}
+
+  // ---------- Fitxes d'estudi i relacions ----------
+  function defaultRelationConfig(){return{references:{enabled:true,ideas:true,year:false,title:false,publisher:false},folders:{}}}
+  function ensureRelationConfig(){
+    const d=defaultRelationConfig();
+    relationConfig=relationConfig&&typeof relationConfig==='object'&&!Array.isArray(relationConfig)?relationConfig:d;
+    relationConfig.references=relationConfig.references&&typeof relationConfig.references==='object'?relationConfig.references:d.references;
+    for(const k of ['enabled','ideas','year','title','publisher'])if(typeof relationConfig.references[k]!=='boolean')relationConfig.references[k]=d.references[k];
+    relationConfig.folders=relationConfig.folders&&typeof relationConfig.folders==='object'?relationConfig.folders:{};
+    for(const id of allFolderIds()){
+      const f=relationConfig.folders[id]&&typeof relationConfig.folders[id]==='object'?relationConfig.folders[id]:{};
+      relationConfig.folders[id]={enabled:typeof f.enabled==='boolean'?f.enabled:true,front:typeof f.front==='boolean'?f.front:true,back:typeof f.back==='boolean'?f.back:true};
+    }
+    Object.keys(relationConfig.folders).forEach(id=>{if(!allFolderIds().includes(id))delete relationConfig.folders[id]});
+  }
+  let relationIndexCache={key:null,index:null,summaries:null};
+  function relationFolder(id){
+    ensureRelationConfig();
+    return relationConfig.folders[id]||{enabled:true,front:true,back:true}
+  }
+  function relationFingerprint(){
+    const compactProfiles=profiles.map(p=>[p.author,(p.ideas||[]).map(i=>i.text)]);
+    const compactRefs=refs.map(r=>[r.author,r.year,r.title,r.publisher]);
+    const compactOthers=others.map(o=>[o.id,o.folderId||UNCAT,o.front,o.back]);
+    const compactFolders=folders.map(f=>[f.id,f.name]);
+    return JSON.stringify([compactProfiles,compactRefs,compactOthers,compactFolders,relationConfig]);
+  }
+  function addMapSet(map,key,value){
+    if(!key)return;
+    if(!map.has(key))map.set(key,new Set());
+    map.get(key).add(value)
+  }
+  function queryTokens(concept){
+    const raw=concept.tokens?.length?concept.tokens:ideaTokens(concept.label||concept.key||'');
+    return uniqStrings(raw.map(k=>stem(SYN[normalize(k)]||normalize(k))).filter(Boolean))
+  }
+  function intersectsTokens(tokens,query){
+    const set=tokens instanceof Set?tokens:new Set(tokens||[]);
+    return query.some(t=>set.has(t))
+  }
+  function buildRelationIndex(){
+    ensureRelationConfig();
+    const key=relationFingerprint();
+    if(relationIndexCache.key===key&&relationIndexCache.index)return relationIndexCache.index;
+
+    const authors=new Map();
+    function authorEntry(author){
+      const nk=normalize(author);
+      if(authors.has(nk))return authors.get(nk);
+      // Només fem la comparació d'equivalència una vegada en construir l'índex.
+      for(const entry of authors.values()){
+        if(authorEquivalent(entry.author,author))return entry;
+      }
+      const entry={key:nk,author,ideas:[],refs:[]};
+      authors.set(nk,entry);
+      return entry
+    }
+
+    for(const p of profiles){
+      const e=authorEntry(p.author);
+      for(const idea of (p.ideas||[])){
+        const text=idea.text||'';
+        if(!text)continue;
+        e.ideas.push({text,tokens:new Set(ideaTokens(text))})
+      }
+    }
+    for(const r of refs)authorEntry(r.author).refs.push(r);
+
+    const maps={
+      ideas:new Map(),year:new Map(),title:new Map(),publisher:new Map(),
+      front:new Map(),back:new Map()
+    };
+
+    for(const e of authors.values()){
+      for(const idea of e.ideas){
+        for(const tok of idea.tokens)addMapSet(maps.ideas,tok,e.key)
+      }
+      for(const r of e.refs){
+        for(const tok of ideaTokens(r.year||''))addMapSet(maps.year,tok,e.key);
+        for(const tok of ideaTokens(r.title||''))addMapSet(maps.title,tok,e.key);
+        for(const tok of ideaTokens(r.publisher||''))addMapSet(maps.publisher,tok,e.key)
+      }
+    }
+
+    const cards=new Map();
+    for(const o of others){
+      const id=o.id||`${normalize(o.front)}:${normalize(o.back)}`;
+      const rec={id,folderId:o.folderId||UNCAT,front:o.front||'',back:o.back||'',frontTokens:new Set(ideaTokens(o.front||'')),backTokens:new Set(ideaTokens(o.back||''))};
+      cards.set(id,rec);
+      for(const tok of rec.frontTokens)addMapSet(maps.front,tok,id);
+      for(const tok of rec.backTokens)addMapSet(maps.back,tok,id)
+    }
+
+    const index={key,authors,cards,maps};
+    relationIndexCache={key,index,summaries:null};
+    return index
+  }
+  function collectSetFromMap(map,tokens){
+    const out=new Set();
+    for(const tok of tokens)for(const id of (map.get(tok)||[]))out.add(id);
+    return out
+  }
+  function sheetSummary(concept){
+    const idx=buildRelationIndex(),q=queryTokens(concept),authorKeys=new Set(),cardIds=new Set(),rc=relationConfig.references;
+    if(rc.enabled){
+      if(rc.ideas)for(const id of collectSetFromMap(idx.maps.ideas,q))authorKeys.add(id);
+      if(rc.year)for(const id of collectSetFromMap(idx.maps.year,q))authorKeys.add(id);
+      if(rc.title)for(const id of collectSetFromMap(idx.maps.title,q))authorKeys.add(id);
+      if(rc.publisher)for(const id of collectSetFromMap(idx.maps.publisher,q))authorKeys.add(id)
+    }
+    for(const id of allFolderIds()){
+      const cfg=relationConfig.folders[id]||{enabled:true,front:true,back:true};
+      if(!cfg.enabled)continue;
+      const candidates=new Set();
+      if(cfg.front)for(const cid of collectSetFromMap(idx.maps.front,q))candidates.add(cid);
+      if(cfg.back)for(const cid of collectSetFromMap(idx.maps.back,q))candidates.add(cid);
+      for(const cid of candidates){
+        const card=idx.cards.get(cid);
+        if(card&&(card.folderId||UNCAT)===id)cardIds.add(cid)
+      }
+    }
+    return{concept,authorCount:authorKeys.size,cardCount:cardIds.size,total:authorKeys.size+cardIds.size}
+  }
+  function buildStudySheet(concept){
+    const idx=buildRelationIndex(),q=queryTokens(concept),authorKeys=new Set(),cardIds=new Set(),rc=relationConfig.references;
+    if(rc.enabled){
+      if(rc.ideas)for(const id of collectSetFromMap(idx.maps.ideas,q))authorKeys.add(id);
+      if(rc.year)for(const id of collectSetFromMap(idx.maps.year,q))authorKeys.add(id);
+      if(rc.title)for(const id of collectSetFromMap(idx.maps.title,q))authorKeys.add(id);
+      if(rc.publisher)for(const id of collectSetFromMap(idx.maps.publisher,q))authorKeys.add(id)
+    }
+
+    const authors=[],authorRows=[],refRows=[];
+    for(const key of authorKeys){
+      const e=idx.authors.get(key);if(!e)continue;
+      const matchedIdeas=rc.ideas?e.ideas.filter(i=>intersectsTokens(i.tokens,q)).map(i=>i.text):[];
+      authors.push(e.author);
+      authorRows.push({author:e.author,ideas:matchedIdeas});
+      for(const r of e.refs){
+        refRows.push({author:r.author,year:rc.year?r.year:'',title:rc.title?r.title:'',publisher:rc.publisher?r.publisher:''})
+      }
+    }
+
+    for(const id of allFolderIds()){
+      const cfg=relationConfig.folders[id]||{enabled:true,front:true,back:true};
+      if(!cfg.enabled)continue;
+      const candidates=new Set();
+      if(cfg.front)for(const cid of collectSetFromMap(idx.maps.front,q))candidates.add(cid);
+      if(cfg.back)for(const cid of collectSetFromMap(idx.maps.back,q))candidates.add(cid);
+      for(const cid of candidates){
+        const card=idx.cards.get(cid);
+        if(card&&(card.folderId||UNCAT)===id)cardIds.add(cid)
+      }
+    }
+    const cardRows=[...cardIds].map(id=>idx.cards.get(id)).filter(Boolean).map(o=>{
+      const cfg=relationConfig.folders[o.folderId]||{enabled:true,front:true,back:true};
+      return{folder:folderName(o.folderId),front:cfg.front?o.front:'',back:cfg.back?o.back:''}
+    });
+    return{concept,authors:uniqStrings(authors),authorRows,refRows,cardRows,total:authorRows.length+cardRows.length}
+  }
+  function automaticSheets(){
+    const idx=buildRelationIndex();
+    if(relationIndexCache.key===idx.key&&Array.isArray(relationIndexCache.summaries))return relationIndexCache.summaries;
+    const sheets=CONCEPTS.map(sheetSummary).filter(s=>s.total>0);
+    relationIndexCache.summaries=sheets;
+    return sheets
+  }
+  function renderRelationSettings(){
+    ensureRelationConfig();
+    const r=relationConfig.references;
+    let html=`<div class="relation-source"><label class="checkline"><input id="relRefEnabled" type="checkbox" ${r.enabled?'checked':''}><strong>Referències i autors</strong></label><div class="relation-fields"><label><input class="rel-ref-field" data-field="ideas" type="checkbox" ${r.ideas?'checked':''}> Idees</label><label><input class="rel-ref-field" data-field="year" type="checkbox" ${r.year?'checked':''}> Anys</label><label><input class="rel-ref-field" data-field="title" type="checkbox" ${r.title?'checked':''}> Títols</label><label><input class="rel-ref-field" data-field="publisher" type="checkbox" ${r.publisher?'checked':''}> Editorials / fonts</label></div></div>`;
+    for(const id of allFolderIds()){
+      const count=others.filter(o=>(o.folderId||UNCAT)===id).length;if(id===UNCAT&&!count)continue;
+      const c=relationConfig.folders[id]||{enabled:true,front:true,back:true};
+      html+=`<div class="relation-source"><label class="checkline"><input class="rel-folder-enabled" data-id="${esc(id)}" type="checkbox" ${c.enabled?'checked':''}><strong>${esc(folderName(id))}</strong><span class="tiny">${count} targetes</span></label><div class="relation-fields"><label><input class="rel-folder-field" data-id="${esc(id)}" data-field="front" type="checkbox" ${c.front?'checked':''}> Anvers</label><label><input class="rel-folder-field" data-id="${esc(id)}" data-field="back" type="checkbox" ${c.back?'checked':''}> Revers</label></div></div>`;
+    }
+    $('relationSources').innerHTML=html;
+    const enabled=Number(r.enabled)+allFolderIds().filter(id=>(relationConfig.folders[id]?.enabled??true)&&(id!==UNCAT||others.some(o=>(o.folderId||UNCAT)===UNCAT))).length;
+    $('relationSummary').textContent=`${enabled} fonts habilitades`;
+    $('relRefEnabled')?.addEventListener('change',e=>{relationConfig.references.enabled=e.target.checked;saveAll()});
+    document.querySelectorAll('.rel-ref-field').forEach(x=>x.addEventListener('change',e=>{relationConfig.references[e.target.dataset.field]=e.target.checked;saveAll()}));
+    document.querySelectorAll('.rel-folder-enabled').forEach(x=>x.addEventListener('change',e=>{relationFolder(e.target.dataset.id).enabled=e.target.checked;saveAll()}));
+    document.querySelectorAll('.rel-folder-field').forEach(x=>x.addEventListener('change',e=>{relationFolder(e.target.dataset.id)[e.target.dataset.field]=e.target.checked;saveAll()}));
+  }
+  function renderSheetList(){
+    if(!$('sheetList'))return;
+    const q=normalize($('sheetSearch')?.value||''),allSheets=automaticSheets(),sheets=allSheets.filter(s=>!q||normalize(s.concept.label).includes(q));
+    $('sheetCount').textContent=`${allSheets.length} fitxes disponibles · ${sheets.length} visibles`;
+    $('sheetList').innerHTML=sheets.length?sheets.map(s=>`<div class="sheet-card"><span class="type-badge">Fitxa dinàmica</span><h3>${esc(capitalizeSheetLabel(s.concept.label))}</h3><div class="tiny">${s.authorCount} autors · ${s.cardCount} targetes relacionades</div><button class="btn small soft open-sheet section-gap" data-key="${esc(s.concept.key)}" type="button">Obrir fitxa</button></div>`).join(''):'<div class="empty" style="grid-column:1/-1">No hi ha fitxes amb la configuració actual.</div>';
+    document.querySelectorAll('.open-sheet').forEach(b=>b.addEventListener('click',()=>{const c=CONCEPTS.find(x=>x.key===b.dataset.key);if(c)showStudySheet(buildStudySheet(c))}));
+  }
+  function capitalizeSheetLabel(s=''){const x=String(s).replace(/^(la |el |les |els |l’|l')/i,'');return x?x.charAt(0).toUpperCase()+x.slice(1):s}
+  function showStudySheet(sheet){
+    const c=sheet.concept,box=$('sheetDetail');box.classList.remove('hidden');
+    const authors=sheet.authorRows.length?`<div class="sheet-detail-section"><h3>Autors i idees</h3>${sheet.authorRows.map(a=>`<div class="item" style="margin-top:8px"><strong>${esc(a.author)}</strong>${a.ideas.length?`<div class="tiny">${a.ideas.map(i=>esc(i)).join('<br>')}</div>`:'<div class="tiny">Relacionat mitjançant altres camps de la referència.</div>'}</div>`).join('')}</div>`:'';
+    const refsVisible=relationConfig.references.enabled&&(relationConfig.references.year||relationConfig.references.title||relationConfig.references.publisher)&&sheet.refRows.length;
+    const refBlock=refsVisible?`<div class="sheet-detail-section"><h3>Dades de referències habilitades</h3>${sheet.refRows.map(r=>`<div class="tiny" style="margin:6px 0"><strong>${esc(r.author)}</strong>${r.year?` · ${esc(r.year)}`:''}${r.title?` · <em>${esc(r.title)}</em>`:''}${r.publisher?` · ${esc(r.publisher)}`:''}</div>`).join('')}</div>`:'';
+    const cards=sheet.cardRows.length?`<div class="sheet-detail-section"><h3>Altres carpetes relacionades</h3>${sheet.cardRows.map(o=>`<div class="item" style="margin-top:8px"><span class="type-badge">${esc(o.folder)}</span>${o.front?`<strong>${esc(o.front)}</strong>`:''}${o.back?`<div class="tiny" style="white-space:pre-wrap">${esc(o.back)}</div>`:''}</div>`).join('')}</div>`:'';
+    box.innerHTML=`<div class="row space"><div><span class="eyebrow">Fitxa d’estudi</span><h2 style="margin-top:6px">${esc(capitalizeSheetLabel(c.label))}</h2></div><button id="closeSheetDetail" class="btn small" type="button">Tancar</button></div>${authors||refBlock||cards?authors+refBlock+cards:'<div class="empty">No s’ha trobat contingut amb les relacions seleccionades.</div>'}`;
+    $('closeSheetDetail').addEventListener('click',()=>box.classList.add('hidden'));box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function renderStudySheets(){
+    if(!$('relationSources')||!$('sheets')?.classList.contains('active'))return;
+    renderRelationSettings();renderSheetList()
+  }
+  let sheetSearchTimer=null;
+  $('sheetSearch')?.addEventListener('input',()=>{clearTimeout(sheetSearchTimer);sheetSearchTimer=setTimeout(renderSheetList,90)});
+  $('customSheetForm')?.addEventListener('submit',e=>{e.preventDefault();const term=$('customSheetTerm').value.trim();if(!term)return;showStudySheet(buildStudySheet({key:'custom',label:term,tokens:ideaTokens(term)}))});
+
+  // ---------- Carpetes i selecció d'estudi ----------
+  function allFolderIds(){return [UNCAT,...folders.map(f=>f.id)]}
+  function folderName(id){if(!id||id===UNCAT)return'Sense carpeta';return folders.find(f=>f.id===id)?.name||'Sense carpeta'}
+  function ensureFolder(name){const clean=String(name||'').trim();if(!clean)return UNCAT;let f=folders.find(x=>normalize(x.name)===normalize(clean));if(!f){f={id:uid(),name:clean};folders.push(f);selection.folders[f.id]=true;ensureRelationConfig();relationConfig.folders[f.id]={enabled:true,front:true,back:true}}return f.id}
+  function selectedOther(o){return !!selection.folders[o.folderId||UNCAT]}
+  function selectedRefContent(){return !!selection.references}
+  function renderStudySources(){
+    const rows=[`<label class="source-option"><input id="sourceReferences" type="checkbox" ${selection.references?'checked':''}><span><strong>Referències i idees d’autors</strong><span class="tiny"> ${refs.length} referències · ${allAuthorNames().length} autors</span></span></label>`];
+    for(const id of allFolderIds()){
+      const count=others.filter(o=>(o.folderId||UNCAT)===id).length;if(id===UNCAT&&!count)continue;
+      rows.push(`<label class="source-option"><input class="source-folder" data-folder-id="${esc(id)}" type="checkbox" ${selection.folders[id]?'checked':''}><span><strong>${esc(folderName(id))}</strong><span class="tiny"> ${count} targetes</span></span></label>`)
+    }
+    $('studySources').innerHTML=rows.join('');
+    const activeCount=(selection.references?1:0)+allFolderIds().filter(id=>selection.folders[id] && (id!==UNCAT || others.some(o=>(o.folderId||UNCAT)===UNCAT))).length;
+    const totalCount=1+allFolderIds().filter(id=>id!==UNCAT || others.some(o=>(o.folderId||UNCAT)===UNCAT)).length;
+    if($('studyFilterSummary')){
+      $('studyFilterSummary').textContent=activeCount===totalCount ? 'Tot seleccionat' : activeCount===0 ? 'Res seleccionat' : `${activeCount} de ${totalCount} seleccionats`;
+    }
+    $('sourceReferences')?.addEventListener('change',e=>{selection.references=e.target.checked;saveAll();startQuestion()});
+    document.querySelectorAll('.source-folder').forEach(x=>x.addEventListener('change',e=>{selection.folders[e.target.dataset.folderId]=e.target.checked;saveAll();startQuestion()}));
+  }
+  $('selectAllSources').addEventListener('click',()=>{selection.references=true;allFolderIds().forEach(id=>selection.folders[id]=true);saveAll();startQuestion()});
+  $('clearAllSources').addEventListener('click',()=>{selection.references=false;allFolderIds().forEach(id=>selection.folders[id]=false);saveAll();startQuestion()});
+
+  // ---------- Navegació ----------
+  function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));navButtons.forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='study')startQuestion();if(id==='errors')renderErrors();if(id==='documents')renderDocuments();if(id==='sheets')renderStudySheets()}
+  navButtons.forEach(b=>b.addEventListener('click',()=>{if(mode==='errors'&&errorSession&&b.dataset.view!=='study'){if(!confirm('Hi ha un test d’errors en curs. Vols acabar-lo?'))return;finishErrorSession(false);return}if(b.dataset.view==='study'&&!errorSession)mode='normal';showView(b.dataset.view)}));
+
+  // ---------- Motor d'estudi ----------
+  function totalStats(){return [...refs,...others,...profiles].reduce((a,x)=>{const s=x.stats||{};a.correct+=s.correct||0;a.wrong+=s.wrong||0;return a},{correct:0,wrong:0})}
+  function renderStats(){const s=totalStats();$('studyStats').innerHTML=`<span class="stat">${refs.length} referències</span><span class="stat">${others.length} altres targetes</span><span class="stat">${allAuthorNames().length} autors</span><span class="stat">${s.correct} encerts</span><span class="stat">${s.wrong} errors</span>`}
+  function weightFor(x){const s=x.stats||{};return Math.max(1,1+(s.wrong||0)*2-Math.floor((s.correct||0)/4))}
+  function pushWeighted(arr,entry,x,mult=1){const n=Math.max(1,Math.round(weightFor(x)*mult));for(let i=0;i<n;i++)arr.push(entry)}
+  function profileHasRef(p){return refs.some(r=>authorEquivalent(r.author,p.author))}
+  function selectedNormalCandidates(){
+    const out=[];
+    if(selectedRefContent()){
+      refs.forEach(r=>pushWeighted(out,{kind:'ref',item:r},r,1));
+      profiles.filter(p=>p.ideas?.length&&!profileHasRef(p)).forEach(p=>pushWeighted(out,{kind:'ideaOnly',item:p},p,.8));
+      conceptCandidates().forEach(c=>{const s=conceptStat(c.key),proxy={stats:s};pushWeighted(out,{kind:'concept',concept:c},proxy,.25)});
+    }
+    others.filter(selectedOther).forEach(o=>pushWeighted(out,{kind:'other',item:o},o,1));
+    return out;
+  }
+  function selectedErrorCandidates(){
+    const out=[];
+    if(selectedRefContent()){
+      refs.filter(r=>(r.stats?.wrong||0)>0&&(r.stats?.recoveryStreak||0)<3).forEach(r=>pushWeighted(out,{kind:'ref',item:r},r,1));
+      profiles.filter(p=>!profileHasRef(p)&&(p.stats?.wrong||0)>0&&(p.stats?.recoveryStreak||0)<3).forEach(p=>pushWeighted(out,{kind:'ideaOnly',item:p},p,1));
+      conceptCandidates().filter(c=>(conceptStat(c.key).wrong||0)>0&&(conceptStat(c.key).recoveryStreak||0)<3).forEach(c=>pushWeighted(out,{kind:'concept',concept:c},{stats:conceptStat(c.key)},1));
+    }
+    others.filter(o=>selectedOther(o)&&(o.stats?.wrong||0)>0&&(o.stats?.recoveryStreak||0)<3).forEach(o=>pushWeighted(out,{kind:'other',item:o},o,1));
+    return out;
+  }
+  function candidateKey(c){if(c.kind==='concept')return`concept:${c.concept.key}`;return`${c.kind}:${c.item?.id||''}`}
+  function uniqueErrorCandidates(){const seen=new Set(),out=[];for(const c of selectedErrorCandidates()){const k=candidateKey(c);if(!seen.has(k)){seen.add(k);out.push(c)}}return out.sort(()=>Math.random()-.5)}
+  function startErrorSession(){
+    const queue=uniqueErrorCandidates();if(!queue.length)return;
+    errorSession={queue,index:0,answered:0,correct:0,partial:0,wrong:0,lastOutcome:null,answeredCurrent:false,startedAt:Date.now()};mode='errors';persistErrorSession();$('errorTestResult').classList.add('hidden');showView('study')
+  }
+  function pickCurrent(){
+    if(mode==='errors'&&errorSession)return errorSession.queue[errorSession.index]||null;
+    const pool=selectedNormalCandidates();return pool.length?pool[Math.floor(Math.random()*pool.length)]:null
+  }
+  function updateErrorSessionUI(){
+    const active=mode==='errors'&&errorSession;
+    $('errorSessionBar').classList.toggle('hidden',!active);$('studyBox').classList.toggle('error-mode',!!active);
+    if(!active)return;
+    $('errorSessionPosition').textContent=`Pregunta ${Math.min(errorSession.index+1,errorSession.queue.length)} de ${errorSession.queue.length}`;
+    const rs=currentRecoveryStats(),rec=rs?Math.min(3,rs.recoveryStreak||0):0;
+    $('errorSessionStats').innerHTML=`<span class="mini-pill">${errorSession.answered} contestades</span><span class="mini-pill">${errorSession.correct} correctes</span><span class="mini-pill">${errorSession.partial} parcials</span><span class="mini-pill">${errorSession.wrong} errors</span><span class="mini-pill">Recuperació: ${rec}/3</span>`
+  }
+  function currentRecoveryStats(){
+    if(!current)return null;
+    if(current.kind==='concept')return conceptStat(current.concept.key);
+    return statsObj(current.statsTarget||current.item)
+  }
+  function applyRecoveryOutcome(outcome){
+    const s=currentRecoveryStats();if(!s)return;
+    if(outcome==='correct'){
+      // Si aquesta pregunta té errors pendents, qualsevol encert compta per recuperar-la,
+      // tant en Estudiar com dins del Test d’errors.
+      if((s.wrong||0)>0&&(s.recoveryStreak||0)<3)s.recoveryStreak=Math.min(3,(s.recoveryStreak||0)+1)
+    }else{
+      // Qualsevol nova fallada trenca la ratxa i la deixa de nou en 0/3.
+      s.recoveryStreak=0
+    }
+  }
+  function recordErrorSession(outcome){
+    if(mode!=='errors'||!errorSession)return;errorSession.answered++;errorSession.lastOutcome=outcome;
+    if(outcome==='correct')errorSession.correct++;else if(outcome==='partial')errorSession.partial++;else errorSession.wrong++;
+    errorSession.answeredCurrent=true;persistErrorSession();updateErrorSessionUI()
+  }
+  function reviseErrorSessionWrongToCorrect(){
+    if(mode!=='errors'||!errorSession||errorSession.lastOutcome!=='wrong')return;
+    if(errorSession.wrong>0)errorSession.wrong--;errorSession.correct++;errorSession.lastOutcome='correct';errorSession.answeredCurrent=true;persistErrorSession();updateErrorSessionUI()
+  }
+  function finishErrorSession(completed=false){
+    if(!errorSession)return;const s={...errorSession},pct=s.answered?Math.round((s.correct+s.partial*.5)/s.answered*100):0;
+    errorSession=null;mode='normal';clearStudyDraft();clearPersistedErrorSession();$('errorSessionBar').classList.add('hidden');$('studyBox').classList.remove('error-mode');
+    showView('errors');$('errorTestResult').classList.remove('hidden');
+    $('errorTestResult').innerHTML=`<div class="row space"><div><span class="eyebrow">${completed?'Test completat':'Test finalitzat'}</span><h2 style="margin:6px 0">Resum de la sessió</h2></div><span class="pill">${pct}%</span></div><div class="statbar"><span class="stat">${s.answered} preguntes</span><span class="stat">${s.correct} correctes</span><span class="stat">${s.partial} parcials</span><span class="stat">${s.wrong} errors</span></div><div class="tiny">${completed?'Has completat totes les preguntes d’errors seleccionades.':'Has parat el test abans d’acabar-lo.'} Les estadístiques globals ja s’han guardat.</div>`
+  }
+  function resolveCandidateKey(key){
+    if(!key)return null;
+    if(key.startsWith('concept:')){
+      const c=CONCEPTS.find(x=>x.key===key.slice(8));return c?{kind:'concept',concept:{...c,authors:conceptAuthors(c)}}:null
+    }
+    const [kind,id]=key.split(':');
+    if(kind==='ref'){const item=refs.find(x=>x.id===id);return item?{kind:'ref',item}:null}
+    if(kind==='other'){const item=others.find(x=>x.id===id);return item?{kind:'other',item}:null}
+    if(kind==='ideaOnly'){const item=profiles.find(x=>x.id===id);return item?{kind:'ideaOnly',item}:null}
+    return null
+  }
+  function serializableErrorSession(){
+    if(!errorSession)return null;
+    return{
+      queueKeys:(errorSession.queue||[]).map(candidateKey),
+      index:errorSession.index||0,answered:errorSession.answered||0,correct:errorSession.correct||0,
+      partial:errorSession.partial||0,wrong:errorSession.wrong||0,lastOutcome:errorSession.lastOutcome||null,
+      answeredCurrent:!!errorSession.answeredCurrent,startedAt:errorSession.startedAt||Date.now()
+    }
+  }
+  function persistErrorSession(){
+    if(mode!=='errors'||!errorSession)return;
+    try{localStorage.setItem(ERROR_SESSION_KEY,JSON.stringify(serializableErrorSession()))}catch{}
+  }
+  function clearPersistedErrorSession(){try{localStorage.removeItem(ERROR_SESSION_KEY)}catch{}}
+  function restorePersistedErrorSession(){
+    if(errorSession)return true;
+    try{
+      const s=JSON.parse(localStorage.getItem(ERROR_SESSION_KEY)||'null');if(!s?.queueKeys?.length)return false;
+      const queue=s.queueKeys.map(resolveCandidateKey).filter(Boolean);if(!queue.length){clearPersistedErrorSession();return false}
+      let index=Math.max(0,Number(s.index)||0);
+      // Si la resposta ja s'havia comprovat abans que Safari descarregara la pàgina,
+      // avancem una vegada per no comptar la mateixa pregunta dues vegades.
+      if(s.answeredCurrent)index++;
+      if(index>=queue.length){clearPersistedErrorSession();return false}
+      errorSession={queue,index,answered:Number(s.answered)||0,correct:Number(s.correct)||0,partial:Number(s.partial)||0,wrong:Number(s.wrong)||0,lastOutcome:null,answeredCurrent:false,startedAt:s.startedAt||Date.now()};
+      mode='errors';persistErrorSession();return true
+    }catch{clearPersistedErrorSession();return false}
+  }
+  function questionDraftMeta(){
+    if(!current)return null;
+    return{
+      candidateKey:candidateKey(current),kind:current.kind,qtype:current.qtype||null,
+      expectedFields:[...(current.expectedFields||[])],
+      ideaShown:current.ideaShown||null,validAuthors:[...(current.validAuthors||[])],
+      otherDirection:current.otherDirection||null,
+      qType:$('qType').textContent,qPromptHTML:$('qPrompt').innerHTML,qProgress:$('qProgress').textContent,
+      fieldsHTML:$('qFields').innerHTML,
+      values:Object.fromEntries([...document.querySelectorAll('#qFields [data-field]')].map(el=>[el.dataset.field,el.value]))
+    }
+  }
+  function persistStudyDraft(){
+    if(!current||!$('nextBtn').classList.contains('hidden'))return;
+    const meta=questionDraftMeta();if(!meta)return;
+    try{localStorage.setItem(STUDY_DRAFT_KEY,JSON.stringify({savedAt:Date.now(),mode,meta}))}catch{}
+    if(mode==='errors')persistErrorSession()
+  }
+  function clearStudyDraft(){try{localStorage.removeItem(STUDY_DRAFT_KEY)}catch{}}
+  function restoreStudyDraft(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(STUDY_DRAFT_KEY)||'null');if(!saved?.meta?.candidateKey)return false;
+      if(saved.mode==='errors'&&!errorSession&&!restorePersistedErrorSession())return false;
+      const candidate=resolveCandidateKey(saved.meta.candidateKey);if(!candidate){clearStudyDraft();return false}
+      if(saved.mode==='errors'&&errorSession&&candidateKey(errorSession.queue[errorSession.index])!==saved.meta.candidateKey){clearStudyDraft();return false}
+      current=candidate;mode=saved.mode==='errors'?'errors':'normal';
+      current.qtype=saved.meta.qtype;
+      current.expectedFields=saved.meta.expectedFields||[];
+      current.ideaShown=saved.meta.ideaShown||null;
+      current.validAuthors=saved.meta.validAuthors||[];
+      current.otherDirection=saved.meta.otherDirection||null;
+      current.statsTarget=current.kind==='concept'?{stats:conceptStat(current.concept.key)}:current.item;
+      $('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').classList.add('hidden');$('acceptAnswerBtn').classList.add('hidden');$('showAnswerBtn').classList.remove('hidden');
+      $('qType').textContent=saved.meta.qType||'';$('qPrompt').innerHTML=saved.meta.qPromptHTML||'';$('qProgress').textContent=saved.meta.qProgress||(mode==='errors'?'Test d’errors':'Repàs adaptatiu');
+      $('qFields').innerHTML=saved.meta.fieldsHTML||'';
+      for(const [field,value] of Object.entries(saved.meta.values||{})){const el=document.querySelector(`#qFields [data-field="${field}"]`);if(el)el.value=value}
+      $('studyEmpty').classList.add('hidden');$('studyBox').classList.remove('hidden');updateErrorSessionUI();return true
+    }catch{clearStudyDraft();return false}
+  }
+  function isUnfinishedQuestion(){
+    return !!current&&!$('studyBox').classList.contains('hidden')&&$('nextBtn').classList.contains('hidden')
+  }
+  function startQuestion(forceNew=false){
+    renderStats();
+    if(!forceNew&&isUnfinishedQuestion()){updateErrorSessionUI();return}
+    if(!forceNew&&!current){
+      restorePersistedErrorSession();
+      if(restoreStudyDraft())return
+    }
+    current=pickCurrent();$('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').classList.add('hidden');$('acceptAnswerBtn').classList.add('hidden');$('showAnswerBtn').classList.remove('hidden');
+    updateErrorSessionUI();
+    if(!current){
+      $('studyEmpty').classList.remove('hidden');$('studyBox').classList.add('hidden');
+      if(mode==='errors'&&errorSession)finishErrorSession(true);
+      return
+    }
+    $('studyEmpty').classList.add('hidden');$('studyBox').classList.remove('hidden');$('qProgress').textContent=mode==='errors'?'Test d’errors':'Repàs adaptatiu';
+    if(current.kind==='ref')renderReferenceQuestion(current.item);else if(current.kind==='other')renderOtherQuestion(current.item);else if(current.kind==='concept')renderConceptQuestion(current.concept);else renderIdeaOnlyQuestion(current.item);
+    persistStudyDraft()
+  }
+  function refsByAuthor(author){return refs.filter(r=>authorEquivalent(r.author,author))}
+  function renderReferenceQuestion(r){
+    const ideas=getAuthorIdeas(r.author),available=['complete','author'];if(ideas.length)available.push('ideaAuthor');const type=available[Math.floor(Math.random()*available.length)];current.qtype=type;current.statsTarget=r;
+    if(type==='complete'){
+      $('qType').textContent='Completa la referència';let fields=['year','title','publisher'],hint='';const siblings=refsByAuthor(r.author);
+      if(siblings.length>1){const clue=['year','title','publisher'][Math.floor(Math.random()*3)];fields=fields.filter(f=>f!==clue);const L={year:'Any',title:'Títol',publisher:'Editorial / font'};hint=`<div class="tiny" style="margin-top:8px">Pista per distingir-la: <strong>${L[clue]}:</strong> ${esc(r[clue])}</div>`}
+      $('qPrompt').innerHTML=`${esc(r.author)}${hint}`;const L={year:'Any',title:'Títol',publisher:'Editorial / font'};$('qFields').innerHTML=fields.map(f=>answerField(L[f],f,'input')).join('');current.expectedFields=fields;
+    }else if(type==='author'){
+      $('qType').textContent='Quin és l’autor?';$('qPrompt').innerHTML=`<em>${esc(r.title)}</em><div class="tiny" style="margin-top:8px">${esc(r.year)} · ${esc(r.publisher)}</div>`;$('qFields').innerHTML=answerField('Autor','author','input');current.expectedFields=['author'];
+    }else{
+      const idea=ideas[Math.floor(Math.random()*ideas.length)];current.ideaShown=idea;current.validAuthors=validAuthorsForIdea(idea);const p=findProfileByAuthor(r.author);current.statsTarget=p||r;
+      $('qType').textContent='Quin autor pots relacionar amb aquesta idea?';$('qPrompt').textContent=idea;$('qFields').innerHTML=answerField('Autor','author','input');current.expectedFields=['author'];
+    }
+  }
+  function renderIdeaOnlyQuestion(p){const idea=p.ideas[Math.floor(Math.random()*p.ideas.length)].text;current.qtype='ideaAuthor';current.ideaShown=idea;current.validAuthors=validAuthorsForIdea(idea);current.statsTarget=p;$('qType').textContent='Quin autor pots relacionar amb aquesta idea?';$('qPrompt').textContent=idea;$('qFields').innerHTML=answerField('Autor','author','input');current.expectedFields=['author']}
+  function renderConceptQuestion(c){current.qtype='concept';current.validAuthors=c.authors;current.statsTarget={stats:conceptStat(c.key)};$('qType').textContent='Relació d’autors';$('qPrompt').textContent=`Quins autors parlen sobre ${c.label}?`;$('qFields').innerHTML=answerField('Autors (separa’ls amb punt i coma o línies)','authors','textarea');current.expectedFields=['authors']}
+  function renderOtherQuestion(o){
+    const reverse=o.mode==='bidirectional'&&Math.random()<.5;current.qtype='other';current.otherDirection=reverse?'reverse':'forward';current.statsTarget=o;
+    $('qType').textContent=reverse?'Targeta · revers → anvers':'Targeta · anvers → revers';$('qPrompt').style.whiteSpace='pre-wrap';$('qPrompt').textContent=reverse?o.back:o.front;$('qFields').innerHTML=answerField('Resposta','back',reverse?'input':'textarea');current.expectedFields=['back']
+  }
+  function answerField(label,field,type){const control=type==='textarea'?`<textarea data-field="${field}" style="min-height:90px"></textarea>`:`<input data-field="${field}" autocomplete="off">`;return `<label>${label}${control}</label>`}
+  function refAnswer(r){return `<div class="answer-block"><strong>${esc(r.author)} (${esc(r.year)}).</strong> <em>${esc(r.title)}</em>. ${esc(r.publisher)}.</div>`+(getAuthorIdeas(r.author).length?`<div class="tiny" style="margin-top:8px"><strong>Idees de l’autor:</strong> ${getAuthorIdeas(r.author).map(esc).join(' · ')}</div>`:'')}
+  function otherExpected(o){return current.otherDirection==='reverse'?o.front:o.back}
+  function cueAlternative(front){const n=String(front||'').trim();const m=n.match(/^(?:frase|obra|definici[oó]|definicio|cita|text)\s+(?:de|d['’])\s*(.+)$/i);return m?m[1].trim():null}
+  function splitExpectedLines(s){return String(s||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean)}
+  function semanticMatch(given,expected){
+    const exact=fuzzy(given,expected,'title');if(exact.ok)return{ok:true,minor:exact.minor,score:1};
+    const et=ideaTokens(expected),gt=ideaTokens(given),score=tokenScore(given,expected);if(et.length<=2)return{ok:false,minor:false,score};
+    const ok=score>=0.68&&gt.length>=Math.min(2,et.length);return{ok,minor:ok,score}
+  }
+  function acceptedAlternative(o,given){const dir=current.otherDirection||'forward',arr=(o.accepted?.[dir]||[]);return arr.some(a=>semanticMatch(given,a).ok||fuzzy(given,a,'title').ok)}
+  function gradeOther(o,given){
+    const expected=otherExpected(o);if(acceptedAlternative(o,given))return{ok:true,minor:true,expected,matchedAll:true};
+    if(current.otherDirection==='reverse'){
+      if(semanticMatch(given,expected).ok)return{ok:true,minor:normalize(given)!==normalize(expected),expected,matchedAll:true};const alt=cueAlternative(o.front);if(alt&&authorMatch(given,alt,[alt]).ok)return{ok:true,minor:true,expected,matchedAll:true};return{ok:false,minor:false,expected,matchedAll:false}
+    }
+    const parts=splitExpectedLines(expected);if(parts.length<=1){const m=semanticMatch(given,expected);return{ok:m.ok,minor:m.minor,expected,matchedAll:m.ok}}
+    const matched=[],missing=[];for(const part of parts){const m=semanticMatch(given,part);(m.ok?matched:missing).push(part)}return{ok:missing.length===0,minor:missing.length===0,expected,matchedAll:missing.length===0,matched,missing,partial:matched.length>0&&missing.length>0}
+  }
+  function splitAuthorAnswers(s){
+    const raw=String(s||'').trim();if(!raw)return[];
+    // El separador segur és ; o salt de línia. Les comes poden formar part del nom:
+    // "Casas, A. y Pozo, J.I.".
+    if(/[;\n]/.test(raw))return raw.split(/[;\n]+/).map(x=>x.trim()).filter(Boolean);
+    return [raw]
+  }
+  function wholeWordIncludes(haystack,needle){
+    const h=` ${normalize(haystack)} `,n=normalize(needle);
+    return !!n&&h.includes(` ${n} `)
+  }
+  function authorMentionedInText(text,target,pool){
+    const raw=normalize(text);if(!raw)return false;
+    if(bibliographicAuthorCount(target)>3){
+      const first=normalize(firstAuthorForEtAl(target));
+      if(new RegExp(`(?:^|\\s)${first.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')}\\s+et\\s+al(?:$|\\s)`).test(raw))return true
+    }
+    if(wholeWordIncludes(raw,normalize(target)))return true;
+    const sig=significantNameTokens(target).filter(t=>t.length>=4);
+    if(!sig.length)return false;
+
+    // Si apareixen tots els cognoms/paraules significatives, és una coincidència clara.
+    if(sig.every(t=>wholeWordIncludes(raw,t)))return true;
+
+    // També acceptem un cognom inequívoc, com fem en les respostes d'un sol autor.
+    for(const tok of sig){
+      if(!wholeWordIncludes(raw,tok))continue;
+      const owners=pool.filter(a=>significantNameTokens(a).includes(tok));
+      if(owners.length===1)return true
+    }
+    return false
+  }
+  function gradeConcept(given,valid){
+    const raw=String(given||'').trim(),matched=[],extra=[];
+    if(!raw)return{ok:false,matched,missing:[...valid],extra};
+
+    // Amb ; o línies respectem cada resposta explícita.
+    if(/[;\n]/.test(raw)){
+      const answers=splitAuthorAnswers(raw);
+      for(const a of answers){
+        const hit=valid.find(v=>authorMatch(a,v,valid).ok&&!matched.includes(v));
+        if(hit)matched.push(hit);else extra.push(a)
+      }
+    }else{
+      // En text natural detectem els autors dins del conjunt complet, sense trencar
+      // "Pozo, J.I." ni confondre "Jorquera ... i Guido d'Arezzo" com un únic autor.
+      const known=valid;
+      for(const v of valid)if(authorMentionedInText(raw,v,known))matched.push(v);
+
+      // Marquem com a "no relacionat" només un autor conegut que aparega clarament
+      // i que no forme part de la resposta vàlida.
+      for(const a of known){
+        if(valid.some(v=>authorEquivalent(a,v)))continue;
+        if(authorMentionedInText(raw,a,known)&&!extra.some(x=>authorEquivalent(x,a)))extra.push(a)
+      }
+    }
+    const missing=valid.filter(v=>!matched.includes(v));
+    return{ok:missing.length===0&&extra.length===0,matched,missing,extra}
+  }
+
+  $('answerForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    try{
+      if(!current){
+        const el=$('feedback');el.className='feedback show warn';el.innerHTML='<strong>No s’ha pogut identificar la pregunta actual.</strong><div style="margin-top:6px">Prem «Següent» o torna a entrar en Estudiar.</div>';
+        return
+      }
+      let all=true,minor=false,partialOverall=false,body='',userAnswer='',usedEtAl=null;
+    if(current.qtype==='ideaAuthor'){
+      const input=document.querySelector('[data-field="author"]');userAnswer=input.value;const valid=current.validAuthors||[];
+      const answers=/[;\n]/.test(userAnswer)?userAnswer.split(/[;\n]+/).map(x=>x.trim()).filter(Boolean):[userAnswer.trim()].filter(Boolean);
+      const matched=[],extra=[];let ambiguous=null,anyMinor=false,anyAbbreviated=false;
+
+      for(const answer of answers){
+        const remaining=valid.filter(v=>!matched.some(m=>authorEquivalent(m,v)));
+        const g=matchAuthorAgainstPool(answer,remaining.length?remaining:valid);
+        if(g.ambiguous){ambiguous=g;break}
+        if(g.ok){
+          if(!matched.some(m=>authorEquivalent(m,g.target)))matched.push(g.target);
+          anyMinor=anyMinor||!!g.match?.minor;
+          anyAbbreviated=anyAbbreviated||!!g.match?.abbreviated;
+        }else{
+          extra.push(answer)
+        }
+      }
+
+      if(ambiguous){
+        showFeedback('warn','Resposta ambigua',`Hi ha més d’un autor possible amb aquesta forma: <strong>${ambiguous.candidates.map(esc).join(' · ')}</strong><div class="tiny" style="margin-top:7px">Afig una inicial, un segon cognom o una part més del nom per distingir-lo.</div>`);
+        return
+      }
+
+      const remaining=valid.filter(v=>!matched.some(m=>authorEquivalent(m,v)));
+      all=matched.length>0&&extra.length===0;
+      partialOverall=matched.length>0&&extra.length>0;
+      minor=all&&anyMinor;
+
+      body=`<div class="multi-result">
+        ${matched.length?`<div class="multi-ok">✓ Recordats: ${matched.map(esc).join(' · ')}</div>`:''}
+        ${remaining.length?`<div class="tiny" style="margin-top:7px">Altres autors relacionats: ${remaining.map(esc).join(' · ')}</div>`:`<div class="multi-ok" style="margin-top:7px">✓ Has recordat tots els autors relacionats.</div>`}
+        ${extra.length?`<div class="multi-miss" style="margin-top:7px">No relacionats: ${extra.map(esc).join(' · ')}</div>`:''}
+        ${all&&anyAbbreviated?`<div class="tiny" style="margin-top:5px">Has utilitzat una o més formes abreujades vàlides.</div>`:''}
+      </div>`;
+
+      if(!matched.length&&!extra.length){
+        all=false;body=`<div>Autors relacionats: <strong>${valid.map(esc).join(' · ')}</strong></div>`
+      }else if(!matched.length&&extra.length){
+        all=false;body=`<div>Autors relacionats: <strong>${valid.map(esc).join(' · ')}</strong></div><div class="multi-miss" style="margin-top:7px">No relacionats: ${extra.map(esc).join(' · ')}</div>`
+      }
+    }else if(current.qtype==='concept'){
+      const input=document.querySelector('[data-field="authors"]');userAnswer=input.value;const g=gradeConcept(userAnswer,current.validAuthors||[]);all=g.ok;minor=false;body=`<div class="multi-result">${g.matched.length?`<div class="multi-ok">✓ Recordats: ${g.matched.map(esc).join(' · ')}</div>`:''}${g.missing.length?`<div class="multi-miss">Falten: ${g.missing.map(esc).join(' · ')}</div>`:''}${g.extra.length?`<div class="multi-miss">No relacionats: ${g.extra.map(esc).join(' · ')}</div>`:''}</div>`;
+    }else if(current.qtype==='other'){
+      const input=document.querySelector('[data-field="back"]');userAnswer=input.value;const g=gradeOther(current.item,userAnswer);all=g.ok;minor=g.minor;if(g.partial)body=`<div class="multi-result"><div class="multi-ok">✓ Has recordat: ${g.matched.map(esc).join(' · ')}</div><div class="multi-miss">Falta: ${g.missing.map(esc).join(' · ')}</div></div>`;else body=`<div>Resposta guardada:</div><div class="answer-block" style="white-space:pre-wrap">${esc(g.expected)}</div>`;
+    }else if(current.qtype==='complete'){
+      const labels={year:'Any',title:'Títol',publisher:'Editorial / font'},results=[];
+      for(const f of current.expectedFields){
+        const input=document.querySelector(`[data-field="${f}"]`),given=input.value;userAnswer+=(userAnswer?' | ':'')+given;
+        current.item.fieldStats=current.item.fieldStats&&typeof current.item.fieldStats==='object'?current.item.fieldStats:{};
+        const res=fuzzy(given,current.item[f],f),fs=current.item.fieldStats[f]||(current.item.fieldStats[f]={asked:0,correct:0,wrong:0,minor:0});
+        fs.asked++;if(res.ok){fs.correct++;if(res.minor)fs.minor++}else fs.wrong++;
+        results.push({field:f,label:labels[f],given,expected:current.item[f],...res});
+      }
+      const correctCount=results.filter(x=>x.ok).length,wrongCount=results.length-correctCount;
+      all=wrongCount===0;minor=all&&results.some(x=>x.minor);partialOverall=correctCount>0&&wrongCount>0;
+      body=`<div class="field-results">${results.map(x=>`<div class="field-result ${x.ok?(x.minor?'minor':'ok'):'bad'}"><span class="field-label">${x.ok?(x.minor?'≈':'✓'):'✗'} ${esc(x.label)}</span>${x.ok?`<div class="tiny">${x.minor?`Has escrit «${esc(x.given)}». Forma guardada: `:''}<strong>${esc(x.expected)}</strong></div>`:`<div class="tiny">Has escrit: ${esc(x.given||'—')}<br>Correcte: <strong>${esc(x.expected)}</strong></div>`}</div>`).join('')}</div>`;
+    }else{
+      for(const f of current.expectedFields){const input=document.querySelector(`[data-field="${f}"]`);userAnswer+=(userAnswer?' | ':'')+input.value;let res;if(f==='author'){const direct=directAuthorAnswerMatch(input.value,current.item.author,[current.item.author]);res=direct.ok?direct:authorMatch(input.value,current.item.author,[current.item.author]);if(res.etAl)usedEtAl=res.display}else res=fuzzy(input.value,current.item[f],f);all=all&&res.ok;minor=minor||res.minor}
+      if(!all||minor)body=`La forma exacta guardada és:${refAnswer(current.item)}`;
+    }
+    const s=current.qtype==='concept'?conceptStat(current.concept.key):statsObj(current.statsTarget||current.item);s.asked=(s.asked||0)+1;
+    let outcome='wrong';
+    if(all){
+      s.correct=(s.correct||0)+1;outcome='correct';
+      if(usedEtAl)body=`Forma abreujada vàlida: <strong>${esc(usedEtAl)}</strong>${body?`<div style="margin-top:6px">${body}</div>`:''}`;
+      showFeedback(minor?'warn':'ok',minor?'Correcte amb una errada menor':'Correcte',body)
+    }else if(partialOverall){
+      s.partial=(s.partial||0)+1;s.wrong=(s.wrong||0)+1;s.lastWrong=Date.now();outcome='partial';showFeedback('warn','Parcialment correcte',body)
+    }else{
+      s.wrong=(s.wrong||0)+1;s.lastWrong=Date.now();showFeedback('bad',current.qtype==='concept'||current.qtype==='other'?'Resposta incompleta o incorrecta':'Incorrecte',body||refAnswer(current.item));if(current.qtype==='other'&&userAnswer.trim()){current.lastUserAnswer=userAnswer;$('acceptAnswerBtn').classList.remove('hidden')}
+    }
+      applyRecoveryOutcome(outcome);recordErrorSession(outcome);clearStudyDraft();saveAll();finishQuestion()
+    }catch(err){
+      console.error('A-MOOR check answer error',err);
+      const el=$('feedback');
+      el.className='feedback show bad';
+      el.innerHTML='<strong>No s’ha pogut comprovar la resposta.</strong><div style="margin-top:6px">La pregunta i el que has escrit es mantenen. Recarrega la pàgina i torna-ho a provar.</div>';
+      persistStudyDraft()
+    }
+  });
+  $('acceptAnswerBtn').addEventListener('click',()=>{
+    if(!current||current.qtype!=='other'||!current.lastUserAnswer)return;const o=current.item,dir=current.otherDirection||'forward';o.accepted||={forward:[],reverse:[]};o.accepted[dir]=uniqStrings([...(o.accepted[dir]||[]),current.lastUserAnswer]);const s=statsObj(o);if(s.wrong>0)s.wrong--;s.correct++;showFeedback('ok','Correcte','He guardat aquesta formulació com una resposta vàlida per a aquesta targeta.');$('acceptAnswerBtn').classList.add('hidden');if(mode==='errors'){const rs=currentRecoveryStats();if(rs)rs.recoveryStreak=Math.min(3,(rs.recoveryStreak||0)+1)}reviseErrorSessionWrongToCorrect();clearStudyDraft();saveAll()
+  });
+  $('showAnswerBtn').addEventListener('click',()=>{if(!current)return;const s=current.qtype==='concept'?conceptStat(current.concept.key):statsObj(current.statsTarget||current.item);s.asked=(s.asked||0)+1;s.wrong=(s.wrong||0)+1;s.lastWrong=Date.now();if(current.qtype==='complete'&&current.item?.fieldStats)current.expectedFields.forEach(f=>{const fs=current.item.fieldStats[f];fs.asked++;fs.wrong++});let body='';if(current.qtype==='concept')body=`<strong>${(current.validAuthors||[]).map(esc).join(' · ')}</strong>`;else if(current.qtype==='ideaAuthor')body=`<strong>${(current.validAuthors||[]).map(esc).join(' · ')}</strong>`;else if(current.qtype==='other')body=`<div style="white-space:pre-wrap">${esc(otherExpected(current.item))}</div>`;else body=refAnswer(current.item);showFeedback('bad','Resposta',body);applyRecoveryOutcome('wrong');recordErrorSession('wrong');clearStudyDraft();saveAll();finishQuestion()});
+  function finishQuestion(){document.querySelectorAll('#qFields input,#qFields textarea').forEach(i=>i.disabled=true);$('showAnswerBtn').classList.add('hidden');$('nextBtn').classList.remove('hidden')}
+  $('qFields').addEventListener('input',()=>persistStudyDraft());
+  window.addEventListener('pagehide',()=>{persistStudyDraft();persistErrorSession()});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){persistStudyDraft();persistErrorSession()}});
+  $('nextBtn').addEventListener('click',()=>{clearStudyDraft();if(mode==='errors'&&errorSession){errorSession.index++;errorSession.answeredCurrent=false;persistErrorSession();if(errorSession.index>=errorSession.queue.length)finishErrorSession(true);else{current=null;startQuestion(true)}}else{current=null;startQuestion(true)}});
+  $('finishErrorTestBtn').addEventListener('click',()=>finishErrorSession(false));
+  function closestIdeasForAuthor(author,seed,limit=2){
+    return getAuthorIdeas(author).map(text=>({text,score:seed?ideaSimilarity(seed,text):0}))
+      .sort((a,b)=>b.score-a.score).slice(0,limit).map(x=>x.text)
+  }
+  function explanationForCurrent(){
+    if(!current)return'';
+
+    if(current.qtype==='ideaAuthor'){
+      const idea=current.ideaShown||$('qPrompt').textContent||'',valid=current.validAuthors||[];
+      if(!valid.length)return'';
+      const rows=valid.map(a=>{
+        const related=closestIdeasForAuthor(a,idea,2);
+        return `<div class="explain-item"><strong>${esc(a)}</strong>${related.length?`<div>${related.map(x=>`• ${esc(x)}`).join('<br>')}</div>`:''}</div>`
+      }).join('');
+      return `<div><strong>Per què apareixen aquests autors?</strong></div><div class="tiny" style="margin-top:4px">A-MOOR es basa en les idees que tens guardades:</div>${rows}`
+    }
+
+    if(current.qtype==='concept'){
+      const c=current.concept,valid=current.validAuthors||[];
+      if(!c||!valid.length)return'';
+      const rows=valid.map(a=>{
+        const rel=getAuthorIdeas(a).filter(i=>conceptTextMatch(i,c.tokens||[])).slice(0,2);
+        return rel.length?`<div class="explain-item"><strong>${esc(a)}</strong><div>${rel.map(x=>`• ${esc(x)}`).join('<br>')}</div></div>`:''
+      }).filter(Boolean).join('');
+      return rows?`<div><strong>Idees que justifiquen la relació</strong></div>${rows}`:''
+    }
+
+    if(current.kind==='ref'&&current.item){
+      const r=current.item,ideas=getAuthorIdeas(r.author);
+      if(!ideas.length)return'';
+      return `<div><strong>Context guardat de ${esc(r.author)}</strong></div><div class="explain-item">${ideas.slice(0,6).map(x=>`• ${esc(x)}`).join('<br>')}</div>`
+    }
+
+    if(current.qtype==='other'&&current.item){
+      const o=current.item;
+      return `<div><strong>Context complet de la targeta</strong></div><div class="explain-item"><strong>Anvers:</strong> ${esc(o.front)}</div><div class="explain-item"><strong>Revers:</strong><div style="white-space:pre-wrap">${esc(o.back)}</div></div>`
+    }
+    return''
+  }
+  function canExplainCurrent(){
+    if(!current)return false;
+    if(current.qtype==='ideaAuthor')return (current.validAuthors||[]).length>0;
+    if(current.qtype==='concept')return (current.validAuthors||[]).length>0;
+    if(current.kind==='ref'&&current.item)return getAuthorIdeas(current.item.author).length>0;
+    if(current.qtype==='other'&&current.item)return !!(current.item.front||current.item.back);
+    return false
+  }
+  function showFeedback(kind,title,body){
+    const el=$('feedback');
+    const explainable=(kind==='bad'||/^Parcialment correcte$/i.test(title))&&canExplainCurrent();
+    el.className=`feedback show ${kind}`;
+    el.innerHTML=`<strong>${title}</strong>${body?`<div style="margin-top:6px">${body}</div>`:''}${explainable?`<button id="feedbackExplainBtn" class="explain-toggle" type="button" aria-expanded="false">＋ Explicació</button><div id="feedbackExplainBox" class="explain-box hidden"></div>`:''}`;
+    if(explainable){
+      $('feedbackExplainBtn').addEventListener('click',()=>{
+        const box=$('feedbackExplainBox'),btn=$('feedbackExplainBtn'),willOpen=box.classList.contains('hidden');
+        if(willOpen&&!box.dataset.loaded){
+          try{
+            const explanation=explanationForCurrent();
+            box.innerHTML=explanation||'<div class="tiny">No hi ha més informació guardada per explicar aquesta resposta.</div>';
+          }catch(err){
+            console.error('A-MOOR explanation error',err);
+            box.innerHTML='<div class="tiny">No s’ha pogut carregar l’explicació, però la correcció de la resposta s’ha guardat correctament.</div>'
+          }
+          box.dataset.loaded='1'
+        }
+        box.classList.toggle('hidden',!willOpen);
+        btn.setAttribute('aria-expanded',String(willOpen));
+        btn.textContent=willOpen?'− Amagar explicació':'＋ Explicació'
+      })
+    }
+  }
+
+  // ---------- Exportació de contingut ----------
+  function safeFileName(s='contingut'){return normalize(s).replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-')||'contingut'}
+  function downloadTextFile(filename,text){
+    const blob=new Blob(['\ufeff'+text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)
+  }
+  function exportReferencesText(){
+    const lines=[],done=[];
+    const authors=uniqStrings(refs.map(r=>r.author)).sort((a,b)=>a.localeCompare(b));
+    for(const author of authors){
+      if(done.some(x=>authorEquivalent(x,author)))continue;done.push(author);
+      const ars=refs.filter(r=>authorEquivalent(r.author,author)).sort((a,b)=>String(a.year).localeCompare(String(b.year)));
+      ars.forEach(r=>lines.push(`${r.author} (${r.year}). ${r.title.replace(/\s+$/,'')}${/[.!?]$/.test(r.title.trim())?'':'.'} ${r.publisher.replace(/\.$/,'')}.`));
+      getAuthorIdeas(author).forEach(i=>lines.push(`Idea: ${i}`));
+      lines.push('')
+    }
+    const noRef=profiles.filter(p=>p.ideas?.length&&!profileHasRef(p)).sort((a,b)=>a.author.localeCompare(b.author));
+    if(noRef.length){
+      lines.push('AUTORS SENSE REFERÈNCIA BIBLIOGRÀFICA');
+      for(const p of noRef){
+        lines.push(p.author);p.ideas.forEach(i=>lines.push(`Idea: ${i.text}`));lines.push('')
+      }
+    }
+    return lines.join('\n').trim()+'\n'
+  }
+  function exportFolderText(folderId){
+    const cards=others.filter(o=>(o.folderId||UNCAT)===folderId),lines=[],name=folderId===UNCAT?'':folderName(folderId);
+    for(const o of cards){
+      if(name)lines.push(`Carpeta: ${name}`);
+      lines.push(`Anvers: ${o.front}`);
+      const backLines=String(o.back||'').split(/\r?\n/);
+      lines.push(`Revers: ${backLines.shift()||''}`);lines.push(...backLines);
+      lines.push(`Mode: ${o.mode==='bidirectional'?'bidireccional':'anvers-revers'}`);lines.push('')
+    }
+    return lines.join('\n').trim()+'\n'
+  }
+  $('downloadReferencesBtn').addEventListener('click',()=>{
+    if(!refs.length&&!profiles.some(p=>p.ideas?.length&&!profileHasRef(p))){alert('Encara no hi ha contingut per descarregar.');return}
+    downloadTextFile('A-MOOR-referencies.txt',exportReferencesText())
+  });
+
+  // ---------- Edició de referències i idees ----------
+  function setAuthorIdeasManual(author,newTexts){const p=getProfileExact(author,true),old=p.ideas||[],next=[];for(const text of uniqStrings(newTexts)){const ex=old.find(i=>normalize(i.text)===normalize(text));if(ex){ex.manual=true;ex.legacy=false;next.push(ex)}else next.push({id:uid(),text,origins:[],manual:true,legacy:false})}p.ideas=next}
+  $('addForm').addEventListener('submit',e=>{
+    e.preventDefault();const id=$('editRefId').value,author=$('author').value.trim(),payload={author,year:$('year').value.trim(),title:$('title').value.trim(),publisher:$('publisher').value.trim()};
+    if(id){const r=refs.find(x=>x.id===id);if(r){const oldAuthor=r.author;Object.assign(r,payload);r.manual=true;r.legacy=false;if(!authorEquivalent(oldAuthor,author)){const p=getProfileExact(oldAuthor,false);if(p&&!getProfileExact(author,false)){p.author=author}}}$('addMsg').textContent='Canvis guardats.'}
+    else{refs.push({id:uid(),...payload,stats:{asked:0,correct:0,wrong:0,minor:0},origins:[],manual:true,legacy:false});$('addMsg').textContent='Referència guardada.'}
+    setAuthorIdeasManual(author,$('ideas').value.split('\n').map(x=>x.trim()).filter(Boolean));resetRefForm();saveAll();setTimeout(()=>$('addMsg').textContent='',1800)
+  });
+  function resetRefForm(){$('addForm').reset();$('editRefId').value='';$('saveRefBtn').textContent='Guardar referència';$('cancelRefEdit').classList.add('hidden')}
+  $('cancelRefEdit').addEventListener('click',resetRefForm);
+  function editRef(id){const r=refs.find(x=>x.id===id);if(!r)return;$('editRefId').value=r.id;$('author').value=r.author;$('year').value=r.year;$('title').value=r.title;$('publisher').value=r.publisher;$('ideas').value=getAuthorIdeas(r.author).join('\n');$('saveRefBtn').textContent='Guardar canvis';$('cancelRefEdit').classList.remove('hidden');showView('add');$('author').focus()}
+  function openAuthorEditor(author){const p=findProfileByAuthor(author);$('editAuthorOriginal').value=p?.author||author;$('editAuthorName').value=p?.author||author;$('editAuthorIdeas').value=getAuthorIdeas(author).join('\n');$('mergeAuthorPanel').classList.add('hidden');$('authorIdeaEditor').classList.remove('hidden');$('editAuthorName').focus()}
+  function combineStats(a={},b={}){
+    const out={};
+    for(const k of ['asked','correct','wrong','minor','partial'])out[k]=(Number(a[k])||0)+(Number(b[k])||0);
+    const ar=Number(a.recoveryStreak)||0,br=Number(b.recoveryStreak)||0;
+    out.recoveryStreak=(a.wrong&&b.wrong)?Math.min(ar,br):Math.max(ar,br);
+    if(a.lastWrong||b.lastWrong)out.lastWrong=Math.max(Number(a.lastWrong)||0,Number(b.lastWrong)||0);
+    return out
+  }
+  function combineFieldStats(a={},b={}){
+    const out={};
+    for(const f of ['year','title','publisher']){
+      const x=a[f]||{},y=b[f]||{};
+      out[f]={asked:(x.asked||0)+(y.asked||0),correct:(x.correct||0)+(y.correct||0),wrong:(x.wrong||0)+(y.wrong||0),minor:(x.minor||0)+(y.minor||0)}
+    }
+    return out
+  }
+  function authorMergePreview(source,target){
+    const sourceRefs=refs.filter(r=>normalize(r.author)===normalize(source)),targetRefs=refs.filter(r=>normalize(r.author)===normalize(target));
+    const sourceP=profiles.find(p=>normalize(p.author)===normalize(source)),targetP=profiles.find(p=>normalize(p.author)===normalize(target));
+    const ideas=mergeIdeaObjects(sourceP?.ideas||[],targetP?.ideas||[]);
+    return{refs:sourceRefs.length+targetRefs.length,ideas:ideas.length}
+  }
+  function populateMergeAuthorPanel(){
+    const source=$('editAuthorOriginal').value.trim(),names=allAuthorNames().filter(a=>normalize(a)!==normalize(source)).sort((a,b)=>a.localeCompare(b));
+    $('mergeAuthorTarget').innerHTML=names.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');
+    updateMergeAuthorPanel()
+  }
+  function updateMergeAuthorPanel(){
+    const source=$('editAuthorOriginal').value.trim(),target=$('mergeAuthorTarget').value;
+    $('mergeAuthorFinalName').innerHTML=target?`<option value="${esc(source)}">${esc(source)}</option><option value="${esc(target)}">${esc(target)}</option>`:'';
+    const p=target?authorMergePreview(source,target):null;
+    $('mergeAuthorSummary').textContent=p?`Es fusionaran ${p.refs} referències i ${p.ideas} idees. No es duplicaran coincidències idèntiques.`:'No hi ha cap altre autor disponible per unificar.';
+    $('confirmMergeAuthorBtn').disabled=!target
+  }
+  function mergeAuthors(source,target,finalName){
+    source=String(source||'').trim();target=String(target||'').trim();finalName=String(finalName||'').trim();
+    if(!source||!target||!finalName||normalize(source)===normalize(target))return false;
+    const sourceP=profiles.find(p=>normalize(p.author)===normalize(source)),targetP=profiles.find(p=>normalize(p.author)===normalize(target));
+    const mergedProfile={
+      id:sourceP?.id||targetP?.id||uid(),author:finalName,
+      ideas:mergeIdeaObjects(sourceP?.ideas||[],targetP?.ideas||[]),
+      stats:combineStats(sourceP?.stats||{},targetP?.stats||{})
+    };
+    profiles=profiles.filter(p=>normalize(p.author)!==normalize(source)&&normalize(p.author)!==normalize(target));
+    if(mergedProfile.ideas.length||refs.some(r=>[normalize(source),normalize(target)].includes(normalize(r.author))))profiles.push(mergedProfile);
+
+    refs.forEach(r=>{if(normalize(r.author)===normalize(source)||normalize(r.author)===normalize(target))r.author=finalName});
+    const dedup=[];
+    for(const r of refs){
+      const ex=dedup.find(x=>normalize(x.author)===normalize(r.author)&&normalize(x.year)===normalize(r.year)&&normalize(x.title)===normalize(r.title)&&normalize(x.publisher)===normalize(r.publisher));
+      if(!ex){dedup.push(r);continue}
+      ex.stats=combineStats(ex.stats||{},r.stats||{});ex.fieldStats=combineFieldStats(ex.fieldStats||{},r.fieldStats||{});
+      ex.origins=uniqStrings([...(ex.origins||[]),...(r.origins||[])]);ex.manual=!!(ex.manual||r.manual);ex.legacy=!!(ex.legacy&&r.legacy)
+    }
+    refs=dedup;clearStudyDraft();current=null;return true
+  }
+  $('openMergeAuthorBtn').addEventListener('click',()=>{$('mergeAuthorPanel').classList.remove('hidden');populateMergeAuthorPanel()});
+  $('cancelMergeAuthorBtn').addEventListener('click',()=>$('mergeAuthorPanel').classList.add('hidden'));
+  $('mergeAuthorTarget').addEventListener('change',updateMergeAuthorPanel);
+  $('confirmMergeAuthorBtn').addEventListener('click',()=>{
+    const source=$('editAuthorOriginal').value.trim(),target=$('mergeAuthorTarget').value,finalName=$('mergeAuthorFinalName').value;
+    if(!target)return;
+    const p=authorMergePreview(source,target);
+    if(!confirm(`Unificar «${source}» amb «${target}» i conservar «${finalName}»? Es fusionaran ${p.refs} referències i ${p.ideas} idees.`))return;
+    if(mergeAuthors(source,target,finalName)){
+      $('authorIdeaEditor').classList.add('hidden');saveAll();alert(`Autors unificats com «${finalName}».`)
+    }
+  });
+  $('closeAuthorEditor').addEventListener('click',()=>$('authorIdeaEditor').classList.add('hidden'));
+  $('saveAuthorIdeas').addEventListener('click',()=>{
+    const old=$('editAuthorOriginal').value.trim(),neu=$('editAuthorName').value.trim();if(!neu)return;const p=findProfileByAuthor(old)||getProfileExact(old,true);
+    if(!authorEquivalent(old,neu)){refs.filter(r=>authorEquivalent(r.author,old)).forEach(r=>{r.author=neu;r.manual=true;r.legacy=false});p.author=neu}
+    setAuthorIdeasManual(neu,$('editAuthorIdeas').value.split('\n').map(x=>x.trim()).filter(Boolean));$('authorEditMsg').textContent='Canvis guardats.';$('editAuthorOriginal').value=neu;saveAll();setTimeout(()=>$('authorEditMsg').textContent='',1600)
+  });
+  function addReferenceForAuthor(author){resetRefForm();$('author').value=author;showView('add');$('year').focus()}
+  function renderSaved(){
+    const q=normalize($('refSearch')?.value||'');const filtered=refs.slice().sort((a,b)=>a.author.localeCompare(b.author)).filter(r=>!q||normalize([r.author,r.year,r.title,r.publisher,...getAuthorIdeas(r.author)].join(' ')).includes(q));$('savedCount').textContent=`${refs.length} referències guardades · ${filtered.length} visibles`;
+    $('savedList').innerHTML=filtered.length?filtered.map(r=>`<div class="item"><div class="row space"><div class="grow"><strong>${esc(r.author)}</strong><div>${esc(r.year)} · <em>${esc(r.title)}</em> · ${esc(r.publisher)}</div>${getAuthorIdeas(r.author).length?`<div class="tiny" style="margin-top:7px">${getAuthorIdeas(r.author).length} idees de l’autor</div>`:''}</div><div class="row"><button class="btn small edit-author-ideas" data-author="${esc(r.author)}" type="button">Idees</button><button class="btn small soft merge-author-direct" data-author="${esc(r.author)}" type="button">Unificar amb…</button><button class="btn small edit-ref" data-id="${r.id}" type="button">Editar</button><button class="btn small danger delete-ref" data-id="${r.id}" type="button">Eliminar</button></div></div></div>`).join(''):'<div class="empty">No hi ha coincidències.</div>';
+    document.querySelectorAll('.edit-ref').forEach(b=>b.addEventListener('click',()=>editRef(b.dataset.id)));document.querySelectorAll('.edit-author-ideas').forEach(b=>b.addEventListener('click',()=>openAuthorEditor(b.dataset.author)));document.querySelectorAll('.merge-author-direct').forEach(b=>b.addEventListener('click',()=>{openAuthorEditor(b.dataset.author);$('mergeAuthorPanel').classList.remove('hidden');populateMergeAuthorPanel()}));document.querySelectorAll('.delete-ref').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar aquesta referència?')){refs=refs.filter(r=>r.id!==b.dataset.id);saveAll()}}));
+    const noRef=profiles.filter(p=>p.ideas?.length&&!profileHasRef(p)).filter(p=>!q||normalize([p.author,...p.ideas.map(i=>i.text)].join(' ')).includes(q));$('authorOnlyCount').textContent=`${profiles.filter(p=>p.ideas?.length&&!profileHasRef(p)).length} autors sense referència · ${noRef.length} visibles`;
+    $('authorOnlyList').innerHTML=noRef.length?noRef.map(p=>`<div class="item"><div class="row space"><div class="grow"><strong>${esc(p.author)}</strong><div class="tiny">${p.ideas.length} idees</div><div style="margin-top:7px">${p.ideas.slice(0,3).map(i=>esc(i.text)).join(' · ')}${p.ideas.length>3?'…':''}</div></div><div class="row"><button class="btn small edit-author-ideas" data-author="${esc(p.author)}" type="button">Editar idees</button><button class="btn small soft merge-author-direct" data-author="${esc(p.author)}" type="button">Unificar amb…</button><button class="btn small soft add-ref-author" data-author="${esc(p.author)}" type="button">Afegir referència</button><button class="btn small danger delete-author-only" data-id="${p.id}" type="button">Eliminar</button></div></div></div>`).join(''):'<div class="empty">No hi ha autors sense referència.</div>';
+    document.querySelectorAll('.add-ref-author').forEach(b=>b.addEventListener('click',()=>addReferenceForAuthor(b.dataset.author)));
+    document.querySelectorAll('.delete-author-only').forEach(b=>b.addEventListener('click',()=>{const p=profiles.find(x=>x.id===b.dataset.id);if(p&&confirm(`Eliminar «${p.author}» i les seues ${p.ideas?.length||0} idees?`)){profiles=profiles.filter(x=>x.id!==p.id);clearStudyDraft();current=null;saveAll()}}));
+    document.querySelectorAll('.merge-author-direct').forEach(b=>b.addEventListener('click',()=>{openAuthorEditor(b.dataset.author);$('mergeAuthorPanel').classList.remove('hidden');populateMergeAuthorPanel()}));
+    document.querySelectorAll('.edit-author-ideas').forEach(b=>b.addEventListener('click',()=>openAuthorEditor(b.dataset.author)))
+  }
+  $('refSearch').addEventListener('input',renderSaved);
+
+  // ---------- Altres i carpetes ----------
+  $('folderForm').addEventListener('submit',e=>{e.preventDefault();const name=$('newFolderName').value.trim();if(name){const id=ensureFolder(name);$('newFolderName').value='';saveAll();openOtherBulkManager(id,true)}});
+  function renderFolderSelects(){const opts=[`<option value="${UNCAT}">Sense carpeta</option>`,...folders.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(f=>`<option value="${f.id}">${esc(f.name)}</option>`)].join('');const current=$('otherFolder').value,imp=$('otherImportFolder').value,fil=$('otherFilterFolder').value,bulk=$('bulkOtherFolder')?.value||'';$('otherFolder').innerHTML=opts;$('otherImportFolder').innerHTML=opts;$('otherFilterFolder').innerHTML=`<option value="">Totes les carpetes</option>${opts}`;if($('bulkOtherFolder'))$('bulkOtherFolder').innerHTML=opts;if([...$('otherFolder').options].some(o=>o.value===current))$('otherFolder').value=current;if([...$('otherImportFolder').options].some(o=>o.value===imp))$('otherImportFolder').value=imp;if([...$('otherFilterFolder').options].some(o=>o.value===fil))$('otherFilterFolder').value=fil;if($('bulkOtherFolder')&&[...$('bulkOtherFolder').options].some(o=>o.value===bulk))$('bulkOtherFolder').value=bulk}
+  function renderFolders(){
+    const rows=[];for(const f of folders.slice().sort((a,b)=>a.name.localeCompare(b.name))){const n=others.filter(o=>o.folderId===f.id).length;rows.push(`<div class="item folder-row"><div><strong>${esc(f.name)}</strong><div class="tiny">${n} targetes</div></div><div class="row"><button class="btn small study-folder" data-id="${f.id}" type="button">Estudiar</button><button class="btn small soft manage-folder-cards" data-id="${f.id}" type="button">Gestionar targetes</button><button class="btn small soft download-folder" data-id="${f.id}" type="button">Descarregar contingut</button><button class="btn small rename-folder" data-id="${f.id}" type="button">Reanomenar</button><button class="btn small danger delete-folder" data-id="${f.id}" type="button">Eliminar</button></div></div>`)}
+    const unc=others.filter(o=>(o.folderId||UNCAT)===UNCAT).length;if(unc)rows.unshift(`<div class="item folder-row"><div><strong>Sense carpeta</strong><div class="tiny">${unc} targetes</div></div><div class="row"><button class="btn small study-folder" data-id="${UNCAT}" type="button">Estudiar</button><button class="btn small soft manage-folder-cards" data-id="${UNCAT}" type="button">Gestionar targetes</button><button class="btn small soft download-folder" data-id="${UNCAT}" type="button">Descarregar contingut</button></div></div>`);$('folderList').innerHTML=rows.join('')||'<div class="empty">Encara no hi ha carpetes.</div>';
+    document.querySelectorAll('.study-folder').forEach(b=>b.addEventListener('click',()=>{selection.references=false;allFolderIds().forEach(id=>selection.folders[id]=id===b.dataset.id);saveAll();showView('study')}));
+    document.querySelectorAll('.manage-folder-cards').forEach(b=>b.addEventListener('click',()=>openOtherBulkManager(b.dataset.id,true)));
+    document.querySelectorAll('.download-folder').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.id,text=exportFolderText(id),n=others.filter(o=>(o.folderId||UNCAT)===id).length;if(!n){alert('Aquesta carpeta està buida.');return}downloadTextFile(`A-MOOR-${safeFileName(folderName(id))}.txt`,text)}));
+    document.querySelectorAll('.rename-folder').forEach(b=>b.addEventListener('click',()=>{const f=folders.find(x=>x.id===b.dataset.id),name=prompt('Nou nom de la carpeta:',f?.name||'');if(f&&name?.trim()){f.name=name.trim();saveAll()}}));
+    document.querySelectorAll('.delete-folder').forEach(b=>b.addEventListener('click',()=>{const f=folders.find(x=>x.id===b.dataset.id);if(f&&confirm(`Eliminar la carpeta «${f.name}»? Les targetes passaran a «Sense carpeta».`)){others.forEach(o=>{if(o.folderId===f.id)o.folderId=UNCAT});folders=folders.filter(x=>x.id!==f.id);delete selection.folders[f.id];if(relationConfig.folders)delete relationConfig.folders[f.id];selection.folders[UNCAT]=true;saveAll()}}))
+  }
+  $('otherForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editOtherId').value,p={front:$('otherFront').value.trim(),back:$('otherBack').value.trim(),mode:$('otherMode').value,folderId:$('otherFolder').value||UNCAT};if(id){const o=others.find(x=>x.id===id);if(o){Object.assign(o,p);o.manual=true;o.legacy=false}$('otherMsg').textContent='Canvis guardats.'}else{others.push({id:uid(),...p,stats:{asked:0,correct:0,wrong:0,minor:0},origins:[],manual:true,legacy:false,accepted:{forward:[],reverse:[]}});$('otherMsg').textContent='Targeta guardada.'}resetOtherForm();saveAll();setTimeout(()=>$('otherMsg').textContent='',1600)});
+  function resetOtherForm(){$('otherForm').reset();$('editOtherId').value='';$('otherMode').value='front-back';$('otherFolder').value=UNCAT;$('saveOtherBtn').textContent='Guardar targeta';$('cancelOtherEdit').classList.add('hidden')}
+  $('cancelOtherEdit').addEventListener('click',resetOtherForm);
+  function editOther(id){const o=others.find(x=>x.id===id);if(!o)return;$('editOtherId').value=o.id;$('otherFront').value=o.front;$('otherBack').value=o.back;$('otherMode').value=o.mode||'front-back';$('otherFolder').value=o.folderId||UNCAT;$('saveOtherBtn').textContent='Guardar canvis';$('cancelOtherEdit').classList.remove('hidden');showView('others');$('otherFront').focus()}
+  function currentFilteredOthers(){
+    const q=normalize($('otherSearch')?.value||''),fid=$('otherFilterFolder')?.value||'';
+    return others.filter(o=>(!fid||(o.folderId||UNCAT)===fid)&&(!q||normalize(`${o.front} ${o.back} ${folderName(o.folderId)}`).includes(q)))
+  }
+  function updateBulkOtherUI(){
+    $('otherBulkPanel').classList.toggle('hidden',!bulkOtherMode);
+    $('openBulkOtherBtn').textContent=bulkOtherMode?'Selecció activa':'Seleccionar targetes';
+    $('bulkOtherCount').textContent=`${bulkOtherSelected.size} ${bulkOtherSelected.size===1?'targeta seleccionada':'targetes seleccionades'}`;
+    $('bulkMoveOthersBtn').disabled=!bulkOtherSelected.size;
+    $('bulkDeleteOthersBtn').disabled=!bulkOtherSelected.size
+  }
+  function openOtherBulkManager(destination=null,showAll=false){
+    bulkOtherMode=true;
+    if(destination&&$('bulkOtherFolder'))$('bulkOtherFolder').value=destination;
+    if(showAll&&$('otherFilterFolder'))$('otherFilterFolder').value='';
+    showView('others');updateBulkOtherUI();renderOthers();
+    $('otherBulkPanel').scrollIntoView({behavior:'smooth',block:'nearest'})
+  }
+  function closeOtherBulkManager(){
+    bulkOtherMode=false;bulkOtherSelected.clear();updateBulkOtherUI();renderOthers()
+  }
+  function renderOthers(){
+    const filtered=currentFilteredOthers();$('otherCount').textContent=`${others.length} targetes guardades · ${filtered.length} visibles`;
+    $('otherList').innerHTML=filtered.length?filtered.map(o=>{
+      const selected=bulkOtherSelected.has(o.id);
+      const content=`<div class="grow"><span class="type-badge">${esc(folderName(o.folderId))} · ${o.mode==='bidirectional'?'Bidireccional':'Anvers → revers'}</span><strong>${esc(o.front)}</strong><div style="white-space:pre-wrap">${esc(o.back)}</div></div>`;
+      return `<div class="item ${selected?'bulk-selected':''}"><div class="row space">${bulkOtherMode?`<label class="bulk-check grow"><input class="bulk-other-check" data-id="${o.id}" type="checkbox" ${selected?'checked':''}>${content}</label>`:content}<div class="row">${bulkOtherMode?'':`<button class="btn small edit-other" data-id="${o.id}" type="button">Editar</button><button class="btn small danger delete-other" data-id="${o.id}" type="button">Eliminar</button>`}</div></div></div>`
+    }).join(''):'<div class="empty">No hi ha coincidències.</div>';
+    document.querySelectorAll('.edit-other').forEach(b=>b.addEventListener('click',()=>editOther(b.dataset.id)));
+    document.querySelectorAll('.delete-other').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar aquesta targeta?')){others=others.filter(o=>o.id!==b.dataset.id);saveAll()}}));
+    document.querySelectorAll('.bulk-other-check').forEach(c=>c.addEventListener('change',()=>{
+      if(c.checked)bulkOtherSelected.add(c.dataset.id);else bulkOtherSelected.delete(c.dataset.id);
+      updateBulkOtherUI();renderOthers()
+    }));
+    updateBulkOtherUI()
+  }
+  $('openBulkOtherBtn').addEventListener('click',()=>bulkOtherMode?closeOtherBulkManager():openOtherBulkManager(null,false));
+  $('closeBulkOtherBtn').addEventListener('click',closeOtherBulkManager);
+  $('bulkClearOthersBtn').addEventListener('click',()=>{bulkOtherSelected.clear();updateBulkOtherUI();renderOthers()});
+  $('bulkSelectVisibleBtn').addEventListener('click',()=>{currentFilteredOthers().forEach(o=>bulkOtherSelected.add(o.id));updateBulkOtherUI();renderOthers()});
+  $('bulkMoveOthersBtn').addEventListener('click',()=>{
+    if(!bulkOtherSelected.size)return;
+    const dest=$('bulkOtherFolder').value||UNCAT,count=bulkOtherSelected.size;
+    others.forEach(o=>{if(bulkOtherSelected.has(o.id)){o.folderId=dest;o.manual=true;o.legacy=false}});
+    bulkOtherSelected.clear();saveAll();bulkOtherMode=true;updateBulkOtherUI();
+    alert(`${count} ${count===1?'targeta moguda':'targetes mogudes'} a «${folderName(dest)}».`)
+  });
+  $('bulkDeleteOthersBtn').addEventListener('click',()=>{
+    const count=bulkOtherSelected.size;if(!count)return;
+    if(!confirm(`Eliminar definitivament ${count} ${count===1?'targeta seleccionada':'targetes seleccionades'}?`))return;
+    others=others.filter(o=>!bulkOtherSelected.has(o.id));bulkOtherSelected.clear();clearStudyDraft();current=null;saveAll();bulkOtherMode=true;updateBulkOtherUI()
+  });
+  $('otherSearch').addEventListener('input',renderOthers);$('otherFilterFolder').addEventListener('change',renderOthers);
+
+  // ---------- Errors ----------
+  function renderErrors(){
+    const arr=[];if(selectedRefContent()){
+      refs.filter(r=>(r.stats?.wrong||0)>0&&(r.stats?.recoveryStreak||0)<3).forEach(item=>{const weak=['year','title','publisher'].filter(f=>(item.fieldStats?.[f]?.wrong||0)>0).map(f=>({year:'any',title:'títol',publisher:'editorial'}[f]));arr.push({kind:'Referència',label:item.author,sub:`${item.title}${weak.length?` · Camps a reforçar: ${weak.join(', ')}`:''}`,wrong:item.stats.wrong,recovery:item.stats.recoveryStreak||0})});profiles.filter(p=>!profileHasRef(p)&&(p.stats?.wrong||0)>0&&(p.stats?.recoveryStreak||0)<3).forEach(item=>arr.push({kind:'Idea',label:item.author,sub:item.ideas?.[0]?.text||'',wrong:item.stats.wrong,recovery:item.stats.recoveryStreak||0}));conceptCandidates().filter(c=>(conceptStat(c.key).wrong||0)>0&&(conceptStat(c.key).recoveryStreak||0)<3).forEach(c=>arr.push({kind:'Concepte',label:`Autors sobre ${c.label}`,sub:c.authors.join(' · '),wrong:conceptStat(c.key).wrong,recovery:conceptStat(c.key).recoveryStreak||0}))
+    }
+    others.filter(o=>selectedOther(o)&&(o.stats?.wrong||0)>0&&(o.stats?.recoveryStreak||0)<3).forEach(item=>arr.push({kind:`Altres · ${folderName(item.folderId)}`,label:item.front,sub:item.back,wrong:item.stats.wrong,recovery:item.stats.recoveryStreak||0}));arr.sort((a,b)=>b.wrong-a.wrong);$('errorSummary').innerHTML=`<span class="stat">${arr.length} elements pendents de recuperar</span>`;$('startErrorTest').disabled=!arr.length;$('errorList').innerHTML=arr.length?arr.map(x=>`<div class="item"><span class="type-badge">${esc(x.kind)}</span><strong>${esc(x.label)}</strong><div>${esc(x.sub)}</div><div class="tiny" style="margin-top:6px">${x.wrong} errors</div><span class="recovery-pill">Recuperació: ${Math.min(3,x.recovery||0)}/3</span></div>`).join(''):'<div class="empty">No hi ha errors pendents de recuperar en el contingut seleccionat.</div>'
+  }
+  $('startErrorTest').addEventListener('click',startErrorSession);
+
+  // ---------- Fitxers i importació ----------
+  async function readFile(file){if(file.name.toLowerCase().endsWith('.docx')){if(!window.mammoth)throw new Error('No s’ha pogut carregar el lector de Word.');const buf=await file.arrayBuffer(),result=await window.mammoth.extractRawText({arrayBuffer:buf});return result.value}return await file.text()}
+  const SOURCE_HINTS=['editorial','editoriales','ed ','ediciones','edicions','press','university','universitat','universidad','revista','journal','science','bbc','eufonia','educere','artseduca','anagrama','alianza','paidos','morata','ricordi','ume','piles','cincel','cisell','anaya','planeta','cepe','rialp','herder','pearson','oxford','frontiers','ptrsb','acs','aulodia','educatio','educacao','ile','labor','alpuerto','everest','inde','neuma','urano','eudeba','jobin','goma shobo','paulinas','bononia','leeme','cultura y educacion','fondo de cultura','siglo xxi','segle xxi','aljibe','l artista','aula didactica','conservatorio','federacio','fundacion'];
+  function looksLikeSource(text){const n=normalize(text);return SOURCE_HINTS.some(h=>n===h||n.startsWith(h+' ')||n.startsWith(h))}
+  function parseReferenceLine(line){const m=line.match(/^(.+?)\s*\(([^)]+)\)\.\s*(.+)$/);if(!m)return null;const author=m[1].trim(),year=m[2].trim();if(!/^(?:\d{4}[a-z]?|s\.?\s*f\.?)$/i.test(year))return null;const rest=m[3].trim(),candidates=[];const re=/[.!?]\s+/g;let hit;while((hit=re.exec(rest))!==null){const cut=hit.index+1,left=rest.slice(0,cut).trim(),right=rest.slice(re.lastIndex).trim();if(left&&right)candidates.push({left,right})}if(!candidates.length)return null;let chosen=candidates.find(c=>looksLikeSource(c.right))||candidates[candidates.length-1];let title=chosen.left,publisher=chosen.right;if(/[.]$/.test(title))title=title.slice(0,-1).trim();publisher=publisher.replace(/\.$/,'').trim();if(!title||!publisher)return null;return{author,year,title,publisher}}
+  function reconcileImportedAuthor(author,refAuthors){const pool=uniqStrings([...refAuthors,...refs.map(r=>r.author)]),exact=pool.find(x=>normalize(x)===normalize(author));if(exact)return{author:exact,related:false};const matches=pool.filter(x=>authorEquivalent(author,x));if(matches.length===1)return{author:matches[0],related:true,from:author,to:matches[0]};return{author,related:false}}
+  function parseReferenceDocument(text){
+    const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),parsedRefs=[],rawIdeaBundles=[],relations=[];let section='refs',currentAuthor=null,currentIdeas=[];
+    const flush=()=>{if(currentAuthor&&currentIdeas.length)rawIdeaBundles.push({author:currentAuthor,ideas:uniqStrings(currentIdeas)});currentIdeas=[]};
+    for(const line of lines){const up=normalize(line);if(up==='autors sense referencia bibliografica'){flush();section='authors';currentAuthor=null;continue}if(up==='dubtes per revisar'){flush();section='stop';currentAuthor=null;continue}if(section==='stop')continue;const im=line.match(/^(?:Idea|Idea clau|Idea associada)\s*:\s*(.+)$/i);if(im){if(currentAuthor)currentIdeas.push(im[1].trim());continue}
+      if(section==='refs'){const r=parseReferenceLine(line);if(r){if(currentAuthor&&normalize(currentAuthor)!==normalize(r.author))flush();parsedRefs.push({id:uid(),...r,stats:{asked:0,correct:0,wrong:0,minor:0},origins:[],manual:false,legacy:false});currentAuthor=r.author;continue}}
+      if(section==='authors'){flush();currentAuthor=line;continue}
+    }
+    flush();const refAuthors=uniqStrings(parsedRefs.map(r=>r.author)),map=new Map();for(const b of rawIdeaBundles){const rec=reconcileImportedAuthor(b.author,refAuthors);if(rec.related)relations.push({from:b.author,to:rec.author});const key=normalize(rec.author);if(!map.has(key))map.set(key,{author:rec.author,ideas:[]});map.get(key).ideas=uniqStrings([...map.get(key).ideas,...b.ideas])}
+    const bundles=[...map.values()],ideaCount=bundles.reduce((n,b)=>n+b.ideas.length,0),noRefCount=bundles.filter(b=>![...refAuthors,...refs.map(r=>r.author)].some(a=>authorEquivalent(a,b.author))).length;return{refs:parsedRefs,bundles,ideaCount,noRefCount,relations}
+  }
+  function sameRef(a,b){return authorEquivalent(a.author,b.author)&&normalize(a.year)===normalize(b.year)&&normalize(a.title)===normalize(b.title)}
+  function getOrCreateDoc(name,type,fingerprint){let d=documents.find(x=>x.type===type&&x.fingerprint===fingerprint);if(!d){d={id:uid(),name,type,fingerprint,importedAt:Date.now(),summary:{}};documents.push(d)}else{d.name=name;d.importedAt=Date.now()}return d}
+  function linkOrigin(entity,docId,retro){entity.origins=Array.isArray(entity.origins)?entity.origins:[];if(!entity.origins.includes(docId))entity.origins.push(docId);if(retro&&entity.legacy){entity.manual=false;entity.legacy=false}}
+
+  $('fileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const text=await readFile(file);pendingRefImport={...parseReferenceDocument(text),fileName:file.name,fingerprint:hashString(text)};renderRefImportPreview()}catch(err){$('importPreview').classList.remove('hidden');$('importList').innerHTML=`<div class="item">No s’ha pogut llegir el document: ${esc(err.message)}</div>`;$('confirmImport').disabled=true}});
+  function renderRefImportPreview(){const p=pendingRefImport;$('importPreview').classList.remove('hidden');$('confirmImport').disabled=!p||(!p.refs.length&&!p.bundles.length);$('importSummary').innerHTML=p?`<span class="mini-pill">${p.refs.length} referències</span><span class="mini-pill">${p.ideaCount} idees</span><span class="mini-pill">${p.noRefCount} autors sense referència després de relacionar noms</span>`:'';$('importRelations').classList.toggle('hidden',!p?.relations?.length);$('importRelations').innerHTML=p?.relations?.length?`Relacions automàtiques detectades: ${p.relations.slice(0,8).map(r=>`${esc(r.from)} → ${esc(r.to)}`).join(' · ')}${p.relations.length>8?'…':''}`:'';$('importMsg').textContent='';const sample=p?[...p.refs.slice(0,7).map(r=>`<div class="item"><span class="type-badge">Referència</span><strong>${esc(r.author)}</strong><div>${esc(r.year)} · <em>${esc(r.title)}</em> · ${esc(r.publisher)}</div></div>`),...p.bundles.slice(0,5).map(b=>`<div class="item"><span class="type-badge">Idees d’autor</span><strong>${esc(b.author)}</strong><div class="tiny">${b.ideas.length} idees</div></div>`)]:[];$('importList').innerHTML=sample.join('')}
+  $('confirmImport').addEventListener('click',()=>{
+    const p=pendingRefImport;if(!p)return;const retro=$('retroRefImport').checked,doc=getOrCreateDoc(p.fileName,'references',p.fingerprint);let added=0,linked=0;
+    for(const r of p.refs){let ex=refs.find(x=>sameRef(x,r));if(ex){linkOrigin(ex,doc.id,retro);linked++}else{r.author=canonicalAuthor(r.author,p.refs.map(x=>x.author));r.origins=[doc.id];r.manual=false;r.legacy=false;refs.push(r);added++}}
+    for(const b of p.bundles){const author=canonicalAuthor(b.author,[...p.refs.map(x=>x.author),...refs.map(x=>x.author)]),prof=getProfileExact(author,true);for(const text of b.ideas){let idea=prof.ideas.find(i=>normalize(i.text)===normalize(text));if(idea){linkOrigin(idea,doc.id,retro);linked++}else{prof.ideas.push({id:uid(),text,origins:[doc.id],manual:false,legacy:false});added++}}}
+    doc.summary={references:p.refs.length,ideas:p.ideaCount,authors:p.bundles.length};saveAll();$('importMsg').textContent=`Completat: ${added} elements nous i ${linked} coincidències vinculades al document.`;pendingRefImport=null;$('confirmImport').disabled=true;renderDocuments()
+  });
+
+  function parseOtherDocument(text,defaultFolderId){
+    const lines=text.split(/\r?\n/),out=[];let cur=null,collectingBack=false,currentFolderName='';
+    const push=()=>{if(cur&&cur.front&&cur.back){out.push({id:uid(),front:cur.front.trim(),back:cur.back.trim(),mode:cur.mode||'front-back',folderName:cur.folderName||currentFolderName||'',folderId:defaultFolderId||UNCAT,stats:{asked:0,correct:0,wrong:0,minor:0},origins:[],manual:false,legacy:false,accepted:{forward:[],reverse:[]}})}cur=null;collectingBack=false};
+    for(const raw of lines){const line=raw.trim();if(!line){if(cur&&cur.front&&cur.back&&cur.mode)push();continue}let m=line.match(/^Carpeta\s*:\s*(.*)$/i);if(m){if(cur&&cur.front&&cur.back)push();currentFolderName=m[1].trim();continue}m=line.match(/^Anvers\s*:\s*(.*)$/i);if(m){if(cur&&cur.front)push();cur={front:m[1].trim(),back:'',mode:'front-back',folderName:currentFolderName};collectingBack=false;continue}m=line.match(/^Revers\s*:\s*(.*)$/i);if(m&&cur){cur.back=m[1].trim();collectingBack=true;continue}m=line.match(/^Mode\s*:\s*(.*)$/i);if(m&&cur){cur.mode=normalize(m[1]).includes('bidireccional')?'bidirectional':'front-back';collectingBack=false;continue}if(cur&&collectingBack)cur.back+=(cur.back?'\n':'')+line}
+    push();return out
+  }
+  $('otherFileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const text=await readFile(file),defaultFolder=$('otherImportFolder').value||UNCAT;pendingOtherImport={cards:parseOtherDocument(text,defaultFolder),fileName:file.name,fingerprint:hashString(text)};renderOtherImportPreview()}catch(err){$('otherImportPreview').classList.remove('hidden');$('otherImportList').innerHTML=`<div class="item">No s’ha pogut llegir el document: ${esc(err.message)}</div>`;$('confirmOtherImport').disabled=true}});
+  function renderOtherImportPreview(){const p=pendingOtherImport,cards=p?.cards||[];$('otherImportPreview').classList.remove('hidden');$('confirmOtherImport').disabled=!cards.length;$('otherImportSummary').innerHTML=`<span class="mini-pill">${cards.length} targetes detectades</span><span class="mini-pill">${cards.filter(x=>x.mode==='bidirectional').length} bidireccionals</span>`;$('otherImportMsg').textContent='';$('otherImportList').innerHTML=cards.slice(0,10).map(o=>`<div class="item"><span class="type-badge">${o.mode==='bidirectional'?'Bidireccional':'Anvers → revers'} · ${esc(o.folderName||folderName(o.folderId))}</span><strong>${esc(o.front)}</strong><div style="white-space:pre-wrap">${esc(o.back)}</div></div>`).join('')}
+  $('confirmOtherImport').addEventListener('click',()=>{
+    const p=pendingOtherImport;if(!p)return;const retro=$('retroOtherImport').checked,doc=getOrCreateDoc(p.fileName,'other',p.fingerprint);let added=0,linked=0;
+    for(const raw of p.cards){const fid=raw.folderName?ensureFolder(raw.folderName):(raw.folderId||UNCAT);let ex=others.find(x=>normalize(x.front)===normalize(raw.front)&&normalize(x.back)===normalize(raw.back));if(ex){linkOrigin(ex,doc.id,retro);if(ex.folderId===UNCAT&&fid!==UNCAT)ex.folderId=fid;linked++}else{raw.folderId=fid;delete raw.folderName;raw.origins=[doc.id];others.push(raw);added++}}
+    doc.summary={cards:p.cards.length};saveAll();$('otherImportMsg').textContent=`Completat: ${added} targetes noves i ${linked} coincidències vinculades.`;pendingOtherImport=null;$('confirmOtherImport').disabled=true;renderDocuments()
+  });
+
+  // ---------- Documents i procedència ----------
+  function docCounts(docId){const refCount=refs.filter(r=>r.origins?.includes(docId)).length,cardCount=others.filter(o=>o.origins?.includes(docId)).length;let ideaCount=0;profiles.forEach(p=>p.ideas.forEach(i=>{if(i.origins?.includes(docId))ideaCount++}));return{refCount,cardCount,ideaCount}}
+  function unlinkDocument(docId,keepData){
+    refs.forEach(r=>{if(r.origins?.includes(docId)){r.origins=r.origins.filter(x=>x!==docId);if(keepData&&r.origins.length===0)r.manual=true}});
+    others.forEach(o=>{if(o.origins?.includes(docId)){o.origins=o.origins.filter(x=>x!==docId);if(keepData&&o.origins.length===0)o.manual=true}});
+    profiles.forEach(p=>p.ideas.forEach(i=>{if(i.origins?.includes(docId)){i.origins=i.origins.filter(x=>x!==docId);if(keepData&&i.origins.length===0)i.manual=true}}));
+    if(!keepData){refs=refs.filter(r=>r.manual||r.origins.length);others=others.filter(o=>o.manual||o.origins.length);profiles.forEach(p=>p.ideas=p.ideas.filter(i=>i.manual||i.origins.length));profiles=profiles.filter(p=>p.ideas.length||refs.some(r=>authorEquivalent(r.author,p.author)))}
+    documents=documents.filter(d=>d.id!==docId);saveAll()
+  }
+  function renderDocuments(){
+    if(!documents.length){$('documentsList').innerHTML='<div class="card empty">Encara no hi ha cap document registrat. Els documents antics es poden vincular tornant-los a pujar i marcant l’opció de vinculació retroactiva.</div>';return}
+    $('documentsList').innerHTML=documents.slice().sort((a,b)=>b.importedAt-a.importedAt).map(d=>{const c=docCounts(d.id),date=new Date(d.importedAt).toLocaleString('ca-ES');return `<div class="item"><div class="row space"><div class="grow"><span class="type-badge">${d.type==='references'?'Referències i idees':'Altres'}</span><strong>${esc(d.name)}</strong><div class="tiny">Importat/vinculat: ${esc(date)}</div><div class="doc-meta"><span class="mini-pill">${c.refCount} referències</span><span class="mini-pill">${c.ideaCount} idees</span><span class="mini-pill">${c.cardCount} targetes</span></div></div><div class="row"><button class="btn small unlink-doc" data-id="${d.id}" type="button">Desvincular i conservar dades</button><button class="btn small danger delete-doc" data-id="${d.id}" type="button">Eliminar document i dades</button></div></div></div>`}).join('');
+    document.querySelectorAll('.unlink-doc').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar el document del registre però conservar totes les dades?'))unlinkDocument(b.dataset.id,true)}));document.querySelectorAll('.delete-doc').forEach(b=>b.addEventListener('click',()=>{const d=documents.find(x=>x.id===b.dataset.id),c=docCounts(b.dataset.id);if(confirm(`Eliminar «${d?.name||'document'}» i les dades que depenen exclusivament d’ell?\n\nAssociades ara: ${c.refCount} referències, ${c.ideaCount} idees i ${c.cardCount} targetes.\n\nLes dades editades manualment o compartides amb altres documents es conservaran.`))unlinkDocument(b.dataset.id,false)}))
+  }
+
+  // ---------- Accés al compte ----------
+  function friendlyAuthError(error,context='login'){
+    const raw=String(error?.message||error||'').trim(),m=raw.toLowerCase();
+    const sec=raw.match(/after\s+(\d+)\s+seconds?/i)||raw.match(/(\d+)\s+seconds?/i);
+    if(sec){
+      const n=Number(sec[1]);
+      return `Per seguretat, espera ${n} ${n===1?'segon':'segons'} abans de tornar-ho a provar.`;
+    }
+    if(m.includes('email rate limit')||m.includes('rate limit exceeded')||m.includes('too many requests')||error?.status===429){
+      return context==='signup'
+        ? 'Ara mateix no podem enviar més correus de confirmació. El correu no queda en cua: torna a prémer «Crear compte» més tard.'
+        : 'Hi ha massa intents seguits. Espera un poc i torna-ho a provar.';
+    }
+    if(m.includes('invalid login credentials')||m.includes('invalid credentials')){
+      return 'El correu o la contrasenya no són correctes.';
+    }
+    if(m.includes('email not confirmed')){
+      return 'Encara no has confirmat el correu. Revisa la safata d’entrada i confirma el compte abans d’iniciar sessió.';
+    }
+    if(m.includes('user already registered')||m.includes('already been registered')){
+      return 'Ja existeix un compte amb aquest correu. Prova d’iniciar sessió.';
+    }
+    if(m.includes('password')&&m.includes('least')){
+      return 'La contrasenya no compleix els requisits mínims. Utilitza almenys 6 caràcters.';
+    }
+    if(m.includes('signup')&&m.includes('disabled')){
+      return 'Ara mateix no es poden crear comptes nous.';
+    }
+    if(m.includes('network')||m.includes('fetch')||m.includes('failed to fetch')){
+      return 'No s’ha pogut connectar amb el servei de comptes. Comprova la connexió i torna-ho a provar.';
+    }
+    return context==='signup'
+      ? 'No s’ha pogut crear el compte. Torna-ho a provar d’ací a un moment.'
+      : 'No s’ha pogut iniciar sessió. Torna-ho a provar.';
+  }
+  $('authForm').addEventListener('submit',async e=>{
+    e.preventDefault();if(!supa){showAuth('No s’ha pogut carregar el sistema de comptes.','bad');return}
+    const email=$('authEmail').value.trim(),password=$('authPassword').value;
+    $('authMsg').textContent='Iniciant sessió…';$('authMsg').className='auth-msg';
+    const {data,error}=await supa.auth.signInWithPassword({email,password});
+    if(error){$('authMsg').textContent=friendlyAuthError(error,'login');$('authMsg').className='auth-msg bad';return}
+    if(data?.user)await activateUser(data.user);
+  });
+  $('togglePasswordBtn').addEventListener('click',()=>{
+    const input=$('authPassword'),show=input.type==='password';input.type=show?'text':'password';$('togglePasswordBtn').textContent=show?'Ocultar':'Mostrar';$('togglePasswordBtn').setAttribute('aria-pressed',show?'true':'false')
+  });
+  function showVerifyEmail(email){
+    $('authScreen').classList.add('hidden');$('migrationScreen').classList.add('hidden');$('appShell').classList.add('hidden');$('verifyEmailScreen').classList.remove('hidden');$('verifyEmailAddress').textContent=email
+  }
+  $('backToLoginBtn').addEventListener('click',()=>showAuth('Quan hages confirmat el correu, inicia sessió.','ok'));
+  $('guestModeBtn').addEventListener('click',()=>{
+    guestMode=true;currentUser=null;cloudReady=false;suppressCloudSync=false;
+    showApp();
+  });
+  $('signUpBtn').addEventListener('click',async()=>{
+    if(!supa){showAuth('No s’ha pogut carregar el sistema de comptes.','bad');return}
+    const username=$('authUsername').value.trim(),email=$('authEmail').value.trim(),password=$('authPassword').value;
+    if(username.length<2){$('authMsg').textContent='Tria un nom d’usuari d’almenys 2 caràcters.';$('authMsg').className='auth-msg bad';return}
+    if(!email||password.length<6){$('authMsg').textContent='Introdueix un correu vàlid i una contrasenya d’almenys 6 caràcters.';$('authMsg').className='auth-msg bad';return}
+    $('authMsg').textContent='Creant el compte…';$('authMsg').className='auth-msg';
+    const {data,error}=await supa.auth.signUp({email,password,options:{emailRedirectTo:'https://inesfelici.github.io/AMOOR/',data:{username}}});
+    if(error){$('authMsg').textContent=friendlyAuthError(error,'signup');$('authMsg').className='auth-msg bad';return}
+    if(data?.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){
+      $('authMsg').textContent='Ja existeix un compte amb aquest correu. Prova d’iniciar sessió.';$('authMsg').className='auth-msg bad';return
+    }
+    if(data?.session&&data?.user){$('authMsg').textContent='Compte creat.';$('authMsg').className='auth-msg ok';await activateUser(data.user)}
+    else{showVerifyEmail(email)}
+  });
+  $('migrateLocalBtn').addEventListener('click',async()=>{
+    const localState=migrationCandidateState||exportState();
+    backupState(localState,'còpia abans d’importar al perfil');
+    if(migrationCloudState&&stateHasData(migrationCloudState)){
+      try{localStorage.setItem('amoor_backup_cloud_before_local_import_v1',JSON.stringify({createdAt:new Date().toISOString(),state:migrationCloudState}))}catch{}
+    }
+    $('migrationMsg').textContent='Pujant les dades al teu perfil…';$('migrationMsg').className='auth-msg';
+    try{
+      await writeCloudState(localState);
+      applyState(localState);
+      migrationCandidateState=null;migrationCloudState=null;
+      cloudReady=true;suppressCloudSync=false;setSyncStatus('ok','Sincronitzat');showApp();
+    }catch(err){console.error(err);$('migrationMsg').textContent='No s’han pogut importar les dades. No s’ha esborrat res.';$('migrationMsg').className='auth-msg bad'}
+  });
+  $('startEmptyBtn').addEventListener('click',async()=>{
+    const old=migrationCandidateState||exportState();backupState(old,'dades locals no importades al perfil');
+    $('migrationMsg').textContent='Carregant el perfil…';$('migrationMsg').className='auth-msg';
+    try{
+      const st=migrationCloudState||blankState();
+      if(!migrationCloudState)await writeCloudState(st);
+      applyState(st);
+      migrationCandidateState=null;migrationCloudState=null;
+      cloudReady=true;suppressCloudSync=false;setSyncStatus('ok','Sincronitzat');showApp();
+    }catch(err){console.error(err);$('migrationMsg').textContent='No s’ha pogut carregar el perfil. Les dades locals continuen guardades en la còpia de seguretat.';$('migrationMsg').className='auth-msg bad'}
+  });
+  $('cancelMigrationBtn').addEventListener('click',async()=>{await supa.auth.signOut();showAuth()});
+  $('signOutBtn').addEventListener('click',async()=>{
+    if(guestMode){
+      showAuth('Les dades locals es mantenen en aquest navegador. Inicia sessió o crea un compte per sincronitzar-les.','ok');
+      return;
+    }
+    if(syncDirty)await syncCloudNow();
+    clearStudyDraft();clearPersistedErrorSession();current=null;errorSession=null;mode='normal';
+    await supa.auth.signOut();showAuth('Sessió tancada.','ok');
+  });
+  $('saveUsernameBtn').addEventListener('click',async()=>{
+    const username=$('accountUsernameInput').value.trim();
+    if(username.length<2){$('usernameMsg').textContent='El nom d’usuari ha de tindre almenys 2 caràcters.';return}
+    $('usernameMsg').textContent='Guardant…';
+    profileSettings.username=username;saveRaw();
+    if(!guestMode&&currentUser&&supa){
+      const {data,error}=await supa.auth.updateUser({data:{username}});
+      if(error){
+        $('usernameMsg').textContent='S’ha guardat en A-MOOR, però no s’ha pogut actualitzar la dada del compte.';
+        saveAll();return
+      }
+      if(data?.user)currentUser=data.user
+    }
+    saveAll();showApp();$('usernameMsg').textContent='Nom d’usuari guardat.';
+    setTimeout(()=>{if($('usernameMsg'))$('usernameMsg').textContent=''},1800)
+  });
+  $('syncNowBtn').addEventListener('click',async()=>{syncDirty=true;await syncCloudNow()});
+  window.addEventListener('online',()=>{if(syncDirty)scheduleCloudSync(100)});
+  window.addEventListener('focus',refreshFromCloudIfNewer);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshFromCloudIfNewer()});
+
+  // ---------- Render global ----------
+  function renderAll(){renderFolderSelects();renderFolders();renderStudySources();renderStats();renderSaved();renderOthers();renderErrors();renderDocuments();renderStudySheets()}
+  migrate();renderAll();
+  suppressCloudSync=false;
+  (async()=>{
+    if(!supa){showAuth('No s’ha pogut carregar el sistema de comptes. Recarrega la pàgina.','bad');return}
+    const {data:{session},error}=await supa.auth.getSession();
+    if(error){showAuth('No s’ha pogut comprovar la sessió.','bad');return}
+    if(session?.user)await activateUser(session.user);else showAuth();
+    supa.auth.onAuthStateChange((event,session)=>{
+      if(event==='SIGNED_OUT')setTimeout(()=>showAuth(),0);
+      else if((event==='SIGNED_IN'||event==='USER_UPDATED')&&session?.user)setTimeout(()=>activateUser(session.user),0);
+    });
+  })();
+})();
+</script>
+</body>
+</html>
