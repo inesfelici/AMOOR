@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Referències — Estudi</title>
+  <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
+  <style>
+    :root{
+      --bg:#f5f7f3; --panel:#fff; --text:#27302a; --muted:#6d776f;
+      --line:#dfe5df; --accent:#4f6b59; --accent-soft:#e8eee9;
+      --ok:#3f6a4c; --warn:#8a6a2d; --bad:#8c4848; --bad-soft:#f7eaea;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit} button{cursor:pointer}
+    .app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+    .sidebar{border-right:1px solid var(--line);padding:28px 18px;background:rgba(255,255,255,.45)}
+    .brand{font-size:18px;font-weight:700;margin:0 10px 26px}
+    .nav{display:grid;gap:8px}
+    .nav button{border:0;background:transparent;color:var(--text);padding:12px 14px;border-radius:12px;text-align:left}
+    .nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:700}
+    .main{padding:42px 34px 70px}.wrap{max-width:850px;margin:0 auto}
+    h1{font-size:34px;letter-spacing:-.03em;margin:0 0 8px}h2{font-size:22px;margin:0 0 16px}
+    p{line-height:1.55}.muted{color:var(--muted)}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+    .grid{display:grid;gap:18px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--text);padding:11px 16px;border-radius:12px;font-weight:650}
+    .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn.soft{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+    .btn.danger{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+    label{display:grid;gap:7px;font-size:14px;font-weight:650}
+    input,textarea,select{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);
+      border-radius:12px;padding:12px 13px;outline:none}
+    input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    textarea{min-height:110px;resize:vertical}.view{display:none}.view.active{display:block}
+    .study-card{padding:32px}.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:800;color:var(--muted)}
+    .prompt{font-size:26px;line-height:1.25;margin:10px 0 24px}
+    .feedback{display:none;margin-top:18px;border-radius:14px;padding:16px}.feedback.show{display:block}
+    .feedback.ok{background:#edf5ef;color:var(--ok)}.feedback.warn{background:#f7f1df;color:var(--warn)}
+    .feedback.bad{background:var(--bad-soft);color:var(--bad)}.answer-block{margin-top:8px;color:var(--text)}
+    .statbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 24px}
+    .stat{background:rgba(255,255,255,.65);border:1px solid var(--line);padding:9px 12px;border-radius:999px;font-size:14px}
+    .list{display:grid;gap:12px}.item{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}
+    .item strong{display:block;margin-bottom:5px}.tiny{font-size:13px;color:var(--muted)}
+    .hidden{display:none!important}.empty{text-align:center;padding:36px 18px;color:var(--muted)}
+    .filebox{border:1px dashed #bfc9c0;border-radius:16px;padding:26px;text-align:center;background:rgba(255,255,255,.55)}
+    .pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700}
+    .question-fields{display:grid;gap:13px}.source-preview{white-space:pre-wrap;background:#f7f8f6;border:1px solid var(--line);padding:14px;border-radius:12px;max-height:240px;overflow:auto}
+    .top-mobile{display:none}.section-gap{margin-top:20px}.type-badge{font-size:12px;font-weight:750;color:var(--accent)}
+    @media(max-width:760px){
+      .app{display:block}.sidebar{display:none}.top-mobile{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.65)}
+      .top-mobile button{white-space:nowrap;border:0;background:transparent;padding:9px 12px;border-radius:10px}
+      .top-mobile button.active{background:var(--accent-soft);color:var(--accent);font-weight:700}
+      .main{padding:28px 16px 54px}h1{font-size:29px}.grid.two{grid-template-columns:1fr}.study-card{padding:22px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Referències</div>
+    <nav class="nav" aria-label="Menú principal">
+      <button class="active" data-view="study">Estudiar</button>
+      <button data-view="errors">Test d’errors</button>
+      <button data-view="add">Afegir contingut</button>
+      <button data-view="others">Altres</button>
+      <button data-view="import">Importar document</button>
+    </nav>
+  </aside>
+
+  <div>
+    <nav class="top-mobile" aria-label="Menú principal mòbil">
+      <button class="active" data-view="study">Estudiar</button>
+      <button data-view="errors">Errors</button>
+      <button data-view="add">Afegir</button>
+      <button data-view="others">Altres</button>
+      <button data-view="import">Importar</button>
+    </nav>
+
+    <main class="main"><div class="wrap">
+
+      <section id="study" class="view active">
+        <h1>Estudiar</h1>
+        <p class="muted">Les referències amb més errors apareixen amb més freqüència.</p>
+        <div id="studyStats" class="statbar"></div>
+        <div id="studyEmpty" class="card empty hidden">Encara no hi ha cap contingut per estudiar.</div>
+        <div id="studyBox" class="card study-card hidden">
+          <div class="row space"><span id="qType" class="eyebrow"></span><span id="qProgress" class="pill"></span></div>
+          <div id="qPrompt" class="prompt"></div>
+          <form id="answerForm">
+            <div id="qFields" class="question-fields"></div>
+            <div class="row" style="margin-top:18px">
+              <button class="btn primary" type="submit">Comprovar</button>
+              <button class="btn" type="button" id="showAnswerBtn">Mostra la resposta</button>
+            </div>
+          </form>
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <div class="row" style="margin-top:16px"><button id="nextBtn" class="btn soft hidden" type="button">Següent</button></div>
+        </div>
+      </section>
+
+      <section id="errors" class="view">
+        <h1>Test d’errors</h1>
+        <p class="muted">Inclou tant referències com targetes d’«Altres» que hages fallat.</p>
+        <div id="errorSummary" class="statbar"></div>
+        <div class="card">
+          <div class="row space">
+            <div><h2 style="margin-bottom:5px">Contingut amb errors</h2><div class="tiny">Ordenat de més a menys fallades.</div></div>
+            <button id="startErrorTest" class="btn primary" type="button">Començar test d’errors</button>
+          </div>
+          <div id="errorList" class="list section-gap"></div>
+        </div>
+      </section>
+
+      <section id="add" class="view">
+        <h1>Afegir contingut</h1>
+        <p class="muted">Un mateix autor pot tindre diverses referències. Les idees semblants entre autors es relacionen automàticament a l’hora de corregir.</p>
+        <form id="addForm" class="card grid">
+          <input type="hidden" id="editRefId">
+          <div class="grid two">
+            <label>Autor<input id="author" required placeholder="Hemsy de Gainza, V."></label>
+            <label>Any<input id="year" required inputmode="numeric" placeholder="1964"></label>
+          </div>
+          <label>Títol<input id="title" required placeholder="La iniciación musical del niño"></label>
+          <label>Editorial<input id="publisher" required placeholder="Ricordi"></label>
+          <label>Idees associades<textarea id="ideas" placeholder="Una idea per línia. Pots deixar-ho buit."></textarea></label>
+          <div class="row">
+            <button id="saveRefBtn" class="btn primary" type="submit">Guardar referència</button>
+            <button id="cancelRefEdit" class="btn hidden" type="button">Cancel·lar</button>
+            <span id="addMsg" class="tiny" aria-live="polite"></span>
+          </div>
+        </form>
+
+        <div class="card section-gap">
+          <div class="row space">
+            <div><h2 style="margin-bottom:5px">Referències guardades</h2><div id="savedCount" class="tiny"></div></div>
+          </div>
+          <div id="savedList" class="list section-gap"></div>
+        </div>
+      </section>
+
+      <section id="others" class="view">
+        <h1>Altres</h1>
+        <p class="muted">Per a dades que no siguen referències bibliogràfiques: compositor → obra, concepte → definició, data → fet, etc.</p>
+
+        <form id="otherForm" class="card grid">
+          <input type="hidden" id="editOtherId">
+          <label>Anvers / pregunta
+            <input id="otherFront" required placeholder="John Cage">
+          </label>
+          <label>Revers / resposta
+            <textarea id="otherBack" required placeholder="4'33''; experimentalisme; compositor estatunidenc..."></textarea>
+          </label>
+          <div class="row">
+            <button id="saveOtherBtn" class="btn primary" type="submit">Guardar targeta</button>
+            <button id="cancelOtherEdit" class="btn hidden" type="button">Cancel·lar</button>
+            <button id="studyOthersBtn" class="btn soft" type="button">Estudiar «Altres»</button>
+            <span id="otherMsg" class="tiny"></span>
+          </div>
+        </form>
+
+        <div class="card section-gap">
+          <div class="row space">
+            <div><h2 style="margin-bottom:5px">Targetes guardades</h2><div id="otherCount" class="tiny"></div></div>
+          </div>
+          <div id="otherList" class="list section-gap"></div>
+        </div>
+      </section>
+
+      <section id="import" class="view">
+        <h1>Importar document</h1>
+        <p class="muted">Admet fitxers .txt i .docx. Cada referència ha d’anar en una línia independent.</p>
+        <div class="card grid">
+          <div class="filebox">
+            <input id="fileInput" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            <p class="tiny" style="margin-bottom:0">Format recomanat: Autor (Any). Títol. Editorial.</p>
+          </div>
+          <div>
+            <div class="eyebrow">Exemple</div>
+            <div class="source-preview">Hemsy de Gainza, V. (1964). La iniciación musical del niño. Ricordi.
+Idea: Estimular la creativitat.
+
+Willems, E. (1981). El valor humano de la educación musical. Paidós.</div>
+          </div>
+          <div id="importPreview" class="hidden">
+            <h2>Previsualització</h2>
+            <div id="importList" class="list"></div>
+            <div class="row" style="margin-top:18px">
+              <button id="confirmImport" class="btn primary" type="button">Importar referències</button>
+              <span id="importMsg" class="tiny"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div></main>
+  </div>
+</div>
+
+<script>
+(() => {
+  const REF_KEY='referencies_estudi_v1';
+  const OTHER_KEY='altres_estudi_v1';
+  let refs=loadArray(REF_KEY), others=loadArray(OTHER_KEY);
+  let current=null, mode='normal', pendingImport=[];
+
+  const $=id=>document.getElementById(id);
+  const navButtons=[...document.querySelectorAll('[data-view]')];
+
+  function loadArray(key){try{const x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
+  function saveAll(){localStorage.setItem(REF_KEY,JSON.stringify(refs));localStorage.setItem(OTHER_KEY,JSON.stringify(others));renderAll()}
+  function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+
+  function normalize(s=''){
+    return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[“”"'.,:;!?¿¡()[\]{}]/g,' ').replace(/\s+/g,' ').trim();
+  }
+  function levenshtein(a,b){
+    a=normalize(a);b=normalize(b);const m=a.length,n=b.length;
+    const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));
+    for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;
+    for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+    return dp[m][n];
+  }
+  function fuzzy(given,correct,kind){
+    const g=normalize(given),c=normalize(correct);if(!g)return{ok:false,minor:false};if(g===c)return{ok:true,minor:false};
+    if(kind==='year')return{ok:false,minor:false};
+    const d=levenshtein(g,c),ratio=1-d/Math.max(g.length,c.length,1);
+    let t=kind==='title'?0.83:kind==='publisher'?0.82:kind==='author'?0.84:0.82;
+    const ok=ratio>=t||d<=Math.max(1,Math.floor(c.length*.08));return{ok,minor:ok};
+  }
+
+  const SYN={
+    estimular:'promoure', estimularne:'promoure', fomentar:'promoure', potenciar:'promoure', promoure:'promoure', afavorir:'promoure',
+    desenvolupament:'desenvolupar', desenvolupar:'desenvolupar',
+    creativitat:'creativitat', creatividad:'creativitat', creatiu:'creativitat', creativa:'creativitat',
+    escolta:'audicio', audicio:'audicio', audicion:'audicio',
+    nen:'infant', nena:'infant', niño:'infant', niña:'infant', infantil:'infant',
+    expressio:'expressio', expresion:'expressio',
+    improvisacio:'improvisacio', improvisacion:'improvisacio'
+  };
+  const STOP=new Set(['el','la','els','les','un','una','uns','unes','de','del','dels','a','al','als','i','o','en','per','para','amb','con','que','se','es','l']);
+  function ideaTokens(s){
+    return normalize(s).split(' ').filter(w=>w&&!STOP.has(w)).map(w=>SYN[w]||w);
+  }
+  function ideaSimilarity(a,b){
+    const A=ideaTokens(a),B=ideaTokens(b);if(!A.length||!B.length)return 0;
+    const sa=new Set(A),sb=new Set(B);let inter=0;sa.forEach(x=>{if(sb.has(x))inter++});
+    const union=new Set([...sa,...sb]).size;const jac=union?inter/union:0;
+    const lev=1-levenshtein(a,b)/Math.max(normalize(a).length,normalize(b).length,1);
+    return Math.max(jac,lev);
+  }
+  function ideasEquivalent(a,b){return ideaSimilarity(a,b)>=0.58}
+  function validAuthorsForIdea(idea){
+    const out=[];
+    refs.forEach(r=>{
+      if((r.ideas||[]).some(x=>ideasEquivalent(idea,x))&&!out.some(a=>normalize(a)===normalize(r.author)))out.push(r.author);
+    });
+    return out;
+  }
+
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));
+    navButtons.forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+    if(id==='study')startQuestion();if(id==='errors')renderErrors();
+  }
+  navButtons.forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+
+  function totalStats(){
+    const all=[...refs,...others];return all.reduce((a,r)=>{a.asked+=r.stats?.asked||0;a.correct+=r.stats?.correct||0;a.wrong+=r.stats?.wrong||0;return a},{asked:0,correct:0,wrong:0});
+  }
+  function renderStats(){
+    const s=totalStats();
+    $('studyStats').innerHTML=`<span class="stat">${refs.length} referències</span><span class="stat">${others.length} altres targetes</span><span class="stat">${s.correct} encerts</span><span class="stat">${s.wrong} errors</span>`;
+  }
+  function weighted(arr){
+    const out=[];arr.forEach(x=>{const w=x.stats?.wrong||0,c=x.stats?.correct||0,n=Math.max(1,1+w*2-Math.floor(c/4));for(let i=0;i<n;i++)out.push(x)});return out;
+  }
+
+  function pickCurrent(){
+    if(mode==='others'){
+      if(!others.length)return null;const p=weighted(others);return{kind:'other',item:p[Math.floor(Math.random()*p.length)]};
+    }
+    if(mode==='errors'){
+      const candidates=[
+        ...refs.filter(x=>(x.stats?.wrong||0)>0).map(item=>({kind:'ref',item})),
+        ...others.filter(x=>(x.stats?.wrong||0)>0).map(item=>({kind:'other',item}))
+      ];
+      if(!candidates.length)return null;
+      const expanded=[];candidates.forEach(c=>{const n=Math.max(1,(c.item.stats?.wrong||0)*2);for(let i=0;i<n;i++)expanded.push(c)});
+      return expanded[Math.floor(Math.random()*expanded.length)];
+    }
+    if(!refs.length)return null;const p=weighted(refs);return{kind:'ref',item:p[Math.floor(Math.random()*p.length)]};
+  }
+
+  function startQuestion(){
+    renderStats();current=pickCurrent();
+    $('feedback').className='feedback';$('feedback').innerHTML='';$('nextBtn').classList.add('hidden');$('showAnswerBtn').classList.remove('hidden');
+    if(!current){$('studyEmpty').classList.remove('hidden');$('studyBox').classList.add('hidden');return}
+    $('studyEmpty').classList.add('hidden');$('studyBox').classList.remove('hidden');
+    $('qProgress').textContent=mode==='errors'?'Test d’errors':mode==='others'?'Altres':'Repàs adaptatiu';
+    if(current.kind==='other')renderOtherQuestion(current.item);else renderReferenceQuestion(current.item);
+  }
+
+  function refsByAuthor(author){return refs.filter(r=>normalize(r.author)===normalize(author))}
+  function renderReferenceQuestion(r){
+    const available=['complete','author'];if(r.ideas?.length)available.push('ideaAuthor');
+    const type=available[Math.floor(Math.random()*available.length)];current.qtype=type;
+    if(type==='complete'){
+      $('qType').textContent='Completa';const siblings=refsByAuthor(r.author);let fields=['year','title','publisher'],hint='';
+      if(siblings.length>1){const clue=['year','title','publisher'][Math.floor(Math.random()*3)];fields=fields.filter(f=>f!==clue);const L={year:'Any',title:'Títol',publisher:'Editorial'};hint=`<div class="tiny" style="margin-top:8px">Pista: <strong>${L[clue]}:</strong> ${esc(r[clue])}</div>`}
+      $('qPrompt').innerHTML=`${esc(r.author)}${hint}`;
+      const L={year:'Any',title:'Títol',publisher:'Editorial'};
+      $('qFields').innerHTML=fields.map(f=>`<label>${L[f]}<input data-field="${f}" autocomplete="off"></label>`).join('');
+      current.expectedFields=fields;
+    }else if(type==='author'){
+      $('qType').textContent='Quin és l’autor?';$('qPrompt').innerHTML=`<em>${esc(r.title)}</em><div class="tiny" style="margin-top:8px">${esc(r.year)} · ${esc(r.publisher)}</div>`;
+      $('qFields').innerHTML=`<label>Autor<input data-field="author" autocomplete="off"></label>`;current.expectedFields=['author'];
+    }else{
+      const idea=r.ideas[Math.floor(Math.random()*r.ideas.length)];current.ideaShown=idea;current.validAuthors=validAuthorsForIdea(idea);
+      $('qType').textContent='Quin autor pots relacionar amb aquesta idea?';$('qPrompt').textContent=idea;
+      $('qFields').innerHTML=`<label>Autor<input data-field="author" autocomplete="off"></label>`;current.expectedFields=['author'];
+    }
+  }
+
+  function renderOtherQuestion(o){
+    current.qtype='other';$('qType').textContent='Targeta';$('qPrompt').textContent=o.front;
+    $('qFields').innerHTML=`<label>Resposta<textarea data-field="back" style="min-height:90px"></textarea></label>`;current.expectedFields=['back'];
+  }
+
+  function refAnswer(r){
+    return `<div class="answer-block"><strong>${esc(r.author)} (${esc(r.year)}).</strong> <em>${esc(r.title)}</em>. ${esc(r.publisher)}.</div>`+
+      (r.ideas?.length?`<div class="tiny" style="margin-top:8px"><strong>Idees:</strong> ${r.ideas.map(esc).join(' · ')}</div>`:'');
+  }
+  function otherAnswer(o){return `<div class="answer-block"><strong>${esc(o.front)}</strong><div style="margin-top:6px">${esc(o.back)}</div></div>`}
+
+  $('answerForm').addEventListener('submit',e=>{
+    e.preventDefault();if(!current)return;
+    const item=current.item;let all=true,minor=false,extra='';
+    if(current.qtype==='ideaAuthor'){
+      const input=document.querySelector('[data-field="author"]').value;
+      const valid=current.validAuthors||[item.author];
+      all=valid.some(a=>fuzzy(input,a,'author').ok);
+      if(all)extra=`<div class="tiny" style="margin-top:8px">Altres respostes vàlides: ${valid.map(esc).join(' · ')}</div>`;
+      else extra=`<div style="margin-top:6px">Autors relacionats: <strong>${valid.map(esc).join(' · ')}</strong></div>`;
+    }else if(current.qtype==='other'){
+      const input=document.querySelector('[data-field="back"]').value;const res=fuzzy(input,item.back,'title');all=res.ok;minor=res.minor;
+    }else{
+      current.expectedFields.forEach(f=>{const input=document.querySelector(`[data-field="${f}"]`);const res=fuzzy(input.value,item[f],f);all=all&&res.ok;minor=minor||res.minor});
+    }
+    item.stats||={asked:0,correct:0,wrong:0,minor:0};item.stats.asked++;
+    if(all){
+      item.stats.correct++;if(minor)item.stats.minor=(item.stats.minor||0)+1;
+      const body=current.qtype==='ideaAuthor'?extra:(minor?`La forma exacta guardada és:${current.kind==='ref'?refAnswer(item):otherAnswer(item)}`:'');
+      showFeedback(minor?'warn':'ok',minor?'Correcte amb una errada menor':'Correcte',body);
+    }else{
+      item.stats.wrong++;item.stats.lastWrong=Date.now();
+      const ans=current.qtype==='ideaAuthor'?extra:(current.kind==='ref'?`Resposta correcta:${refAnswer(item)}`:`Resposta correcta:${otherAnswer(item)}`);
+      showFeedback('bad','Incorrecte',ans);
+    }
+    saveAll();finishQuestion();
+  });
+
+  $('showAnswerBtn').addEventListener('click',()=>{
+    if(!current)return;const item=current.item;item.stats||={asked:0,correct:0,wrong:0,minor:0};item.stats.asked++;item.stats.wrong++;item.stats.lastWrong=Date.now();
+    let body=current.kind==='ref'?refAnswer(item):otherAnswer(item);
+    if(current.qtype==='ideaAuthor'){const valid=current.validAuthors||[item.author];body=`<div>Autors relacionats: <strong>${valid.map(esc).join(' · ')}</strong></div>`}
+    showFeedback('bad','Resposta',body);saveAll();finishQuestion();
+  });
+
+  function finishQuestion(){document.querySelectorAll('#qFields input,#qFields textarea').forEach(i=>i.disabled=true);$('showAnswerBtn').classList.add('hidden');$('nextBtn').classList.remove('hidden')}
+  $('nextBtn').addEventListener('click',startQuestion);
+  function showFeedback(kind,title,body){const el=$('feedback');el.className=`feedback show ${kind}`;el.innerHTML=`<strong>${title}</strong>${body?`<div style="margin-top:6px">${body}</div>`:''}`}
+
+  // Referències: alta i edició
+  $('addForm').addEventListener('submit',e=>{
+    e.preventDefault();const id=$('editRefId').value;
+    const payload={author:$('author').value.trim(),year:$('year').value.trim(),title:$('title').value.trim(),publisher:$('publisher').value.trim(),ideas:$('ideas').value.split('\n').map(x=>x.trim()).filter(Boolean)};
+    if(id){
+      const r=refs.find(x=>x.id===id);if(r)Object.assign(r,payload);
+      $('addMsg').textContent='Canvis guardats.';
+    }else{
+      refs.push({id:uid(),...payload,stats:{asked:0,correct:0,wrong:0,minor:0}});
+      $('addMsg').textContent='Referència guardada.';
+    }
+    resetRefForm();saveAll();setTimeout(()=>$('addMsg').textContent='',1800);
+  });
+  function resetRefForm(){
+    $('addForm').reset();$('editRefId').value='';$('saveRefBtn').textContent='Guardar referència';$('cancelRefEdit').classList.add('hidden');
+  }
+  $('cancelRefEdit').addEventListener('click',resetRefForm);
+  function editRef(id){
+    const r=refs.find(x=>x.id===id);if(!r)return;
+    $('editRefId').value=r.id;$('author').value=r.author;$('year').value=r.year;$('title').value=r.title;$('publisher').value=r.publisher;$('ideas').value=(r.ideas||[]).join('\n');
+    $('saveRefBtn').textContent='Guardar canvis';$('cancelRefEdit').classList.remove('hidden');showView('add');$('author').focus();
+  }
+
+  function renderSaved(){
+    $('savedCount').textContent=`${refs.length} referències guardades`;
+    if(!refs.length){$('savedList').innerHTML='<div class="empty">Encara no hi ha referències.</div>';return}
+    $('savedList').innerHTML=refs.slice().sort((a,b)=>a.author.localeCompare(b.author)).map(r=>`
+      <div class="item"><div class="row space"><div style="min-width:0">
+        <strong>${esc(r.author)}</strong><div>${esc(r.year)} · <em>${esc(r.title)}</em> · ${esc(r.publisher)}</div>
+        ${r.ideas?.length?`<div class="tiny" style="margin-top:7px">${r.ideas.length} idea${r.ideas.length===1?'':'es'} associada${r.ideas.length===1?'':'s'}</div>`:''}
+      </div><div class="row"><button class="btn edit-ref" data-id="${r.id}" type="button">Editar</button><button class="btn danger delete-ref" data-id="${r.id}" type="button">Eliminar</button></div></div></div>`).join('');
+    document.querySelectorAll('.edit-ref').forEach(b=>b.addEventListener('click',()=>editRef(b.dataset.id)));
+    document.querySelectorAll('.delete-ref').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar aquesta referència?')){refs=refs.filter(r=>r.id!==b.dataset.id);saveAll()}}));
+  }
+
+  // Altres: alta i edició
+  $('otherForm').addEventListener('submit',e=>{
+    e.preventDefault();const id=$('editOtherId').value;const payload={front:$('otherFront').value.trim(),back:$('otherBack').value.trim()};
+    if(id){const o=others.find(x=>x.id===id);if(o)Object.assign(o,payload);$('otherMsg').textContent='Canvis guardats.'}
+    else{others.push({id:uid(),...payload,stats:{asked:0,correct:0,wrong:0,minor:0}});$('otherMsg').textContent='Targeta guardada.'}
+    resetOtherForm();saveAll();setTimeout(()=>$('otherMsg').textContent='',1800);
+  });
+  function resetOtherForm(){$('otherForm').reset();$('editOtherId').value='';$('saveOtherBtn').textContent='Guardar targeta';$('cancelOtherEdit').classList.add('hidden')}
+  $('cancelOtherEdit').addEventListener('click',resetOtherForm);
+  function editOther(id){
+    const o=others.find(x=>x.id===id);if(!o)return;$('editOtherId').value=o.id;$('otherFront').value=o.front;$('otherBack').value=o.back;
+    $('saveOtherBtn').textContent='Guardar canvis';$('cancelOtherEdit').classList.remove('hidden');showView('others');$('otherFront').focus();
+  }
+  $('studyOthersBtn').addEventListener('click',()=>{mode='others';showView('study')});
+  function renderOthers(){
+    $('otherCount').textContent=`${others.length} targetes guardades`;
+    $('otherList').innerHTML=others.length?others.map(o=>`
+      <div class="item"><div class="row space"><div style="min-width:0"><strong>${esc(o.front)}</strong><div>${esc(o.back)}</div></div>
+      <div class="row"><button class="btn edit-other" data-id="${o.id}" type="button">Editar</button><button class="btn danger delete-other" data-id="${o.id}" type="button">Eliminar</button></div></div></div>`).join(''):'<div class="empty">Encara no hi ha targetes.</div>';
+    document.querySelectorAll('.edit-other').forEach(b=>b.addEventListener('click',()=>editOther(b.dataset.id)));
+    document.querySelectorAll('.delete-other').forEach(b=>b.addEventListener('click',()=>{if(confirm('Eliminar aquesta targeta?')){others=others.filter(o=>o.id!==b.dataset.id);saveAll()}}));
+  }
+
+  function renderErrors(){
+    const arr=[
+      ...refs.filter(r=>(r.stats?.wrong||0)>0).map(item=>({kind:'Referència',item,label:item.author,sub:item.title})),
+      ...others.filter(o=>(o.stats?.wrong||0)>0).map(item=>({kind:'Altres',item,label:item.front,sub:item.back}))
+    ].sort((a,b)=>(b.item.stats.wrong||0)-(a.item.stats.wrong||0));
+    $('errorSummary').innerHTML=`<span class="stat">${arr.length} elements amb errors</span>`;$('startErrorTest').disabled=!arr.length;
+    $('errorList').innerHTML=arr.length?arr.map(x=>`<div class="item"><span class="type-badge">${x.kind}</span><strong>${esc(x.label)}</strong><div>${esc(x.sub)}</div><div class="tiny" style="margin-top:6px">${x.item.stats.wrong||0} errors · ${x.item.stats.correct||0} encerts</div></div>`).join(''):'<div class="empty">Encara no has fallat cap element.</div>';
+  }
+  $('startErrorTest').addEventListener('click',()=>{mode='errors';showView('study')});
+
+  // Importació
+  $('fileInput').addEventListener('change',async e=>{
+    const file=e.target.files?.[0];if(!file)return;let text='';
+    try{
+      if(file.name.toLowerCase().endsWith('.docx')){
+        if(!window.mammoth)throw new Error('No s’ha pogut carregar el lector de Word.');
+        const buf=await file.arrayBuffer();const result=await window.mammoth.extractRawText({arrayBuffer:buf});text=result.value;
+      }else{text=await file.text()}
+      pendingImport=parseDocument(text);renderImportPreview();
+    }catch(err){
+      $('importPreview').classList.remove('hidden');$('importList').innerHTML=`<div class="item">No s’ha pogut llegir el document: ${esc(err.message)}</div>`;$('confirmImport').disabled=true;
+    }
+  });
+  function parseDocument(text){
+    const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),out=[];let last=null;
+    for(const line of lines){
+      const im=line.match(/^(?:idea|idea clau|idea associada)\s*:\s*(.+)$/i);
+      if(im&&last){last.ideas.push(im[1].trim());continue}
+      const m=line.match(/^(.+?)\s*\((\d{4}[a-z]?)\)\.\s*(.+?)\.\s*([^.\n]+)\.?$/);
+      if(m){last={id:uid(),author:m[1].trim(),year:m[2].trim(),title:m[3].trim(),publisher:m[4].trim(),ideas:[],stats:{asked:0,correct:0,wrong:0,minor:0}};out.push(last)}
+    }
+    return out;
+  }
+  function renderImportPreview(){
+    $('importPreview').classList.remove('hidden');$('confirmImport').disabled=!pendingImport.length;$('importMsg').textContent=pendingImport.length?`${pendingImport.length} referències detectades.`:'No s’ha detectat cap referència.';
+    $('importList').innerHTML=pendingImport.length?pendingImport.map(r=>`<div class="item"><strong>${esc(r.author)}</strong><div>${esc(r.year)} · <em>${esc(r.title)}</em> · ${esc(r.publisher)}</div>${r.ideas.length?`<div class="tiny">${r.ideas.length} idees detectades</div>`:''}</div>`).join(''):'<div class="empty">Comprova el format del document.</div>';
+  }
+  $('confirmImport').addEventListener('click',()=>{if(!pendingImport.length)return;const n=pendingImport.length;refs.push(...pendingImport);pendingImport=[];saveAll();$('importMsg').textContent=`S’han importat ${n} referències.`;$('confirmImport').disabled=true});
+
+  function renderAll(){renderStats();renderSaved();renderOthers();renderErrors()}
+  function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+  renderAll();startQuestion();
+})();
+</script>
+</body>
+</html>
