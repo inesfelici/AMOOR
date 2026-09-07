@@ -1,0 +1,26 @@
+{
+  "name": "A-MOOR",
+  "short_name": "A-MOOR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f3",
+  "theme_color": "#4f6b59",
+  "icons": [
+    {
+      "src": "./amoor-tab-v4-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "./amoor-tab-v4-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "./amoor-touch-v4.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
